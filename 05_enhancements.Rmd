@@ -1,0 +1,171 @@
+# Model Enhancements
+
+Enhancing and making adjustments to a model can often be straightforward in the Bayesian context, depending on what one wants to accomplish.  In other cases, some things may be possible that aren't readily available with standard approaches in the traditional setting.  The following shows a few brief examples to give an idea of the possibilities.
+
+
+
+## Generating New Variables of Interest
+
+We have already seen one way to get at new statistics of interest in the predictive model checking section.  I next show how to do so as part of the modeling process itself.  In Stan we can accomplish this via the generated quantities section.
+
+A typical part of linear regression output is $R^2$, the amount of variance accounted for by the model.  To get this in Stan we just have to create the code necessary for the calculations, and place it within the generated quantities section.  I only show this part of the model code; everything we had before would remain the same.  For comparison I show the corresponding R code. There are a couple of ways to go about this, and I use some of Stan's matrix operations as one approach.
+
+<!-- You ran this and saved the image as data/mainModelDatawithRsq.RData -->
+
+
+```{r generatedQuantitiesRsq, eval=FALSE, echo=-c(1, 6:34, 46)}
+stanmodelcodeRsq = "
+.
+.
+.
+
+data {                      // Data block
+  int<lower=1> N;           // Sample size
+  int<lower=1> K;           // Dimension of model matrix
+  matrix [N, K] X;          // Model Matrix
+  vector[N] y;              // Target variable
+}
+
+/* 
+transformed data {          // Transformed data block. Not used presently.
+} 
+*/
+
+parameters {                // Parameters block; declarations only
+  vector[K] beta;           // Coefficient vector
+  real<lower=0> sigma;      // Error scale
+}
+
+model {                     // Model block
+  vector[N] mu;
+  mu <- X * beta;           // Creation of linear predictor
+  
+  // priors
+  beta ~ normal(0, 10);
+  sigma ~ cauchy(0, 5);     // With sigma bounded at 0, this is half-cauchy
+  
+  // likelihood
+  y ~ normal(mu, sigma);
+}
+
+generated quantities {
+  real rss;                
+  real totalss;
+  real<lower=0, upper=1> R2;                 
+  vector[N] mu;
+  
+  mu <- X * beta;
+  rss <- dot_self(y-mu);
+  totalss <- dot_self(y-mean(y));
+  R2 <- 1 - rss/totalss;
+}
+"
+```
+
+Using the results from the model using <span class="func">lm</span>, we do the same calculations for `rss` and `totalss`, and note the result is identical to what you'd see in the summary of the model.
+
+
+```{r generatedQuantitiesvsR, eval=TRUE, cache=TRUE, echo=5}
+load('data/mainModels.RData')
+rss = crossprod(resid(modlm))
+totalss = crossprod(y-mean(y))
+rss = rss[1]; totalss = totalss[1] # for alignment, remove matrix
+1-rss/totalss; summary(modlm)$r.squared
+# 1-var(resid(modlm))/var(y) # alternatives
+# var(fitted(modlm))/var(y)
+```
+
+Now we can run the model with added $R^2$.  Note that as before we do not just get a point estimate, but a whole distribution of simulated values for $R^2$.  First the results.
+
+
+
+
+```{r generatedQuantitiesRsqResults, echo=-1}
+load('data/mainModelDatawithRsq.RData')
+print(fitRsq, digits=3, par=c('beta','sigma','R2'), prob=c(.025,.5,.975))
+```
+
+The nice thing here is that our $R^2$ incorporates the additional uncertainty in estimating the model parameters, and thus acts like an *adjusted* $R^2$[^adjr2].  The following is the classical regression adjusted $R^2$.
+
+
+```{r generatedQuantitiesAdjRsq}
+summary(modlm)$adj
+```
+
+Furthermore, in the Bayesian context we get an interval estimate and everything else we typically get as with other quantities of interest, and the same goes for anything we calculate along the way (e.g. the mu values). In addition, it would be trivial to calculate something like the actual adjusted $R^2$, the probability that the value is greater than .5, and other things of that nature.
+
+
+
+## Robust Regression
+
+If we were concerned that extreme observations exist that our current model is not able to capture well, we could change the sampling distribution to one that had a little more probability in the tails.  This is very easy to do in this situation, as we just change likelihood portion of our code to employ say, a t-distribution. In Stan, the t-distribution has parameters mean and sigma as with the normal distribution, but we also have the added parameter for degrees of freedom.  Thus our code might look like the following:
+
+
+```{r robustRegressionT}
+stanmodelcodeT = "
+.
+.
+.
+
+model {                     
+  vector[N] mu;
+  mu <- X * beta;           
+  
+  // priors
+  beta ~ normal(0, 10);
+  sigma ~ cauchy(0, 5);     
+  
+  // likelihood
+  // y ~ normal(mu, sigma);            // previously used normal 
+  y ~ student_t(10, mu, sigma)         // t with df=10
+}
+"
+```
+
+In this case we set the degrees of freedom at 10[^dfdat], but how would you know in advance what to set it as?  It might be better to place a prior (with lower bound of one) for that value and estimate it as part of the modeling process.  One should note that there are many distributions available in Stan (e.g. others might be useful for skewed data, truncated etc.), and more will be added in the future. 
+
+
+
+## Generalized Linear Model
+
+Expanding from standard linear model, we can move very easily to generalized linear models, of which the standard regression is a special case.  The key components are use of a link function that links the linear predictor to the target variable, and an appropriate sampling distribution for the likelihood.
+
+Let's consider a count model using the Poisson distribution.  We can specify the model as follows:
+
+$$y \sim Pois(\lambda)$$
+
+$$g(\lambda) = X\beta$$
+
+
+where $g(.)$ is the link function, the canonical link function for Poisson being the natural logarithm.  In Stan this can be expressed via the inverse link function, where we exponentiate the linear predictor.  Aside from that we simply specify $y$ as distributed Poisson in the same way we used the normal and t-distribution in earlier efforts.
+
+```{r poissonRegression}
+stanmodelcodePoisson = "
+.
+.
+.
+
+model {                     
+  vector[N] lambda;
+  vector[N] eta;
+
+  eta <- X * beta;
+  lambda <- exp(eta)
+   
+  // priors
+  beta ~ normal(0, 10);
+
+  // likelihood
+  y ~ poisson(lambda)
+}
+"
+```
+
+And that's all there is to that[^stannotvec].  We just saw that we are not limited to the exponential family distributions of glm(s), though that covers a lot of ground, and so at this point you have a lot of the tools covered in standard applied statistics course, and a few beyond.
+
+
+[^adjr2]: See [Gelman & Pardoe (2006)](http://www.stat.columbia.edu/~gelman/research/published/rsquared.pdf), Bayesian Measures of Explained Variance.
+
+[^dfdat]: Alternatively, we could add a value 'df' to the data list and data block.
+
+[^stannotvec]: Note that some link/inverse-link functions in Stan cannot be applied to vectors, only scalars.  As such you would have to loop over the values of $y$,<br> `for(n in 1:N) ...`

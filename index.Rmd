@@ -1,0 +1,44 @@
+--- 
+title: <span style="font-size:150%; font-variant:small-caps; font-style:italic; ">Bayesian Basics</span>
+author:  |
+  <div class="title"><span style="font-size:125%; font-variant:small-caps; font-style:normal">Michael Clark</span><br>
+  <span style="font-size:75%; margin: 0 auto; font-style:normal">Statistician Lead</span> <br>
+  <img src="../img/CSCAR_logos/signature-acronym.png" style="width:24%; padding:10px 0;"> <br>
+  <img src="../img/ARC_logos/ARC-acronym-signature.png" style="width:17%; padding:10px 0;"> </div>
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+output: 
+    bookdown::tufte_html_book: 
+      toc: yes
+      number_sections: false
+      css: [toc.css, ../css/tufte_bookdown/mytufte.css]
+      split_by: rmd
+always_allow_html: yes
+documentclass: book
+bibliography: ['packages.bib', 'BayesBasics.bib']
+biblio-style: apalike
+link-citations: yes
+github-repo: m-clark/docs
+description: "An introduction to Bayesian data analysis."
+
+
+# this is for pdf but also to paste into references; tufte style refs at point of citation in margin
+nocite: | 
+  @kruschke_doing_2010, @gelman_arm, @mcgrayne_theory_2012, @gelmanPardoe2006,
+  @gelmanHwangVehtari, @gelmanVehtariWAIC, @mcelreath2016
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, comment=NA, cache=F, message = F, warning=F, 
+                      R.options=list(width=120), fig.align='center')
+
+# automatically create a bib database for R packages
+knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib')
+```
+
+```{r echo=FALSE}
+library(tufte); library(tidyverse)
+```
+
+
+#  <span style="color:transparent">Home</span>

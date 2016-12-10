@@ -1,0 +1,11 @@
+# Summary
+
+Hopefully this document has provided a path toward easing into Bayesian analysis for those that are interested but might not have had the confidence or particular skill set that many texts and courses assume.  Conceptually, Bayesian inference can be fairly straightforward, and inferentially is more akin to the ways people naturally think about probability.  Many of the steps taken in classical statistical analysis are still present, but have been enriched via the incorporation of prior information, a more flexible modeling scheme, and the ability to enhance even standard analyses with new means of investigation.
+
+Of course it will not necessarily be easy, particularly for complex models, though such models might actually be relatively easier compared to the classical framework.  While not necessary for all models, oftentimes the process will involve a more hands-on approach.  However this allows for more understanding of the model and its results, and gets easier with practice just like anything else.
+
+You certainly don't have to abandon classical and other methods either.  Scientific research involves applying the best tool for the job, and in some cases the Bayesian approach may not be the best fit for a particular problem.  But when it is, it's hoped you'll be willing to take the plunge, and know there are many tools and a great community of people to help you along the way.
+
+<br>
+
+<div style="text-align:center">Best of luck with your research!</div>

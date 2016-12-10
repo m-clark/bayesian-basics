@@ -1,0 +1,19 @@
+bookdown::tufte_html_book:
+  css: [toc.css, ../css/tufte_bookdown/mytufte.css]
+  font-import: http://fonts.googleapis.com/css?family=Risque|Roboto|Open+Sans
+  font-family: 'Roboto'
+  config:
+    toc:
+      before: |
+        <li><a href="./"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#ff5503">Become a Bayesian with R</span></a></li>
+      after: |
+        <li><a href="https://m-clark.github.io" target="blank">Michael Clark</a></li>
+    edit:
+      link: https://github.com/rstudio/bookdown-demo/edit/master/%s
+    highlight: pygments
+bookdown::pdf_book:
+  includes:
+    in_header: preamble.tex
+  latex_engine: xelatex
+  citation_package: natbib
+bookdown::epub_book: default

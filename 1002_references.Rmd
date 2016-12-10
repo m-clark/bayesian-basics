@@ -1,0 +1,32 @@
+`r if (knitr:::is_html_output()) '# References {-}'`
+
+## Texts
+
+Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). Bayesian Data
+Analysis. 3rd edition.
+
+Gill, J. (2008). *Bayesian methods : a social and behavioral sciences approach*. 2nd edition.
+
+Jackman, S. (2009). *Bayesian analysis for the social sciences*. Wiley, Chichester, UK.
+
+Kruschke, J. *Doing Bayesian Data Analysis*. Very intro book, but might be good for those not too confident in statistics generally speaking. And who doesn't like puppies? Second edition has Stan examples. (intro)
+
+Lunn, D., Jackson, C., Best, N., Thomas, A., and Spiegelhalter, D. (2012). *The BUGS Book: A Practical
+Introduction to Bayesian Analysis*. Chapman and Hall/CRC, Boca Raton, FL.
+
+Lynch, S. M. (2007). Introduction to applied Bayesian statistics and estimation for social scientists. Springer,
+New York.
+
+McElreath, R. *Statistical Rethinking*.  A good modeling book in general, by one who has contributed a lot to helping others learn Stan.  Comes with its own R package too. (intro to moderate)
+
+
+
+## Other
+
+Statisticat, LLC. *Bayesian Inference*. A quick overview from the original author's of the <span class="pack">LaplacesDemon</span> package.
+
+http://mc-stan.org/ Main website
+
+http://stan.fit/ The Stan Group
+
+More resources [here](http://mc-stan.org/documentation/)
