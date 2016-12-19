@@ -1,7 +1,7 @@
-This is XeTeX, Version 3.1415926-2.5-0.9999.3 (MiKTeX 2.9 64-bit) (preloaded format=xelatex 2014.8.17)  5 DEC 2016 21:50
+This is XeTeX, Version 3.1415926-2.5-0.9999.3 (MiKTeX 2.9 64-bit) (preloaded format=xelatex 2014.8.17)  18 DEC 2016 19:09
 entering extended mode
 **Bayesian_Basics.tex
-(D:\Documents\Stats\docs\BB2\Bayesian_Basics.tex
+(D:\Documents\Stats\Repositories\Docs\bayesian-basics\Bayesian_Basics.tex
 LaTeX2e <2014/05/01>
 Babel <3.9k> and hyphenation patterns for 68 languages loaded.
 (D:\Programs\MiKTeX\tex\latex\base\book.cls
@@ -774,7 +774,7 @@ Package: titling 2009/09/04 v2.1d maketitle typesetting
 \thanksmarkwidth=\skip60
 \thanksmargin=\skip61
 \droptitle=\skip62
-) (D:\Documents\Stats\docs\BB2\Bayesian_Basics.aux)
+) (D:\Documents\Stats\Repositories\Docs\bayesian-basics\Bayesian_Basics.aux)
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 130.
 LaTeX Font Info:    ... okay on input line 130.
 LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 130.
@@ -861,15 +861,15 @@ Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 LaTeX Info: Redefining \ref on input line 130.
 LaTeX Info: Redefining \pageref on input line 130.
 LaTeX Info: Redefining \nameref on input line 130.
-(D:\Documents\Stats\docs\BB2\Bayesian_Basics.out) (D:\Documents\Stats\docs\BB2\
-Bayesian_Basics.out)
+(D:\Documents\Stats\Repositories\Docs\bayesian-basics\Bayesian_Basics.out) (D:\
+Documents\Stats\Repositories\Docs\bayesian-basics\Bayesian_Basics.out)
 \@outlinefile=\write4
 [1
 
 
 ] [2
 
-] (D:\Documents\Stats\docs\BB2\Bayesian_Basics.toc
+] (D:\Documents\Stats\Repositories\Docs\bayesian-basics\Bayesian_Basics.toc
 LaTeX Font Info:    Try loading font information for OT1+lmr on input line 3.
 (D:\Programs\MiKTeX\tex\latex\lm\ot1lmr.fd
 File: ot1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
@@ -932,13 +932,13 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
 ]
 Chapter 4.
-LaTeX Font Info:    Try loading font information for EU1+lmtt on input line 358
+LaTeX Font Info:    Try loading font information for EU1+lmtt on input line 356
 .
 (D:\Programs\MiKTeX\tex\latex\euenc\eu1lmtt.fd
 File: eu1lmtt.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
 LaTeX Font Info:    Font shape `EU1/lmtt/bx/n' in size <10> not available
-(Font)              Font shape `EU1/lmtt/b/n' tried instead on input line 359.
+(Font)              Font shape `EU1/lmtt/b/n' tried instead on input line 357.
 [13]
 
 Package amsmath Warning: Foreign command \atopwithdelims;
@@ -969,7 +969,7 @@ Chapter 5.
 ]
 Chapter 6.
 [29] [30]
-Overfull \vbox (0.70795pt too high) detected at line 1325
+Overfull \vbox (0.70795pt too high) detected at line 1344
  []
 
 [31] [32] [33] [34
@@ -997,40 +997,40 @@ Overfull \vbox (0.89676pt too high) has occurred while \output is active []
 [47] [48]
 Underfull \vbox (badness 1033) has occurred while \output is active []
 
-[49] [50] [51] [52] [53] [54] [55] [56]
-Underfull \vbox (badness 10000) detected at line 2841
+[49] [50] [51] [52] [53] [54]
+Overfull \vbox (1.55835pt too high) detected at line 2721
+ []
+
+[55] [56]
+Overfull \vbox (0.63333pt too high) detected at line 2863
+ []
+
+[57] [58] [59] [60]
+Underfull \vbox (badness 10000) detected at line 3141
  []
 
 
-Underfull \vbox (badness 10000) detected at line 2841
+Underfull \vbox (badness 10000) detected at line 3141
  []
 
-[57] [58] [59]
-Overfull \vbox (1.26839pt too high) detected at line 3119
- []
+[61] [62] [63] (D:\Documents\Stats\Repositories\Docs\bayesian-basics\Bayesian_B
+asics.bbl [64])
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 3261.
+[65
 
-[60]
-Underfull \vbox (badness 10000) detected at line 3119
- []
+]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 3261.
+(D:\Documents\Stats\Repositories\Docs\bayesian-basics\Bayesian_Basics.aux)
+Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 3261.
+Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 3261.
 
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
-Underfull \vbox (badness 10000) detected at line 3119
- []
-
-[61] [62] (D:\Documents\Stats\docs\BB2\Bayesian_Basics.bbl [63] [64
-
-])
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 3239.
-[65]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 3239.
-(D:\Documents\Stats\docs\BB2\Bayesian_Basics.aux)
-Package atveryend Info: Empty hook `AtVeryEndDocument' on input line 3239.
-Package atveryend Info: Empty hook `AtEndAfterFileList' on input line 3239.
  ) 
 Here is how much of TeX's memory you used:
  25050 strings out of 428791
- 446483 string characters out of 3166350
- 548171 words of memory out of 3000000
+ 446658 string characters out of 3166350
+ 549171 words of memory out of 3000000
  28093 multiletter control sequences out of 15000+200000
  24474 words of font info for 66 fonts, out of 3000000 for 9000
  1096 hyphenation exceptions out of 8191

@@ -8,8 +8,6 @@ Our goal is to estimate a parameter $\theta$, the probability that the random kn
 
 In R, we can represent the following data for your team as follows, as well as setup some other things for later.
 
-<span class="marginnote">The fifth shot would have won the game but was taken by Wayne Rooney'</span>
-
 ```{r goaldat}
 shots = c('goal','goal','goal','miss','miss',
           'goal','goal','miss','miss','goal')
@@ -20,6 +18,7 @@ N = length(shots)                      # sample size
 nGoal = sum(shots=='goal')             # number of shots made
 nMiss = sum(shots=='miss')             # number of those miss
 ```
+<span class="marginnote">The fifth shot would have won the game but was taken by Wayne Rooney.</span>
 
 Recall the binomial distribution where we specify the number of trials for a particular observation and the probability of an event. Let's look at the distribution for a couple values for $\theta$ equal to .5 and .85 and $N=10$ observations.  We will repeat this 1000 times.
 

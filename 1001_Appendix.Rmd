@@ -309,7 +309,7 @@ BUGS [@bugsbook] (*B*ayesian inference *U*sing *G*ibbs *S*ampling) is perhaps th
 
 ### R
 
-R has many modeling packages devoted to Bayesian analysis such that there is a [Task View](http://cran.r-project.org/web/views/Bayesian.html) specific to the topic.  Most of them are even specific to the implementation of a certain type of analysis[^rbayes].  So not only can you do everything within R and take advantage of the power of those languages, you can then use Bayesian specific R packages on the results. 
+R has many modeling packages devoted to Bayesian analysis such that there is a [Task View](http://cran.r-project.org/web/views/Bayesian.html) specific to the topic.  Most of them are even specific to the implementation of a certain type of analysis[^rbayes].  So not only can you do everything within R and take advantage of the power of those languages, you can then use Bayesian specific R packages on the results.  For standard and even some complex models I would suggest using the <span class="pack">rstanarm</span> or <span class="pack">brms</span> packages as a way to stick to the usual R modeling style, unless you have a notably complicated model, at wich point you can use <span class="pack">rstan</span>.
 
 
 ### General Statistical Packages

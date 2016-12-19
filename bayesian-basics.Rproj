@@ -13,3 +13,5 @@ RnwWeave: knitr
 LaTeX: pdfLaTeX
 
 StripTrailingWhitespace: Yes
+
+BuildType: Website

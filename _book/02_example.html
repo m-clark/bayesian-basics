@@ -16,7 +16,7 @@
 <meta name="github-repo" content="m-clark/docs" />
 
 
-<meta name="date" content="2016-12-05" />
+<meta name="date" content="2016-12-18" />
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -30,7 +30,7 @@ MathJax.Hub.Config({
 <title>Bayesian Basics</title>
 
 <link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
-<script src="libs/htmlwidgets-0.7/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-0.8/htmlwidgets.js"></script>
 <script src="libs/jquery-1.12.4/jquery.min.js"></script>
 <script src="libs/datatables-binding-0.2/datatables.js"></script>
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
@@ -188,7 +188,6 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>The following is an attempt to provide a small example to show the connection between prior distribution, likelihood and posterior distribution. Let’s say we want to estimate the probability that a soccer/football player<label for="tufte-sn-5" class="margin-toggle sidenote-number">5</label><input type="checkbox" id="tufte-sn-5" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">5</span> Don’t even start, it’s always been both ‘football’ and ‘soccer’.</span> will score a penalty kick in a shootout. We will employ the binomial distribution to model this.</p>
 <p>Our goal is to estimate a parameter <span class="math inline">\(\theta\)</span>, the probability that the random knucklehead from your favorite football team will score the penalty in a overtime shootout. Let’s say that for this match takes 10 shots per team before the game is decided.</p>
 <p>In R, we can represent the following data for your team as follows, as well as setup some other things for later.</p>
-<p><span class="marginnote">The fifth shot would have won the game but was taken by Wayne Rooney’</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">shots =<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;goal&#39;</span>,<span class="st">&#39;goal&#39;</span>,<span class="st">&#39;goal&#39;</span>,<span class="st">&#39;miss&#39;</span>,<span class="st">&#39;miss&#39;</span>,
           <span class="st">&#39;goal&#39;</span>,<span class="st">&#39;goal&#39;</span>,<span class="st">&#39;miss&#39;</span>,<span class="st">&#39;miss&#39;</span>,<span class="st">&#39;goal&#39;</span>)
 
@@ -197,6 +196,7 @@ shotsNum =<span class="st"> </span><span class="kw">as.numeric</span>(shots==<sp
 N =<span class="st"> </span><span class="kw">length</span>(shots)                      <span class="co"># sample size</span>
 nGoal =<span class="st"> </span><span class="kw">sum</span>(shots==<span class="st">&#39;goal&#39;</span>)             <span class="co"># number of shots made</span>
 nMiss =<span class="st"> </span><span class="kw">sum</span>(shots==<span class="st">&#39;miss&#39;</span>)             <span class="co"># number of those miss</span></code></pre></div>
+<p><span class="marginnote">The fifth shot would have won the game but was taken by Wayne Rooney.</span></p>
 <p>Recall the binomial distribution where we specify the number of trials for a particular observation and the probability of an event. Let’s look at the distribution for a couple values for <span class="math inline">\(\theta\)</span> equal to .5 and .85 and <span class="math inline">\(N=10\)</span> observations. We will repeat this 1000 times.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x1 =<span class="st"> </span><span class="kw">rbinom</span>(<span class="dv">1000</span>, <span class="dt">size=</span><span class="dv">10</span>, <span class="dt">p=</span>.<span class="dv">5</span>)
 x2 =<span class="st"> </span><span class="kw">rbinom</span>(<span class="dv">1000</span>, <span class="dt">size=</span><span class="dv">10</span>, <span class="dt">p=</span>.<span class="dv">85</span>)
@@ -244,7 +244,7 @@ pTheta =<span class="st"> </span>pTheta/<span class="kw">sum</span>(pTheta) </co
 pThetaGivenData =<span class="st"> </span>pDataGivenTheta*pTheta /<span class="st"> </span>pData  <span class="co"># Bayes theorem</span></code></pre></div>
 <p>Now lets examine what all we’ve got.</p>
 <div id="htmlwidget-1d319e990fb3bc05c25c" style="width:50%;height:auto;" class="datatables html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1d319e990fb3bc05c25c">{"x":{"filter":"none","data":[["0.091","0.182","0.273","0.364","0.455","0.545","0.636","0.727","0.818","0.909"],["0.033","0.067","0.100","0.133","0.167","0.167","0.133","0.100","0.067","0.033"],["0.000","0.003","0.024","0.080","0.164","0.236","0.244","0.172","0.069","0.008"],["0.000","0.002","0.018","0.079","0.203","0.293","0.242","0.128","0.034","0.002"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>theta\u003c/th>\n      <th>prior\u003c/th>\n      <th>likelihood\u003c/th>\n      <th>posterior\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"ordering":false,"paging":false,"searching":false,"info":false,"autowidth":false,"columnDefs":[{"className":"dt-center","targets":[0,1,2,3]}],"order":[],"autoWidth":false,"orderClasses":false},"selection":{"mode":"multiple","selected":null,"target":"row"}},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-1d319e990fb3bc05c25c">{"x":{"filter":"none","data":[["0.091","0.182","0.273","0.364","0.455","0.545","0.636","0.727","0.818","0.909"],["0.033","0.067","0.100","0.133","0.167","0.167","0.133","0.100","0.067","0.033"],["0.000","0.003","0.024","0.080","0.164","0.236","0.244","0.172","0.069","0.008"],["0.000","0.002","0.018","0.079","0.203","0.293","0.242","0.128","0.034","0.002"]],"container":"<table class=\"display\">\n  <thead>\n    <tr>\n      <th>theta\u003c/th>\n      <th>prior\u003c/th>\n      <th>likelihood\u003c/th>\n      <th>posterior\u003c/th>\n    \u003c/tr>\n  \u003c/thead>\n\u003c/table>","options":{"ordering":false,"paging":false,"searching":false,"info":false,"autowidth":false,"columnDefs":[{"className":"dt-center","targets":[0,1,2,3]}],"order":[],"autoWidth":false,"orderClasses":false}},"evals":[],"jsHooks":[]}</script>
 <p>Starting with the <em>prior</em> column, we can see that with the triangular distribution, we’ve given most of our prior probability to the middle values with probability tapering off somewhat slowly towards either extreme. The likelihood suggests the data is most likely for <span class="math inline">\(\theta\)</span> values .55-.64, though we know the specific maximum likelihood estimate for <span class="math inline">\(\theta\)</span> is the proportion for the sample, or .6. Our posterior will fall somewhere between the prior and likelihood estimates, and we can see it has shifted the bulk of the probability slightly away from most likely values suggested by the prior distribution towards a <span class="math inline">\(\theta\)</span> value suggested by the data of .6.</p>
 <p>Let’s go ahead and see what the mean is: <span class="marginnote">The expected value for a continuous parameter is <span class="math inline">\(\operatorname{E}[X] = \int_{-\infty}^\infty xp(x)\mathrm{d}x\)</span>, and for a discrete parameter <span class="math inline">\(\operatorname{E}[X] = \sum_{i=1}^\infty x_i\, p_i\)</span>, i.e. a weighted sum of the possible values times their respective probability of occurrence.</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">posteriorMean =<span class="st"> </span><span class="kw">sum</span>(pThetaGivenData*theta)
@@ -252,11 +252,11 @@ posteriorMean</code></pre></div>
 <pre><code>[1] 0.5623611</code></pre>
 <p>So we start with a prior centered on a value of <span class="math inline">\(\theta=.5\)</span>, add data whose ML estimate is <span class="math inline">\(\theta=.6\)</span>, and our posterior distribution suggests we end up somewhere in between.</p>
 <p>We can perhaps understand this further via the following visualizations. In each of these the prior is represented by the blue density, the likelihood by the red, and the posterior by purple. This first is based on a different prior than just used in our example, and instead employs the beta distribution noted among the possibilities in the <a href="02_example.html#prior">code above</a>. While the beta distribution is highly flexible, with shape parameters <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\mathcal{B}\)</span> set to 10 and 10 we get a symmetric distribution centered on <span class="math inline">\(\theta = .5\)</span>. This would actually be a somewhat stronger prior than we might normally want to use, but serves to illustrate a point. The mean of the beta is <span class="math inline">\(\frac{\mathcal{A}}{\mathcal{A}+\mathcal{B}}\)</span>, and thus has a nice interpretation as a prior based on data with sample size equal to <span class="math inline">\(\mathcal{A}+\mathcal{B}\)</span>. The posterior distribution that results would have a mean somewhere between the maximum likelihood value and that of the prior. With the stronger prior, the posterior is pulled closer to it.</p>
-<p><img src="Bayesian_Basics_files/figure-html/prior2post_1-1.png" width="672"  style="display: block; margin: auto;" /></p>
+<p><img src="Bayesian-Basics_files/figure-html/prior2post_1-1.png" width="672"  style="display: block; margin: auto;" /></p>
 <p>The second utilizes a more diffuse prior of <span class="math inline">\(\beta(2,2)\)</span>. <span class="marginnote"><span class="math inline">\(\beta(1,1)\)</span> is a uniform distribution.</span> The result of using the vague prior is that the likelihood gets more weight with regard to the posterior. In fact, if we used a uniform distribution, <em>we would essentially be doing the equivalent of maximum likelihood estimation</em>. In that sense, many of the commonly used methods that implement maximum likelihood can be seen as a special case of a Bayesian approach.</p>
-<p><img src="Bayesian_Basics_files/figure-html/prior2post_2-1.png" width="672"  style="display: block; margin: auto;" /></p>
+<p><img src="Bayesian-Basics_files/figure-html/prior2post_2-1.png" width="672"  style="display: block; margin: auto;" /></p>
 <p>The third graph employs the initial <span class="math inline">\(\beta(10,10)\)</span> prior again, but this time we add more observations to the data. Again this serves to give more weight to the likelihood, which is what we want. As scientists, we’d want the evidence, i.e. data, to eventually outweigh our prior beliefs about the state of things the more we have of it.</p>
-<p><img src="Bayesian_Basics_files/figure-html/prior2post_3-1.png" width="672"  style="display: block; margin: auto;" /></p>
+<p><img src="Bayesian-Basics_files/figure-html/prior2post_3-1.png" width="672"  style="display: block; margin: auto;" /></p>
 <p>For an interactive demonstration of the above, <a href="https://micl.shinyapps.io/prior2post/">see this</a>.</p>
 </div>
 <div id="posterior-predictive" class="section level2">

@@ -16,7 +16,7 @@
 <meta name="github-repo" content="m-clark/docs" />
 
 
-<meta name="date" content="2016-12-05" />
+<meta name="date" content="2016-12-18" />
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -30,7 +30,7 @@ MathJax.Hub.Config({
 <title>Bayesian Basics</title>
 
 <link href="libs/tufte-css-2015.12.29/tufte.css" rel="stylesheet" />
-<script src="libs/htmlwidgets-0.7/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-0.8/htmlwidgets.js"></script>
 <script src="libs/jquery-1.12.4/jquery.min.js"></script>
 <script src="libs/datatables-binding-0.2/datatables.js"></script>
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
@@ -227,7 +227,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="sampling-procedure" class="section level2">
 <h2>Sampling Procedure</h2>
-<p>There are many ways in which one might sample from the posterior. Bayesian analysis is highly flexible and can solve a great many statistical models in theory. In practice things can be more difficult. As more complex models are attempted, new approaches are undertaken to deal with the problems in estimation that inevitably arise. In an attempt to dissolve at least some of the mystery, a brief description follows.</p>
+<p>There are <a href="http://m-clark.github.io/docs/ld_mcmc/">many ways</a> in which one might sample from the posterior. Bayesian analysis is highly flexible and can solve a great many statistical models in theory. In practice things can be more difficult. As more complex models are attempted, new approaches are undertaken to deal with the problems in estimation that inevitably arise. In an attempt to dissolve at least some of the mystery, a brief description follows.</p>
 <div id="metropolis" class="section level3">
 <h3>Metropolis</h3>
 <p>We have mentioned that BUGS and JAGS use <span class="emph">Gibbs sampling</span>, which is a special case of the <span class="emph">Metropolis-Hastings</span> (MH) algorithm<label for="tufte-sn-32" class="margin-toggle sidenote-number">32</label><input type="checkbox" id="tufte-sn-32" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">32</span> Originally developed in physics in the 50s, it eventually made its way across to other fields.</span>, a very general approach encompassing a wide variety of techniques. The Metropolis algorithm can be briefly described in the following steps:</p>

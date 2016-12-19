@@ -71,9 +71,10 @@ As a reminder, we pointed out in the [sensitivity analysis][Sensitivity Analysis
 It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors.  One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot.  While the choice might be considered subjective in some respects, it is not arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.
 
 
+
 ## Sampling Procedure
 
-There are many ways in which one might sample from the posterior.  Bayesian analysis is highly flexible and can solve a great many statistical models in theory.  In practice things can be more difficult.  As more complex models are attempted, new approaches are undertaken to deal with the problems in estimation that inevitably arise.  In an attempt to dissolve at least some of the mystery, a brief description follows.
+There are [many ways](http://m-clark.github.io/docs/ld_mcmc/) in which one might sample from the posterior.  Bayesian analysis is highly flexible and can solve a great many statistical models in theory.  In practice things can be more difficult.  As more complex models are attempted, new approaches are undertaken to deal with the problems in estimation that inevitably arise.  In an attempt to dissolve at least some of the mystery, a brief description follows.
 
 ### Metropolis
 
@@ -141,6 +142,7 @@ for (t in 1:nsim){
 
 
 ### Hamiltonian Monte Carlo
+
 Stan uses <span class="emph">Hamiltonian Monte Carlo</span>, another variant of MH. It takes the parameters $\theta$ as collectively denoting the position of a particle in some space with momentum $\phi$ (of same dimension as $\theta$). Both $\theta$ and $\phi$ are updated at each Metropolis step and jointly estimated, though we are only interested in $\theta$.  We can describe the basic steps as follows.
 
 
