@@ -1,19 +1,19 @@
 # Model Checking & Diagnostics
 
-As<span class="marginnote">I wonder how many results have been published on models that didn't converge with the standard MLE.  People will often ignore warnings as long as they get a result.</span> with modeling in traditional  approaches, it is not enough to simply run a model and get some sort of result.  One must examine the results to assess model integrity and have more confidence in the results that have been produced.
+<span class="marginnote">I wonder how many results have been published on models that didn't converge with the standard MLE.  People will often ignore warnings as long as they get some sort of result.</span>As with modeling in traditional  approaches, it is not enough to simply run a model and go with whatever results are returned without further inspection.  One must examine the results to assess model integrity and have more confidence in the results that have been produced.
 
 
 ## Monitoring Convergence
 
-There are various ways to assess whether or not the model has converged to a target distribution[^targetdist], but as with more complex models in MLE, there is nothing that can tell you for sure that you've hit upon *the* solution.  As a starting point, Stan or other modeling environments will spit out repeated warnings or errors if something is egregiously wrong, or perhaps take an extraordinary time to complete relative to expectations, if it ever finishes at all.  Assuming you've at least gotten past that point, there is more to be done.
+There are various ways to assess whether or not the model has converged to a target distribution[^targetdist], but as with more complex models in MLE, there is nothing that can tell you for sure that you've hit upon *the* solution.  As a starting point, Stan or other modeling environments will spit out repeated warnings or errors if something is egregiously wrong, or perhaps take an extraordinarily long time to complete relative to expectations, if it ever finishes at all.  Assuming you've at least gotten past that point, there is more to be done.
 
 ### Visual Inspection: Traceplot & Densities
 
 In the previous model we noted the traceplot for a single parameter, and a visual approach to monitoring convergence is certainly one good method.  In general we look for a plot that shows random scatter around a mean value, and our model results suggest that the chains mixed well and the traceplot looked satisfactory.<span class="marginnote"><span class="imgbigger"><img src="img/badchains.svg" style="display:block; margin: 0 auto;"  width=75%></span></span>
 
-To the right I provide an example where things have gone horribly wrong.  The chains never converge nor do they mix with one another.  However, one reason for running multiple chains is that any individual chain might converge toward one target, while another chain might converge elsewhere, and this would still be a problem.  Also you might see otherwise healthy chains get stuck on occasion over the course of the series, which might suggest more model tweaking or a change in the sampler settings is warranted.
+To the right I provide an example where things have gone horribly wrong.  The chains never converge nor do they mix with one another.  One reason for running multiple chains is that any individual chain might converge toward one target, while another chain might converge elsewhere, and this would still be a problem.  Also you might see otherwise healthy chains get stuck on occasion over the course of the series, which might suggest more model tweaking or a change in the sampler settings is warranted.
 
-We can examine the mixed chains and density plots of the posterior together with the <span class="pack">rstan</span> or <span class="pack">shinyStan</span> package plot function displayed in the model example or <span class="func">launch_shiny</span> in the <span class="pack">brms</span> package.<span class="marginnote"><span class="imgbigger"><img src="img/shinyStan.png" style="display:block; margin: 0 auto;"></span></span>  In the Bayesian approach, increasing amounts of data leads to a posterior distribution of the parameter vector approaching multivariate normality.  The figure to the right shows a density, trace and autocorrelation plots for one of the regression coefficients using shinyStan.  
+We can examine the mixed chains and density plots of the posterior with standard functions in the <span class="pack">rstan</span> package displayed previously, various functions in the <span class="pack">bayesplot</span> package, or interactively via <span class="pack">shinyStan</span> package and its <span class="func">launch_shiny</span> function.  In the Bayesian approach, increasing amounts of data leads to a posterior distribution of the parameter vector approaching multivariate normality.  The figure to the right shows a density, trace and autocorrelation plots for one of the regression coefficients using <span class="pack">shinyStan</span>.<span class="marginnote"><span class="imgbigger"><img src="img/shinyStan.png" style="display:block; margin: 0 auto;"></span></span>
 
 ```{r badChain, eval=FALSE, echo=FALSE}
 # see https://groups.google.com/forum/#!topic/stan-users/hio0siMTvhE
@@ -57,18 +57,34 @@ ggsave('img/badchains.svg', width=11, height=8.5, bg='transparent')
 
 ### Statistical Measures
 
-To go along with visual inspection, we can examine various statistics that might help our determination of convergence or lack thereof.  Gelman and Rubin's <span class="emph">potential scale reduction factor</span>, $\hat{R}$, provides an estimate of convergence based on the variance of an estimate $\theta$ between chains and the variance within a chain. It is interpreted as the factor by which the variance in the estimate might be reduced with longer chains.  We are looking for a value near 1 (and at the very least less than 1.1), and it will get there as $N_{sim} \rightarrow \infty$.
+To go along with visual inspection, we can examine various statistics that might help our determination of convergence or lack thereof.  Gelman and Rubin's <span class="emph">potential scale reduction factor</span>, $\hat{R}$, provides an estimate of convergence based on the variance of an estimated parameter $\theta$ between chains, and the variance within a chain. It is interpreted as the factor by which the variance in the estimate might be reduced with longer chains.  We are looking for a value near 1 (and at the very least less than 1.1), and it will get there as $N_{sim} \rightarrow \infty$.  In the regression model things are looking good in this respect.
+
+```{r showRhat}
+rh = rstan::summary(fit, pars=c('beta', 'sigma'))$summary[,c('mean', 'Rhat')]
+rh %>% round(3)
+```
+
 
 The <span class="pack">coda</span> package provides other convergence statistics based on Geweke (1992) and Heidelberger and Welch (1983).  Along with those statistics, it also has plots for the $\hat{R}$ and Geweke diagnostics.
 
 
 ### Autocorrelation
 
-As noted previously, each estimate in the MCMC process is serially correlated with the previous estimates by definition.  Furthermore, other aspects of the data, model, and estimation settings may contribute to this. <span class="marginnote"><span class="imgbigger"><img src="img/acfPlotNoSerial.svg" style="display:block; margin: 0 auto;" width=50%></span></span> <span class="marginnote"><span class="imgbigger"><img src="img/acfPlotSerial.svg" style="display:block; margin: 0 auto;" width=50%></span></span>  Higher serial correlation typically has the effect of requiring more samples in order to get to a stationary distribution we can feel comfortable with. If inspection of the traceplots look more *snake-like* than like a fat hairy caterpillar, this might suggest such a situation, and that more samples are required. We can also look at the autocorrelation plot, in which the chain's correlation with successive lags of the chain are plotted.  The first plot to the right is the autocorrelation plot from our model (starting at lag 1). The correlation is low to begin with and then just bounces around zero after.  The next plot shows a case of high serial correlation, where the correlation with the first lag is high and the correlation persists even after longer lags.  A longer chain with more thinning could help with this.
+As noted previously, each estimate in the MCMC process is serially correlated with the previous estimates by definition.  Furthermore, other aspects of the data, model, and estimation settings may contribute to this. <span class="marginnote"><span class="imgbigger"><img src="img/acfPlotNoSerial.svg" style="display:block; margin: 0 auto;" width=50%></span></span> <span class="marginnote"><span class="imgbigger"><img src="img/acfPlotSerial.svg" style="display:block; margin: 0 auto;" width=50%></span></span>  Higher serial correlation typically has the effect of requiring more samples in order to get to a stationary distribution. If inspection of the traceplots look more *snake-like* than like a fat hairy caterpillar, this might suggest such a situation, and that more samples are required. We can also look at the autocorrelation plot, in which the chain's correlation with successive lags of the chain are plotted.  The first plot to the right is the autocorrelation plot from our model (starting at lag 1). The correlation is low to begin with and then just bounces around zero after.  The next plot shows a case of high serial correlation, where the correlation with the first lag is high and the correlation persists even after longer lags.  A longer chain with more thinning could help with this.
 
-The effective number of simulation draws is provided as $n_{\textrm{eff}}$ in the Stan output and similarly obtained in BUGS/JAGS.  We would desire this number to equal the number of posterior draws requested.  In the presence of essentially no autocorrelation the values would be equal.  This is not a requirement though, and technically a low number of draws would still be usable.  However, a notable discrepancy might suggest there are some issues with the model, or simply that longer chains could be useful.
+The effective number of simulation draws is provided as $n_{\textrm{eff}}$ in the Stan output, and is similarly obtained in BUGS/JAGS.  Ideally, we would desire this number to equal the number of posterior draws requested, and in the presence of essentially no autocorrelation the values would be equal.  This is not a requirement though, and technically a low number of draws would still be usable.  However, a notable discrepancy might suggest there are some issues with the model, or simply that longer chains could be useful. In our current model, all our effective sample sizes are at or near the total number of posterior draws.
+
+```{r showNeff, echo}
+neff = rstan::summary(fit, pars=c('beta', 'sigma'))$summary[,c('mean', 'n_eff')]
+neff %>% round(3)
+```
 
 <span class="emph">Monte Carlo error</span> is an estimate of the uncertainty contributed by only having a finite number of posterior draws. Typically we'd want roughly less than 5% of the posterior standard deviation (reported right next to it in the Stan output), but might as well go for less than 1%. With no autocorrelation it would equal $\sqrt{\frac{var(\theta)}{n_{\textrm{eff}}}}$[^mcerr]. and $n_{\textrm{eff}}$ would equal the number of simulation draws requested.
+
+```{r showMCerror, echo=FALSE}
+rstan::summary(fit, pars=c('beta', 'sigma'))$summary[,c('mean', 'se_mean')] %>% round(3)
+```
+
 
 
 ```{r autocorrExample, eval=FALSE, echo=FALSE}
@@ -85,8 +101,8 @@ betas.mcmc = as.mcmc(betas)
 test0 <- acf(betas.mcmc[,1], plot = FALSE)
 test <- with(test0, data.frame(lag, acf))
 ggplot(data = test, mapping = aes(x = lag, y = acf)) +
-       geom_hline(aes(yintercept = 0), col='gray90') +
-       geom_segment(mapping = aes(xend = lag, yend = 0), col='#ff5503', lwd=6) +
+  geom_hline(aes(yintercept = 0), col='gray90') +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col='#ff5503', lwd=6) +
   labs(x='Lag',  y='Autocorrelation') +
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
@@ -127,13 +143,13 @@ Sensitivity analysis entails checks on our model settings to see if changes in t
 
 A standard way to check for model adequacy is simply to investigate whether the predictions on new data are accurate.  In general, the measure of predictive accuracy will be specific to the data problem, and involve posterior simulation of the sort covered in the next section.  In addition, while oftentimes new data is hard to come by, assuming one has sufficient data to begin with, one could set aside part of it specifically for this purpose. In this manner one trains and tests the model in much the same fashion as machine learning approaches.  In fact, one can incorporate the validation process as an inherent part of the modeling process in the Bayesian context just as you would there.  
 
-For model comparison of out of sample predictive performance, there are information measures similar to the Akaike Information criterion (AIC), that one could use in the Bayesian environment.  One not to use is the so-called Bayesian information criterion (or BIC), which is not actually Bayesian nor a measure of predictive accuracy.  BUGS provides the DIC, or deviance information criterion, as part of its summary output, which is a somewhat Bayesian version of the AIC.  More recently developed, the WAIC, or Watanabe-AIC[^waic], is a more fully Bayesian approach.  Under some conditions, the DIC and WAIC measures are asymptotically equivalent to Bayesian leave-one-out cross validation, as the AIC is under the classical setting.
+For model comparison of out of sample predictive performance, there are information measures similar to the Akaike information criterion (AIC), that one could use in the Bayesian environment.  One not to use is the so-called Bayesian information criterion (or BIC), which is not actually Bayesian nor a measure of predictive accuracy.  BUGS provides the DIC, or deviance information criterion, as part of its summary output, which is a somewhat Bayesian version of the AIC.  More recently developed, the WAIC, or Watanabe-AIC[^waic], is a more fully Bayesian approach.  Under some conditions, the DIC and WAIC measures are asymptotically equivalent to Bayesian leave-one-out cross validation, as the AIC is under the classical setting.
 
 ### Posterior Predictive Checking: Statistical
 
-For an overall assessment of model fit, we can examine how well the model can reproduce the data at hand given the $\theta$ draws from the posterior.  We discussed earlier the <span class="emph">posterior predictive distribution</span> for a future observation $\tilde{y}$, $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$, and here we'll dive in to using it explicitly. There are two sources of uncertainty in our regression model, the variance $\sigma^2$ in y not explained by the model, and posterior uncertainty in the parameters due to having a finite sample size.  As $N\rightarrow\infty$, the latter goes to zero, and so we can simulate draws of $\tilde{y} \sim N(\tilde{X}\beta, \sigma^2I)$[^conjugate]. If $\tilde{X}$ is the model data as in the following, then we will refer to $y^{\textrm{Rep}}$ instead of $\tilde{y}$.
+For an overall assessment of model fit, we can examine how well the model can reproduce the data at hand given the $\theta$ draws from the posterior.  We discussed earlier the <span class="emph">posterior predictive distribution</span> for a future observation $\tilde{y}$, $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$, and here we'll dive in to using it explicitly. There are two sources of uncertainty in our regression model, the variance in y not explained by the model ($\sigma^2$), and posterior uncertainty in the parameters due to having a finite sample size.  As $N\rightarrow\infty$, the latter goes to zero, and so we can simulate draws of $\tilde{y} \sim N(\tilde{X}\beta, \sigma^2I)$[^conjugate]. If $\tilde{X}$ is the model data as in the following, then we will refer to $y^{\textrm{Rep}}$ instead of $\tilde{y}$.
 
-For our model this entails extracting the simulated values from the model object, and taking a random draw from the normal distribution based on the $\beta$ and $\sigma$ that are drawn to produce our <span class="emph">replicated data</span>, $y^{\textrm{Rep}}$ (see @gelman_bda, Appendix C).
+For our model this entails extracting the simulated values from the model object, and taking a random draw from the normal distribution based on the $\beta$ and $\sigma$ that are drawn to produce our <span class="emph">replicated data</span>, $y^{\textrm{Rep}}$ (see @gelman_bda, Appendix C).  In what follows, I write out the process explicitly, but <span class="pack">bayesplot</span>, <span class="pack">rstanarm</span>, and <span class="pack">brms</span> make this a potentially straightforward, possibly with a single line of code, the latter packages using <span class="pack">bayesplot</span>. In addition, it's often simpler to create the $y^{\textrm{Rep}}$ as part of your generated quantities section of the model code if modeling with Stan explicitly.
 
 ```{r posteriorPredictiveExample, eval=TRUE, message=FALSE, fig.show='hide', echo=6:14}
 load('data/mainModels.RData')
@@ -180,14 +196,29 @@ ggsave('img/histofyrepMinimum.svg', bg='transparent')
 
 
 <span class="marginnote"><span class="imgbigger"><img src="img/histofyrepMinimum.svg" style="display:block; margin: 0 auto;" width=50%></span></span>
-These results suggest we may be having difficulty picking up the lower tail of the target variable, as our average minimum is notably higher than that seen in the data, and almost all our minimums are greater than the observed minimum ($p=.99$).  While in this case we know that assuming the normal distribution for our sampling distribution is appropriate, this might otherwise have given us pause for further consideration.  A possible solution would be to assume a $t$ distribution for the sampling distribution, which would have fatter tails and thus possibly be better able to handle extreme values. We'll show an example of this later.  In this case it is just that by chance one of the $y$ values is extreme relative to the others.
+These results suggest we may be having difficulty picking up the lower tail of the target variable, as our average minimum is notably higher than that seen in the data, and almost all our minimums are greater than the observed minimum ($p=.99$).  While in this case where we are dealing with a simulated data set and we know that assuming the normal distribution for our sampling distribution is appropriate, this might otherwise have given us pause for further consideration.  A possible solution would be to assume a $t$ distribution for the likelihood, which would have fatter tails and thus possibly be better able to handle extreme values. We'll show an example of this later.  In this case it is just that by chance one of the $y$ values, `r min(y)`, is fairly extreme relative to the others. Also, it is typically difficult to capture extreme values in practice. As a comparison, the model actually captures the 5^th^, 10^th^ (shown), and 25^th^ quantile values very well. <span class="marginnote"><span class="imgbigger"><img src="img/histofyrepQ10.svg" style="display:block; margin: 0 auto;" width=50%> See <span class="func">ppc_stat</span> in <span class="pack">bayesplot</span>.</span></span>
 
-In general, we can devise a test statistic, $T_{\textrm{Rep}}$, and associated p-value to check any particular result of interest based on the simulated data.  The p-value in this context is simply the percentage of times the statistic of interest is equal to or more extreme than the statistic, $T_y$, calculated for the original data.  Thus p-values near 0 or 1 are indicative of areas where the model is falling short in some fashion. Sometimes $T_y$ may be based on the $\theta$ parameters being estimated, and thus you'd have a $T_y$ for every posterior draw. In such a case one might examine the scatterplot of $T_{\textrm{Rep}}$ vs. $T_y$, or examine a density plot of the difference between the two.  In short, this is an area where one can get creative.  However, it must be stressed that we are not trying to accept or reject a model hypothesis as in the frequentist setting- we're not going to throw a model out because of an extreme p-value in our posterior predictive check.  We are merely trying to understand the model's shortcomings as best we can, and make appropriate adjustments if applicable.  It is often the case that the model will still be good enough for practical purposes.
+```{r posteriorPredictive10thComparisonHist, eval=FALSE, warning=FALSE, message=FALSE, echo=FALSE}
+q10 = function(y) quantile(y, 0.1)
+q10_rep = ppc_stat(y, t(yRep), stat=q10)$data
+
+qplot(x=q10_rep) + 
+  geom_histogram(fill=scales::alpha('#ff5503', .95), color='gray50') + 
+  geom_vline(xintercept=quantile(y, .1), color='gray50', size=1.5, alpha=.75) + 
+  lazerhawk::theme_trueMinimal() +
+  theme(axis.title.x=element_text(color='gray25'),
+        axis.title.y=element_text(color='gray25'),
+        plot.background = element_rect(fill = "transparent",colour = NA))
+ggsave('img/histofyrepQ10.svg', bg='transparent')
+```
+
+
+In general, we can devise a test statistic, $T_{\textrm{Rep}}$, and associated p-value to check *any* particular result of interest based on the simulated data.  The p-value in this context is simply the percentage of times the statistic of interest is equal to or more extreme than the statistic, $T_y$, calculated for the original data.  Thus p-values near 0 or 1 are indicative of areas where the model is falling short in some fashion. Sometimes $T_y$ may be based on the $\theta$ parameters being estimated, and thus you'd have a $T_y$ for every posterior draw. In such a case one might examine the scatterplot of $T_{\textrm{Rep}}$ vs. $T_y$, or examine a density plot of the difference between the two.  In short, this is an area where one can get creative, and the <span class="pack">bayesplot</span> package can help with make this fairly easy.  However, it must be stressed that we are not trying to accept or reject a model hypothesis as in the frequentist setting- we're not going to throw a model out because of an extreme p-value in our posterior predictive check.  We are merely trying to understand the model's shortcomings as best we can, and make appropriate adjustments if applicable.  It is often the case that the model will still be good enough for practical purposes.
 
 
 ### Posterior Predictive Checking: Graphical
 
-<span class="marginnote"><span class="imgbigger"><img src="img/posteriorPredictiveFittedvsObserved.svg" style="display:block; margin: 0 auto;" width=50%></span></span>
+<span class="marginnote"><span class="imgbigger"><img src="img/posteriorPredictiveFittedvsObserved.svg" style="display:block; margin: 0 auto;" width=50%></span> See <span class="func">ppc_scatter_avg</span> in <span class="pack">bayesplot</span>.</span>
 As there are any number of ways to do statistical posterior predictive checks, we have many options for graphical inspection as well.  As a starting point I show a graph of our average fitted value versus the observed data.  The average is over all posterior draws of $\theta$.
 
 ```{r posteriorPredictiveFitted, eval=FALSE, warning=FALSE, message=FALSE, echo=FALSE}
@@ -205,7 +236,7 @@ ggsave('img/posteriorPredictiveFittedvsObserved.svg', bg='transparent')
 ```
 
 
-Next, I show density plots for a random sample of 20 of the replicated data sets along with that of the original data (shaded).  In general it looks like we're doing pretty well here. The subsequent figure displays the density plot for individual predictions for a single value of $y$ from our data.  While it looks like some predictions were low for that value, in general the model captures this particular value of the data decently.<span class="marginnote"><span class="imgbigger"><img src="img/yRepDensity.svg" style="display:block; margin: 0 auto;" width=50%></span></span>
+Next, I show density plots for a random sample of 20 of the replicated data sets along with that of the original data (shaded).  In general it looks like we're doing pretty well here. The subsequent figure displays the density plot for individual predictions for a single value of $y$ from our data.  While it looks like some predictions were low for that value, in general the model captures this particular value of the data decently.<span class="marginnote"><span class="imgbigger"><img src="img/yRepDensity.svg" style="display:block; margin: 0 auto;" width=50%></span>See <span class="func">ppc_dens_overlay</span> in <span class="pack">bayesplot</span>.</span>
 
 ```{r posteriorPredictiveIndividualy, eval=FALSE, warning=FALSE, message=FALSE, echo=FALSE}
 yRepSample = yRep[,sample(1:nsims, 20)]
@@ -254,8 +285,7 @@ ggsave('img/posteriorPredictiveFittedY.svg', bg='transparent')
 
 
 We can also examine residual plots of $y - E(y|X,\theta)$ as with standard analysis, shown as the final two figures for this section.  The first shows such *realized* residuals, so-called as they are based on a posterior draw of $\theta$ rather than point estimation of the parameters, versus the expected values from the model.  
-<span class="marginnote"><span class="imgbigger"><img src="img/posteriorPredictiveFittedY.svg" style="display:block; margin: 0 auto;" width=50%></span></span>
-The next plot shows the average residual against the average fitted value.  No discernible patterns are present, so we may conclude that the model is adequate in this regard.
+<span class="marginnote"><span class="imgbigger"><img src="img/posteriorPredictiveFittedY.svg" style="display:block; margin: 0 auto;" width=50%></span></span>The next plot shows the average residual against the average fitted value.  No discernible patterns are present, so we may conclude that the model is adequate in this regard.
 <span class="marginnote"><span class="imgbigger"><img src="img/posteriorPredictiveResidualRaw.svg" style="display:block; margin: 0 auto;" width=50%></span></span>
 <span class="marginnote"><span class="imgbigger"><img src="img/posteriorPredictiveResidualAvg.svg" style="display:block; margin: 0 auto;" width=50%></span><br>The two plots directly above replicate the figures in 6.11 in Gelman 2013.</span>
 
@@ -310,7 +340,7 @@ As with standard approaches, every model should be checked to see whether it hol
 
 
 
-[^targetdist]: Recall again that we are looking for convergence to a distribution, not a specific parameter.
+[^targetdist]: Recall again that we are looking for convergence to a distribution, not a point estimate of a specific parameter.
 
 [^mcerr]: This is the 'naive' estimate the <span class="pack">coda</span> package provides in its summary output.
 
@@ -320,4 +350,4 @@ As with standard approaches, every model should be checked to see whether it hol
 
 [^conjugate]: Technically, in the conjugate case the posterior predictive is t-distributed because of the uncertainty in the parameters, though it doesn't take much sample size for simple models to get to approximately normal. Conceptually, with $\hat{\beta}$ being our mean $\beta$ estimate from the posterior, this can be represented as: <br> $\tilde{y} \sim t(\tilde{X}\hat{\beta}, \sigma^2 + \textrm{parUnc}, \textrm{df}=N-k)$
 
-[^yrep]: In many cases you might want to produce this in the generated quantities section of your Stan code, but doing so outside of it will keep the stanfit object smaller, which may be desirable.
+[^yrep]: In many cases you might want to produce this in the generated quantities section of your Stan code, but doing so outside of it will keep the <span class="objclass">stanfit</span> object smaller, which may be desirable.
