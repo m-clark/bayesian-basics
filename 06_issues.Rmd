@@ -5,11 +5,11 @@ This section highlights some things to think about, as well as questions that wo
 
 ## Debugging
 
-An essential part of Bayesian analysis is debugging to see if your code and model are doing what it should be doing[^debug], and this especially holds for more complex models.  For many models and common settings for the number of simulations, Bayesian analysis can still take several minutes on standard computers or laptops.  With big data and/or complex models, some might take hours or even *days*.  In either case, it is a waste of time to let broken code/models run unnecessarily.
+An essential part of Bayesian analysis is debugging to see if your code and model are doing what it should be doing[^debug], and this especially holds for more complex models.  For many models with typical numbers for posterior draws, Bayesian analysis might take several minutes on standard computers or laptops.  With big data and/or very complex models, some might take hours or even *days*.  In either case, it is a waste of time to let broken code/models run unnecessarily.
 
-The idea with debugging is that, once you think you have everything set up the way you like, run very short attempts to see if A, the code even compiles, and B, whether it runs appropriately.  As such, you will only want to set your warm-up and iterations to some small number to begin with, e.g. maybe not even 100 iterations, and no more than two chains[^compile].  Sometimes it will be obvious what a problem is, such as a typo resulting in the program of choice not being able to locate the parameter of interest.  Others may be fairly subtle, for example, when it comes to prior specification.
+The idea with debugging is that, once you think you have everything set up the way you like, run very short attempts to see if A, the code even compiles, and B, whether it runs appropriately.  As such, you will only want to set your warm-up and iterations to some small number to begin with, e.g. maybe not even 100 iterations, and no more than two chains[^compile].  Sometimes it will be obvious what a problem is, such as a typo resulting in the program of choice not being able to locate the parameter of interest.  Other issues may be fairly subtle, for example, when it comes to prior specification.
 
-Along with shorter runs, one should consider simpler models first, and perhaps using only a subset of the data.  Especially for complex models, it helps to build the model up, debugging and checking for problems along the way.  As a not too complicated example, consider a mixed model for logistic regression.  One could even start with a standard linear model ignoring the binary nature of the target. Getting a sense of things from that and just making sure that inputs etc. are in place, one can supply the inverse logit link and change the sampling distribution to Bernoulli. Now you can think about adding the random effect, other explanatory variables of interest, and any other complexities that had not been included yet.
+Along with initial short runs, one should consider simpler models first, and perhaps using only a subset of the data.  Especially for complex models, it helps to build the model up, debugging and checking for problems along the way.  As a not too complicated example, consider a mixed model for logistic regression.  One could even start with a standard linear model ignoring the binary nature of the target and random effect structure. Getting a sense of things from that and just making sure that inputs etc. are in place, one can supply the inverse logit link and change the sampling distribution to Bernoulli. Now you can think about adding the random effect, other explanatory variables of interest, and any other complexities that had not been included yet.
 
 As you identify issues, you fix any problems that arise and tinker with other settings.  Once you are satisfied, *then* try for the big run.  Even then, you might spot new issues with a longer chain, so you can rinse and repeat at that point.  BUGS, JAGS, and Stan more or less have this capacity built in with model upgrade functions.  For example, in Stan you can feed the previous setup of a model in to the main <span class="func">stan</span> function.  Use one for your initial runs, then when you're ready, supply the model object as input to the 'fit' argument, perhaps with adjustments to the Monte Carlo settings.
 
@@ -20,13 +20,13 @@ Selection of prior distributions might be a bit daunting for the new user of app
 
 ### Noninformative, Weakly Informative, Informative
 
-We can begin with <span class="emph">noninformative priors</span> , which might also be referred to as *vague*, *flat*, *reference*, *objective*, or *diffuse*.  The idea is to use something that allows for Bayesian inference but puts all the premium on the data, and/or soi-disant *objectivity*.  As we have alluded to elsewhere, if we put a prior uniform distribution on the regression coefficients (and e.g. the log of $\sigma$), this would be a noninformative approach that would essentially be akin to maximum likelihood estimation.  One might wonder at this point why we wouldn't just use vague priors all the time and not worry about overly influencing the analysis by the choice of prior.
+We can begin with <span class="emph">noninformative priors</span>, which might also be referred to as *vague*, *flat*, *reference*, *objective*, or *diffuse* depending on the context.  The idea is to use something that allows for Bayesian inference but puts all the premium on the data, and/or soi-disant *objectivity*, though the fact that there is still choice here should make clear that these are not entirely noninformative or objective.  As we have alluded to elsewhere, if we put a prior uniform distribution on the regression coefficients (and e.g. the log of $\sigma$), this would be a noninformative approach that would essentially be akin to maximum likelihood estimation.  One might wonder at this point why we wouldn't just use vague priors all the time and not worry about overly influencing the analysis by the choice of prior.
 
-As an example, let's assume a uniform distribution $(-\infty,\infty)$ for some parameter $\theta$.  Without bounds, this prior is *improper*, i.e. the probability distribution does not integrate to 1.  While the posterior distribution may be proper, it is left the the researcher to determine this.  One also has to choose a suitable range, something which may not be easy to ascertain.  In addition, the distribution may not be uniform on some transformation of the parameter, say $\theta^2$.  A *Jeffreys' prior* could be used to overcome this particular issue, but is more difficult for multiparameter settings.
+As an example, let's assume a uniform distribution $(-\infty,\infty)$ for some parameter $\theta$.  Without bounds, this prior is *improper*, i.e. the probability distribution does not integrate to 1.  While the posterior distribution may be proper, it may not be, and it is left the the researcher to determine this.  One also has to choose a suitable range, something which may not be easy to ascertain.  In addition, the distribution may not be uniform on some transformation of the parameter, say $\theta^2$.  A *Jeffreys' prior* could be used to overcome this particular issue, but is more difficult for multiparameter settings.
 
-In general there are several issues with using a noninformative or reference prior.  For many models there may be no clear choice of what to use.  In any case, if the data are sufficient, the prior won't matter, so establishing some reference to be used automatically isn't exactly in keeping with Bayesian thinking. Furthermore, if you had clear prior information from previous research, one should use it.  Furthermore, such choices can still have unintended effects on the results.  In reality, any prior could be said to be <span class="emph">weakly informative</span>.
+In general there are several issues with using a noninformative or reference prior.  For many models there may be no clear choice of what to use.  In any case, if the data are sufficient, the prior won't matter as much, so establishing some reference to be used automatically isn't exactly in keeping with Bayesian thinking. In addition, such choices can still have unintended effects on the results.  Furthermore, if you had clear prior information, e.g. from previous research, one should use it. 
 
-So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague.  As an example, consider our earlier [binomial distribution example](#prior-likelihood-posterior-distributions).  Perhaps a reasonable guess as to the probability of making a penalty was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80%  of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a $\mathcal{B}(9,3)$ would probably be our best bet.  One can examine the distribution to the right. <span class="marginnote"><span class="imgbigger"><img src="img/betaDistr9and3.svg" style="display:block; margin: 0 auto;" width=50%></span></span>
+In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague.  As an example, consider our earlier [binomial distribution example](#prior-likelihood-posterior-distributions).  Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80%  of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a $\mathcal{B}(9,3)$ would probably be a good way to proceed.  One can examine the distribution to the right. <span class="marginnote"><span class="imgbigger"><img src="img/betaDistr9and3.svg" style="display:block; margin: 0 auto;" width=50%></span></span>
 
 ```{r chooseBetaPrior, results='hold', echo=c(1:3), fig.keep='none'}
 diff(pbeta(c(.6, .9), 3, 1))
@@ -46,9 +46,10 @@ ggplot(aes(x=x), data=data.frame(x=rbeta(10000, 9, 3))) +
 ggsave('img/betaDistr9and3.svg', bg='transparent')
 ```
 
-With our regression model we were dealing with standardized predictors, so even choosing a $\mathcal{N}(0, 10)$ might be overly vague, though it would be near flat from -1 to 1.  The nice part about setting the prior mean on zero is that it has a regularizing effect that can help avoid overfitting with smaller samples.
+With our regression model we were dealing with standardized predictors, so even choosing a $\mathcal{N}(0, 10)$ might be overly vague, though it would be near flat from -1 to 1.  The nice part about setting the prior mean on zero is that it has a regularizing effect, shrinking coefficients toward 0, that can help avoid overfitting with smaller samples.
 
-Thus weakly informative priors can be based on perfectly reasonable settings, and this probably makes more sense than claiming complete ignorance. Just some casual thought in many settings will often reveal that one isn't completely ignorant.  Furthermore if we have clear prior information, in the form of prior research for example, we can then use <span class="emph">informative</span> priors based on those results.  This again would be preferable to a completely noninformative approach.
+Thus weakly informative priors can be based on perfectly reasonable settings, and this probably makes more sense than claiming complete ignorance, not to mention they simply work better for parameter estimation relative to flat priors. As mentioned, just some casual thought in many settings will often reveal that one isn't completely ignorant.  Furthermore if we have clear prior information, in the form of prior research for example, we can then use <span class="emph">informative</span> priors based on those results.  This again would be preferable to a completely noninformative approach.
+
 
 ### Conjugacy
 
@@ -58,7 +59,13 @@ $$p(\theta|y, n) \propto \beta(y+\mathcal{A}, n-y+\mathcal{B})$$
 
 Thus the posterior has the same parametric form as the prior, i.e. the beta distribution is *congugate* for the binomial likelihood.  In this sense, the prior has the interpretation as providing additional data points.  In our regression model, the conjugate setting uses a normal distribution for the predictor coefficients and an inverse gamma for $\sigma^2$.  In the case of exponential family distributions of generalized linear models, there are also natural conjugate prior distributions.
 
-While there can be practical advantages to using a conjugate prior, it is not required, and for many more complex models, may not even be possible.  However it might help to consider a known conjugate prior as a starting point if nothing else.
+While there can be practical advantages to using a conjugate prior, it is not required, and for many more complex models, may not even be possible.  However it might be useful to consider a known conjugate prior as a starting point.
+
+
+### Hierarchical Priors
+
+Not to be confused with hierarchical linear models, *hierarchical* in the context of Bayesian models often refers to using what are called <span class="emph">hyperpriors</span>, or priors on priors.  Take for instance our example with regression coefficients.  Maybe we wouldn't know a good standard deviation to use.  In this case we might set it as yet another parameter to be estimated, $\sigma_\beta$, and give it a prior with lower bound of 0, e.g. $\sigma_\beta \sim \textrm{Half-Cauchy}(10)$, that would have a median of 10 but will result in a final estimate of some other value.  Technically this could turn into [turtles all the way up](https://en.wikipedia.org/wiki/Turtles_all_the_way_down#/media/File:River_terrapin.jpg), with priors upon priors upon priors.  Usually one level is enough though, and might make you feel better for not setting a specific parameter to some value.
+
 
 ### Sensitivity Analysis Revisited
 
@@ -87,13 +94,13 @@ For $t=1,2...N_{sim}:$
 
 
 2. Sample from some proposal distribution a potential candidate $\theta^*$, given $\theta^{t-1}$
-3. Calculate the ratio $r$ of the posterior densities $\frac{p(\theta^*|y)}{p(\theta^{t-1}|y)}$ [^MHdifflog]
+3. Calculate the ratio $r$ of the posterior densities $\frac{p(\theta^*|y)}{p(\theta^{t-1}|y)}$ 
 4. Set $\theta^t = \theta^*$ with probability $\min(r, 1)$, else  $\theta^t = \theta^{t-1}$
 
 
-Conceptually, if the proposal increases the posterior density, $\theta^t = \theta^*$. If it decreases the proposal density, set $\theta^t = \theta^*$ with probability $r$, else it is $\theta^{t-1}$. The MH algorithm generalizes the Metropolis to use asymmetric proposal distributions and uses an $r$ to correct for asymmetry[^proposal]. 
+Conceptually, if the proposal increases the posterior density, $\theta^t = \theta^*$. If it decreases the proposal density, set $\theta^t = \theta^*$ with probability $r$, else it remains at $\theta^{t-1}$. The MH algorithm generalizes the Metropolis to use asymmetric proposal distributions and uses an $r$ to correct for asymmetry[^proposal]. 
 
-Let's look at this in generic/pseudo R code for additional clarity:
+Let's look at this in generic/pseudo R code for additional clarity (in practice we can take the difference in the log values for step 3):
 
 ```{r MHgeneric, eval=FALSE}
 nsim = numberSimulatedDraws
@@ -108,7 +115,7 @@ for (t in 2:nsim){
 }
 ```
 
-One can see the [Metropolis-Hastings Example](#MHexample) to see the Metropolis algorithm applied to our regression problem.
+One can see the [Metropolis-Hastings Example][Metropolis Hastings Example] to see the Metropolis algorithm applied to our regression problem.
 
 
 ### Gibbs
@@ -153,7 +160,7 @@ Stan uses <span class="emph">Hamiltonian Monte Carlo</span>, another variant of 
 
 
 
-The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow.  An example using HMC on the regression model data can be found in the [Hamiltonian Monte Carlo Example](#HMCexample)<label for="sn-demo" class="margin-toggle sidenote-number"></label><input type="checkbox" id="sn-demo" class="margin-toggle"/><span class="sidenote">See this entry at David Mimno's blog for a [visualization of the process](http://www.mimno.org/articles/hmc/).</span>
+The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow.  An example using HMC on the regression model data can be found in the [Hamiltonian Monte Carlo Example][Hamiltonian Monte Carlo Example]<span class="marginnote">See this entry at David Mimno's blog for a [visualization of HMC](http://www.mimno.org/articles/hmc/).</span>
 
 
 ### Other Variations and Approximate Methods
@@ -174,7 +181,8 @@ For myself, I typically run models such that the results are based on roughly $n
 
 
 ## Model Complexity
-One of the great things about the Bayesian approach is its ability to handle extremely complex models involving lots of parameters.  In addition, it will often work better (or at all) in simpler settings where the data under consideration are problematic (e.g. collinearity, separation in the logistic regression setting).  While it can be quite an undertaking to set things correctly and debug, re-run etc. and generally go through the trial and error process typically associated with highly complex models, it's definitely nice to know that you can.  It will take some work, but you will also learn a great deal along the way.  Furthermore, there are typically tips and tricks that can potentially help just about any model run a little more smoothly.
+
+One of the great things about the Bayesian approach is its ability to handle extremely complex models involving lots of parameters.  In addition, it will often work better (or at all) in simpler settings where the data under consideration are problematic (e.g. collinearity, separation in the logistic regression setting).  While it can be quite an undertaking to set things correctly and debug, re-run etc. and generally go through the trial and error process typically associated with highly complex models, it's definitely nice to know that you can at least attempt them. It will take some work, but you will also learn a great deal along the way.  Furthermore, there are typically tips and tricks that can potentially help just about any model run a little more smoothly.
 
 
 [^debug]: It really should be a part of most analysis.
@@ -182,8 +190,6 @@ One of the great things about the Bayesian approach is its ability to handle ext
 [^compile]: With Stan I sometimes do a 1 iteration compile check first.
 
 [^MH]: Originally developed in physics in the 50s, it eventually made its way across to other fields.
-
-[^MHdifflog]: In practice we can take the difference in the log values.
 
 [^proposal]: Given a proposal/jumping distribution $\mathcal{J}_t$, <br>
 $r=\frac{p(\theta^*|y)/\mathcal{J}_t(\theta^*|\theta^{t-1})} {p(\theta^{t-1}|y)/\mathcal{J}_t(\theta^{t-1}|\theta^*)}$
