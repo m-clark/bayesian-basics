@@ -160,7 +160,7 @@ Stan uses <span class="emph">Hamiltonian Monte Carlo</span>, another variant of 
 
 
 
-The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow.  An example using HMC on the regression model data can be found in the [Hamiltonian Monte Carlo Example][Hamiltonian Monte Carlo Example]<span class="marginnote">See this entry at David Mimno's blog for a [visualization of HMC](http://www.mimno.org/articles/hmc/).</span>
+The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow.  An example using HMC on the regression model data can be found in the [Hamiltonian Monte Carlo Example][Hamiltonian Monte Carlo Example]<span class="marginnote">See this entry at David Mimno's blog for a [visualization of HMC](http://www.mimno.org/articles/hmc/), and Betancourt's [Conceptual Introduction to Hamiltonian Monte Carlo](https://arxiv.org/pdf/1701.02434.pdf).</span>
 
 
 ### Other Variations and Approximate Methods

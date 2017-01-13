@@ -1,4 +1,4 @@
-# Model Checking & Diagnostics
+# Model Exploration
 
 <span class="marginnote">I wonder how many results have been published on models that didn't converge with the standard MLE.  People will often ignore warnings as long as they get some sort of result.</span>As with modeling in traditional  approaches, it is not enough to simply run a model and go with whatever results are returned without further inspection.  One must examine the results to assess model integrity and have more confidence in the results that have been produced.
 
