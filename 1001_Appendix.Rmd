@@ -8,9 +8,9 @@ knitr::opts_chunk$set(eval=T)
 
 ## Maximum Likelihood Review
 
-This is a very brief refresher on <span class="emph">maximum likelihood estimation</span> using a standard regression approach as an example, and more or less assumes one hasn't tried to roll their own such function in a programming environment before.  Given the likelihood's role in Bayesian estimation and statistics in general, and the ties between specific Bayesian results and maximum likelihood estimates one typically comes across, I figure one should be comfortable with some basic likelihood estimation.
+This is a very brief refresher on <span class="emph">maximum likelihood estimation</span> using a standard regression approach as an example, and more or less assumes one hasn't tried to roll their own such function in a programming environment before.  Given the likelihood's role in Bayesian estimation and statistics in general, and the ties between specific Bayesian results and maximum likelihood estimates one typically comes across, one should be conceptually comfortable with some basic likelihood estimation.
 
-In the standard model setting we attempt to find parameters $\theta$ that will maximize the probability of the data we actually observe[^MLprinciple].  We'll start with an observed random target vector $y$ with $i...N$ independent and identically distributed observations and some data-generating process underlying it $f(\cdot|\theta)$.  We are interested in estimating the model parameter(s), $\theta$, that would make the data most likely to have occurred.  The probability density function for $y$ given some particular estimate for the parameters can be noted as $f(y_i|\theta)$.  The joint probability distribution of the (independent) observations given those parameters, $f(y_i|\theta)$, is the product of the individual densities, and is our *likelihood function*.  We can write it out generally as:
+In the standard model setting we attempt to find parameters $\theta$ that will maximize the probability of the data we actually observe.  We'll start with an observed random target vector $y$ with $i...N$ independent and identically distributed observations and some data-generating process underlying it $f(\cdot|\theta)$.  We are interested in estimating the model parameter(s), $\theta$, that would make the data most likely to have occurred.  The probability density function for $y$ given some particular estimate for the parameters can be noted as $f(y_i|\theta)$.  The joint probability distribution of the (independent) observations given those parameters, $f(y_i|\theta)$, is the product of the individual densities, and is our *likelihood function*.  We can write it out generally as:
 <span class='marginnote'><span class="imgbigger"><img src="img/maxLikeNormalCompareLLforDifferentMeans.svg" style="display:block; margin: 0 auto; width:90%"></span>
 
 
@@ -71,7 +71,7 @@ $$\ln\mathcal{L}(\theta) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\
 
 In the following we will demonstrate the maximum likelihood approach to estimation for a simple setting incorporating a normal distribution where we estimate the mean and variance/sd for a set of values $y$[^notlazy].  First the data is created, and then we create the function that will compute the log likelihood.  Using the built in R distributions[^distributions] makes it fairly straightforward to create our own likelihood function and feed it into an optimization function to find the best parameters.  We will set things up to work with the <span class="pack">bbmle</span> package, which has some nice summary functionality and other features.  However, one should take a glance at <span class="func">optim</span> and the other underlying functions that do the work.
 
-```{r bblmDemo1, cache=F}
+```{r bblmDemo1, cache=T}
 # for replication
 set.seed(1234)
 
@@ -87,7 +87,7 @@ LL = function(mu=startvals[1], sigma=startvals[2]){
 }
 ```
 
-The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them $\mu$ and $\sigma$, which will be set to `startvals[1]` and `startvals[2]` respectively.  Only the first line (ll = -sum...) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point[^reasy].  Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood.  Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values.  I do not show that here but you'll see it in your console.
+The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them $\mu$ and $\sigma$, which will be set to `r startvals[1]` and `r startvals[2]` respectively.  Only the first line (ll = -sum...) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point[^reasy].  Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood.  Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values.  I do not show that here but you'll see it in your console.
 
 We are now ready to obtain maximum likelihood estimates for the parameters.  For the <span class="func">mle2</span> function we will need the function we've created, plus other inputs related to that function or the underlying optimizing function used (by default <span class="func">optim</span>).  In this case we will use an optimization procedure that will allow us to set a lower bound for $\sigma$.  This isn't strictly necessary, but otherwise you would get get warnings and possibly lack of convergence if negative estimates for $\sigma$ were allowed[^logsigma]
 
@@ -871,13 +871,12 @@ print(fitIG, digits_summary=3, probs=c(.025,.5,.975))
 
 
 
-[^MLprinciple]: The principle of maximum likelihood.
 
-[^logs]: Math refresher on logs: `log(A*B) = log(A)+log(B)`. So summing the log probabilities will result in the same values for $\theta$, but won't result in extremely small values that will break our computer.
+[^logs]: Math refresher on logs: <span style="font-family='Consolas'">log(A*B) = log(A)+log(B)</span>. So summing the log probabilities will result in the same values for $\theta$, but won't result in extremely small values that will break our computer.
 
 [^notlazy]: Of course we could just use the sample estimates, but this is for demonstration.
 
-[^distributions]: Type `?Distributions` at the console for some of the basic R distributions available.
+[^distributions]: Type <span style="font-family='Consolas'">?Distributions</span> at the console for some of the basic R distributions available.
 
 [^reasy]: Much more straightforward than writing the likelihood function as above.
 
