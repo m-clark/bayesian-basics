@@ -548,19 +548,26 @@ post = function(x, y, b, s2){
   }
   # Note that you will not find the exact same presentation across texts and 
   # other media for the log posterior in this conjugate setting.  In the end
-  # they are conceputally still (log) prior + (log) likelihood
+  # they are conceputally still (log) prior + (log) likelihood (See commented 'else')
   else {                            
     -.5*nrow(X)*log(sigma2) - (.5*(1/sigma2) * (crossprod(y-mu))) +
       -.5*ncol(X)*log(sigma2) - (.5*(1/sigma2) * (t(beta)%*%priorbvarinv%*%beta)) + 
       -(prioralpha+1)*log(sigma2) + log(sigma2) - priorbeta/sigma2 
-  }  
+  }
+  # else {
+  #   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)
+  #   priorb = mvtnorm::dmvnorm(b, mean=rep(0, length(b)), sigma=diag(100, length(b)), log=T)
+  #   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)
+  #   logposterior = ll + priorb + priors2
+  #   logposterior
+  # }
 }
 
 ### update step for regression coefficients
+
 updatereg = function(i, x, y, b, s2){
   # Args are the same as above but with additional i iterator argument.
-  require(MASS)
-  b[i,] = mvrnorm(1, mu=b[i-1,], Sigma=bvarscale)  # proposal/jumping distribution
+  b[i,] = MASS::mvrnorm(1, mu=b[i-1,], Sigma=bvarscale)  # proposal/jumping distribution
   
   # Compare to past- does it increase the posterior probability?
   postdiff = post(x=x, y=y, b=b[i,],   s2=s2[i-1]) - 
@@ -574,6 +581,7 @@ updatereg = function(i, x, y, b, s2){
 }
 
 # update step for sigma2
+
 updates2 = function(i, x, y, b, s2){
   s2candidate =  rnorm(1, s2[i-1], sd=sigmascale)
   if(s2candidate < 0) {
