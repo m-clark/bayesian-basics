@@ -16,7 +16,7 @@
 <meta name="github-repo" content="m-clark/docs" />
 
 
-<meta name="date" content="2017-01-07" />
+<meta name="date" content="2017-01-22" />
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -91,9 +91,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="col-sm-12">
 <div id="TOC">
 <ul>
-<li><a href="index.html#home"><span style="color:transparent">Home</span></a></li>
+<li><a href="index.html#section"><span style="color:transparent"></span></a></li>
 <li class="has-sub"><a href="00_preface.html#preface">Preface</a><ul>
 <li><a href="00_preface.html#prerequisites">Prerequisites</a></li>
+<li><a href="00_preface.html#note">Note</a></li>
 </ul></li>
 <li class="has-sub"><a href="01_intro.html#introduction">Introduction</a><ul>
 <li class="has-sub"><a href="01_intro.html#bayesian-probability">Bayesian Probability</a><ul>
@@ -114,7 +115,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="03_models.html#running-the-model">Running the Model</a></li>
 </ul></li>
 </ul></li>
-<li class="has-sub"><a href="04_diagnostics.html#model-checking-diagnostics">Model Checking &amp; Diagnostics</a><ul>
+<li class="has-sub"><a href="04_diagnostics.html#model-exploration">Model Exploration</a><ul>
 <li class="has-sub"><a href="04_diagnostics.html#monitoring-convergence">Monitoring Convergence</a><ul>
 <li><a href="04_diagnostics.html#visual-inspection-traceplot-densities">Visual Inspection: Traceplot &amp; Densities</a></li>
 <li><a href="04_diagnostics.html#statistical-measures">Statistical Measures</a></li>
@@ -138,6 +139,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="has-sub"><a href="06_issues.html#choice-of-prior">Choice of Prior</a><ul>
 <li><a href="06_issues.html#noninformative-weakly-informative-informative">Noninformative, Weakly Informative, Informative</a></li>
 <li><a href="06_issues.html#conjugacy">Conjugacy</a></li>
+<li><a href="06_issues.html#hierarchical-priors">Hierarchical Priors</a></li>
 <li><a href="06_issues.html#sensitivity-analysis-revisited">Sensitivity Analysis Revisited</a></li>
 <li><a href="06_issues.html#summary-1">Summary</a></li>
 </ul></li>
@@ -173,7 +175,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="has-sub"><a href="1002_references.html#references">References</a><ul>
 <li><a href="1002_references.html#texts">Texts</a></li>
-<li><a href="1002_references.html#other">Other</a></li>
+<li class="has-sub"><a href="1002_references.html#other">Other</a><ul>
+<li><a href="1002_references.html#stan-specific">Stan Specific</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -183,8 +187,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="col-sm-12">
 <div id="preface" class="section level1">
 <h1>Preface</h1>
-<p><span class="marginnote">Initial draft posted 2014 Summer. Recent updates (2016) include major overhaul from pdf to web-based presentation (twice!). The last pdf version I made is <a href="http://m-clark.github.io/docs/IntroBayes.pdf">here</a> if anyone wants it, however, it will no longer be updated. You can download the auto-generated (and ugly) pdf for this document <a href="https://m-clark.github.io/docs/bayesian/basics/Bayesian_Basics.pdf">here</a>.</span> The following serves as a practical and applied introduction to Bayesian estimation methods for the uninitiated. The goal is to provide just enough information in a brief format to allow one to feel comfortable exploring Bayesian data analysis for themselves, assuming they have the requisite context to begin with. The idea is to cover a similar amount of material as one would in part of a standard statistics sequence in various applied disciplines where statistics is being introduced in general.</p>
-<p>After a conceptual introduction, a fully visible by-hand example is provided using the binomial distribution. After that, the document proceeds to introduce fully Bayesian analysis with the standard linear regression model, as that is the basis for most applied statistics courses and is assumed to be most familiar to the reader. Model diagnostics, model enhancements, and additional modeling issues are then explored. Supplemental materials provide more technical detail if desired, and include a maximum likelihood refresher, overview of programming options in Bayesian analysis, the same regression model using BUGS and JAGS, and ‘by-hand’ code for the model using the Metropolis-Hastings and Hamiltonian Monte Carlo algorithms.</p>
+<p><span class="marginnote">Initial draft posted 2014 Summer. Recent updates (2016-7) include major overhaul from pdf to web-based presentation (twice!). The last pdf version I made is <a href="http://m-clark.github.io/docs/IntroBayes.pdf">here</a> if anyone wants it, however, it will no longer be updated. You can download the auto-generated (and ugly) pdf for this document <a href="https://m-clark.github.io/docs/bayesian/basics/Bayesian_Basics.pdf">here</a>.</span> The following serves as a practical and applied introduction to Bayesian estimation methods for the uninitiated. The goal is to provide just enough information in a brief format to allow one to feel comfortable exploring Bayesian data analysis for themselves, assuming they have the requisite context to begin with. The idea is to cover a similar amount of material as one would in part of a standard statistics sequence in various applied disciplines where statistics is being introduced in general.</p>
+<p>After a conceptual introduction, a fully visible by-hand example is provided using the binomial distribution. After that, the document proceeds to introduce fully Bayesian analysis with the standard linear regression model, as that is the basis for most applied statistics courses and is assumed to be most familiar to the reader. Model diagnostics, model enhancements, and additional modeling issues are then explored. Supplemental content in the appendix provides more technical detail if desired, and includes a maximum likelihood refresher, an overview of programming options in Bayesian analysis, the same regression model using BUGS and JAGS, and ‘by-hand’ code for the model using the Metropolis-Hastings and Hamiltonian Monte Carlo algorithms.</p>
 <div id="prerequisites" class="section level2">
 <h2>Prerequisites</h2>
 <p>Prerequisites include a basic statistical exposure such as what would be covered in typical (probably graduate) <em>applied</em> science statistics course. At least some familiarity with R is necessary to follow the code, but that itself is not necessary, and one may go through any number of introductions on the web to acquire enough knowledge in that respect. However, note that for the examples here, at least part of the code will employ some Bayesian-specific programming language (e.g. Stan primarily, BUGS and JAGS in the appendix). No attempt is made to teach those languages though, as it would be difficult to do so efficiently in this more conceptually oriented setting. As such, it is suggested that one follow the code as best they can, and investigate the respective manuals, relevant texts, etc. further on their own. Between the text and comments within the code it is hoped that what the code is accomplishing will be fairly clear. However, I also provide a set of notes that can serve as an overview of Stan <a href="https://m-clark.github.io/workshops/bayesian/">here</a>.</p>
@@ -197,6 +201,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><span class="objclass">object/class</span></li>
 <li><a href="00_preface.html#prerequisites">link</a></li>
 </ul>
+</div>
+<div id="note" class="section level2">
+<h2>Note</h2>
+<p>While this document focuses more on concepts and teaching the Bayesian approach to modeling, while using Stan more as a practical vehicle, I do want to say something about the development of Stan and the document itself. Since this document was first put together in 2014, Stan and associated packages have undergone vast and continued development, and tools for publishing documents with R have as well. Packages such as <span class="pack">rstanarm</span> and <span class="pack">brms</span> didn’t exist then, but now make even some fairly complicated models easy to pull off with just a line or two of standard R code, and without ever having to use the Stan language directly. Further, newer visualization tools such as <span class="pack">bayesplot</span> and <span class="pack">shinystan</span> make model exploration even easier than before. While the document now more reflects these developments, it still leans on doing things more explicitly so that things are not so much of a black box. However, it’s worth noting that the example regression model within and associated diagnostics and visuals would now only take a few lines of code, and fully within R. In short, the combination of R and Stan make Bayesian analysis easier than ever before. Once armed with the basic concepts one should feel able to dive as easily as they would with any other R modeling tool.</p>
 
 </div>
 </div>

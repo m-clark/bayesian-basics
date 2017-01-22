@@ -16,7 +16,7 @@
 <meta name="github-repo" content="m-clark/docs" />
 
 
-<meta name="date" content="2017-01-07" />
+<meta name="date" content="2017-01-22" />
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -91,9 +91,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="col-sm-12">
 <div id="TOC">
 <ul>
-<li><a href="index.html#home"><span style="color:transparent">Home</span></a></li>
+<li><a href="index.html#section"><span style="color:transparent"></span></a></li>
 <li class="has-sub"><a href="00_preface.html#preface">Preface</a><ul>
 <li><a href="00_preface.html#prerequisites">Prerequisites</a></li>
+<li><a href="00_preface.html#note">Note</a></li>
 </ul></li>
 <li class="has-sub"><a href="01_intro.html#introduction">Introduction</a><ul>
 <li class="has-sub"><a href="01_intro.html#bayesian-probability">Bayesian Probability</a><ul>
@@ -114,7 +115,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="03_models.html#running-the-model">Running the Model</a></li>
 </ul></li>
 </ul></li>
-<li class="has-sub"><a href="04_diagnostics.html#model-checking-diagnostics">Model Checking &amp; Diagnostics</a><ul>
+<li class="has-sub"><a href="04_diagnostics.html#model-exploration">Model Exploration</a><ul>
 <li class="has-sub"><a href="04_diagnostics.html#monitoring-convergence">Monitoring Convergence</a><ul>
 <li><a href="04_diagnostics.html#visual-inspection-traceplot-densities">Visual Inspection: Traceplot &amp; Densities</a></li>
 <li><a href="04_diagnostics.html#statistical-measures">Statistical Measures</a></li>
@@ -138,6 +139,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="has-sub"><a href="06_issues.html#choice-of-prior">Choice of Prior</a><ul>
 <li><a href="06_issues.html#noninformative-weakly-informative-informative">Noninformative, Weakly Informative, Informative</a></li>
 <li><a href="06_issues.html#conjugacy">Conjugacy</a></li>
+<li><a href="06_issues.html#hierarchical-priors">Hierarchical Priors</a></li>
 <li><a href="06_issues.html#sensitivity-analysis-revisited">Sensitivity Analysis Revisited</a></li>
 <li><a href="06_issues.html#summary-1">Summary</a></li>
 </ul></li>
@@ -173,7 +175,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="has-sub"><a href="1002_references.html#references">References</a><ul>
 <li><a href="1002_references.html#texts">Texts</a></li>
-<li><a href="1002_references.html#other">Other</a></li>
+<li class="has-sub"><a href="1002_references.html#other">Other</a><ul>
+<li><a href="1002_references.html#stan-specific">Stan Specific</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -183,21 +187,21 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="col-sm-12">
 <div id="appendix" class="section level1">
 <h1>Appendix</h1>
-<p>NOTE EVAL AND CACHE FALSE UNTIL WE GET TO THIS SECTION. CHange back <code>startvals[1]</code> inline to r.</p>
+<p>NOTE EVAL AND CACHE FALSE UNTIL WE GET TO THIS SECTION.</p>
 <div id="maximum-likelihood-review" class="section level2">
 <h2>Maximum Likelihood Review</h2>
-<p>This is a very brief refresher on <span class="emph">maximum likelihood estimation</span> using a standard regression approach as an example, and more or less assumes one hasn’t tried to roll their own such function in a programming environment before. Given the likelihood’s role in Bayesian estimation and statistics in general, and the ties between specific Bayesian results and maximum likelihood estimates one typically comes across, I figure one should be comfortable with some basic likelihood estimation.</p>
-<p>In the standard model setting we attempt to find parameters <span class="math inline">\(\theta\)</span> that will maximize the probability of the data we actually observe<label for="tufte-sn-35" class="margin-toggle sidenote-number">35</label><input type="checkbox" id="tufte-sn-35" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">35</span> The principle of maximum likelihood.</span>. We’ll start with an observed random target vector <span class="math inline">\(y\)</span> with <span class="math inline">\(i...N\)</span> independent and identically distributed observations and some data-generating process underlying it <span class="math inline">\(f(\cdot|\theta)\)</span>. We are interested in estimating the model parameter(s), <span class="math inline">\(\theta\)</span>, that would make the data most likely to have occurred. The probability density function for <span class="math inline">\(y\)</span> given some particular estimate for the parameters can be noted as <span class="math inline">\(f(y_i|\theta)\)</span>. The joint probability distribution of the (independent) observations given those parameters, <span class="math inline">\(f(y_i|\theta)\)</span>, is the product of the individual densities, and is our <em>likelihood function</em>. We can write it out generally as: <span class='marginnote'><span class="imgbigger"><img src="img/maxLikeNormalCompareLLforDifferentMeans.svg" style="display:block; margin: 0 auto; width:90%"></span></p>
+<p>This is a very brief refresher on <span class="emph">maximum likelihood estimation</span> using a standard regression approach as an example, and more or less assumes one hasn’t tried to roll their own such function in a programming environment before. Given the likelihood’s role in Bayesian estimation and statistics in general, and the ties between specific Bayesian results and maximum likelihood estimates one typically comes across, one should be conceptually comfortable with some basic likelihood estimation.</p>
+<p>In the standard model setting we attempt to find parameters <span class="math inline">\(\theta\)</span> that will maximize the probability of the data we actually observe. We’ll start with an observed random target vector <span class="math inline">\(y\)</span> with <span class="math inline">\(i...N\)</span> independent and identically distributed observations and some data-generating process underlying it <span class="math inline">\(f(\cdot|\theta)\)</span>. We are interested in estimating the model parameter(s), <span class="math inline">\(\theta\)</span>, that would make the data most likely to have occurred. The probability density function for <span class="math inline">\(y\)</span> given some particular estimate for the parameters can be noted as <span class="math inline">\(f(y_i|\theta)\)</span>. The joint probability distribution of the (independent) observations given those parameters, <span class="math inline">\(f(y_i|\theta)\)</span>, is the product of the individual densities, and is our <em>likelihood function</em>. We can write it out generally as: <span class='marginnote'><span class="imgbigger"><img src="img/maxLikeNormalCompareLLforDifferentMeans.svg" style="display:block; margin: 0 auto; width:90%"></span></p>
 <p><span class="math display">\[\mathcal{L}(\theta) = \prod_{i=1}^N f(y_i|\theta)\]</span></p>
 <p>Thus the <em>likelihood</em> for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates. Furthermore we can compare one set, <span class="math inline">\(\mathcal{L}(\theta_A)\)</span>, to that of another, <span class="math inline">\(\mathcal{L}(\theta_B)\)</span>, and whichever produces the greater likelihood would be the preferred set of estimates. We can get a sense of this with the graph to the right, based on a single parameter, Poisson distributed variable. The data is drawn from a variable with mean <span class="math inline">\(\theta=5\)</span>. We note the calculated likelihood increases as we estimate values for <span class="math inline">\(\theta\)</span> closer to <span class="math inline">\(5\)</span>.</p>
-<p>For computational reasons we instead work with the sum of the natural log probabilities<label for="tufte-sn-36" class="margin-toggle sidenote-number">36</label><input type="checkbox" id="tufte-sn-36" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">36</span> Math refresher on logs: <code>log(A*B) = log(A)+log(B)</code>. So summing the log probabilities will result in the same values for <span class="math inline">\(\theta\)</span>, but won’t result in extremely small values that will break our computer.</span>, and thus the <em>log likelihood</em>:</p>
+<p>For computational reasons we instead work with the sum of the natural log probabilities<label for="tufte-sn-36" class="margin-toggle sidenote-number">36</label><input type="checkbox" id="tufte-sn-36" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">36</span> Math refresher on logs: <span style="font-family='Consolas'">log(A*B) = log(A)+log(B)</span>. So summing the log probabilities will result in the same values for <span class="math inline">\(\theta\)</span>, but won’t result in extremely small values that will break our computer.</span>, and thus the <em>log likelihood</em>:</p>
 <p><span class="math display">\[\ln\mathcal{L}(\theta) = \sum_{i=1}^N \ln[f(y_i|\theta)]\]</span></p>
 <p>Concretely, we calculate a log likelihood for each observation and then sum them for the total likelihood for parameter(s) <span class="math inline">\(\theta\)</span>.</p>
 <p>The likelihood function incorporates our assumption about the sampling distribution of the data given some estimate for the parameters. It can take on many forms and be notably complex depending on the model in question, but once specified, we can use any number of optimization approaches to find the estimates of the parameter that make the data most likely. As an example, for a normally distributed variable of interest we can write the log likelihood as follows:</p>
 <p><span class="math display">\[\ln\mathcal{L}(\theta) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\frac{(y-\mu)^2}{2\sigma^2})]\]</span></p>
 <div id="example" class="section level3">
 <h3>Example</h3>
-<p>In the following we will demonstrate the maximum likelihood approach to estimation for a simple setting incorporating a normal distribution where we estimate the mean and variance/sd for a set of values <span class="math inline">\(y\)</span><label for="tufte-sn-37" class="margin-toggle sidenote-number">37</label><input type="checkbox" id="tufte-sn-37" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">37</span> Of course we could just use the sample estimates, but this is for demonstration.</span>. First the data is created, and then we create the function that will compute the log likelihood. Using the built in R distributions<label for="tufte-sn-38" class="margin-toggle sidenote-number">38</label><input type="checkbox" id="tufte-sn-38" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">38</span> Type <code>?Distributions</code> at the console for some of the basic R distributions available.</span> makes it fairly straightforward to create our own likelihood function and feed it into an optimization function to find the best parameters. We will set things up to work with the <span class="pack">bbmle</span> package, which has some nice summary functionality and other features. However, one should take a glance at <span class="func">optim</span> and the other underlying functions that do the work.</p>
+<p>In the following we will demonstrate the maximum likelihood approach to estimation for a simple setting incorporating a normal distribution where we estimate the mean and variance/sd for a set of values <span class="math inline">\(y\)</span><label for="tufte-sn-37" class="margin-toggle sidenote-number">37</label><input type="checkbox" id="tufte-sn-37" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">37</span> Of course we could just use the sample estimates, but this is for demonstration.</span>. First the data is created, and then we create the function that will compute the log likelihood. Using the built in R distributions<label for="tufte-sn-38" class="margin-toggle sidenote-number">38</label><input type="checkbox" id="tufte-sn-38" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">38</span> Type <span style="font-family=&#39;Consolas&#39;">?Distributions</span> at the console for some of the basic R distributions available.</span> makes it fairly straightforward to create our own likelihood function and feed it into an optimization function to find the best parameters. We will set things up to work with the <span class="pack">bbmle</span> package, which has some nice summary functionality and other features. However, one should take a glance at <span class="func">optim</span> and the other underlying functions that do the work.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># for replication</span>
 <span class="kw">set.seed</span>(<span class="dv">1234</span>)
 
@@ -211,7 +215,7 @@ LL =<span class="st"> </span>function(<span class="dt">mu=</span>startvals[<span
   <span class="kw">message</span>(<span class="kw">paste</span>(mu, sigma, ll))
   ll
 }</code></pre></div>
-<p>The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, which will be set to <code>startvals[1]</code> and <code>startvals[2]</code> respectively. Only the first line (ll = -sum…) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point<label for="tufte-sn-39" class="margin-toggle sidenote-number">39</label><input type="checkbox" id="tufte-sn-39" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">39</span> Much more straightforward than writing the likelihood function as above.</span>. Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood. Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values. I do not show that here but you’ll see it in your console.</p>
+<p>The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, which will be set to 0 and 1 respectively. Only the first line (ll = -sum…) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point<label for="tufte-sn-39" class="margin-toggle sidenote-number">39</label><input type="checkbox" id="tufte-sn-39" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">39</span> Much more straightforward than writing the likelihood function as above.</span>. Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood. Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values. I do not show that here but you’ll see it in your console.</p>
 <p>We are now ready to obtain maximum likelihood estimates for the parameters. For the <span class="func">mle2</span> function we will need the function we’ve created, plus other inputs related to that function or the underlying optimizing function used (by default <span class="func">optim</span>). In this case we will use an optimization procedure that will allow us to set a lower bound for <span class="math inline">\(\sigma\)</span>. This isn’t strictly necessary, but otherwise you would get get warnings and possibly lack of convergence if negative estimates for <span class="math inline">\(\sigma\)</span> were allowed<label for="tufte-sn-40" class="margin-toggle sidenote-number">40</label><input type="checkbox" id="tufte-sn-40" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">40</span> An alternative approach would be to work with the log of <span class="math inline">\(\sigma\)</span> which can take on negative values, and then convert it back to the original scale.</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bbmle)
 <span class="co"># using optim, and L-BFGS-B so as to contrain sigma to be positive by setting</span>
@@ -244,16 +248,16 @@ Coefficients:
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 
 Residual standard error: 1.995 on 999 degrees of freedom</code></pre>
-<p>We can see that the ML estimates are the same<label for="tufte-sn-41" class="margin-toggle sidenote-number">41</label><input type="checkbox" id="tufte-sn-41" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">41</span> Actually there is a difference between the sigma estimates in that OLS estimates are based on a variance estimate divided by <span class="math inline">\(N-1\)</span> while the MLE estimate has a divisor of <span class="math inline">\(N\)</span>.</span> as the intercept only model estimates, which given the sample size are close to the true values.</p>
+<p>We can see that the ML estimates are the same as the intercept only model estimates<label for="tufte-sn-41" class="margin-toggle sidenote-number">41</label><input type="checkbox" id="tufte-sn-41" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">41</span> Actually there is a difference between the sigma estimates in that OLS estimates are based on a variance estimate divided by <span class="math inline">\(N-1\)</span> while the MLE estimate has a divisor of <span class="math inline">\(N\)</span>.</span>, which given the sample size are close to the true values.</p>
 <p>In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a <span class="emph">likelihood surface</span> that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point<label for="tufte-sn-42" class="margin-toggle sidenote-number">42</label><input type="checkbox" id="tufte-sn-42" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">42</span> Which is equivalent to finding the point where the slope of the tangent line to some function, i.e. the derivative, to the surface is zero. The derivative, or gradient in the case of multiple parameters, of the likelihood function with respect to the parameters is known as the <span class="emph">score function</span>.</span>. For simpler settings such as this, we can visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum. I also plot the the path of the optimizer from a top down view. The large blue dot noted represents the minimum negative log likelihood.</p>
 <p><span class='marginnote'><span class="imgbigger"><img src="img/mlnorm.svg" style="display:block; margin: 0 auto;"> <br> A bit of jitter was added to the points to better see what’s going on.</span></p>
-<p><span class="imgbigger"><img src="img/mlnormLikelihoodSurface.svg" style="display:block; margin: 0 auto;"></p>
+<p><span class="imgbigger"><img src="img/mlnormLikelihoodSurface.png" style="display:block; margin: 0 auto;"></p>
 <p>Please note that there are many other considerations in optimization completely ignored here, but for our purposes and the audience for which this is intended, we do not want to lose sight of the forest for the trees. We now move next to a slightly more complicated regression example.</p>
 </div>
 </div>
 <div id="linear-model" class="section level2">
 <h2>Linear Model</h2>
-<p>In the standard regression context, our expected value for the target comes from our linear predictor, i.e. the weighted combination of our explanatory variables, and we estimate the regression weights/coefficients and possibly other relevant parameters. We can expand our previous example to the standard linear model without too much change. In this case we estimate a mean for each observation, but otherwise assume the variance is constant across observations. Again we first construct some data so that we know exactly what to expect, then write out the likelihood function with starting parameters. As we need to estimate our intercept and coefficient for the X predictor (collectively referred to as <span class="math inline">\(\beta\)</span>), we can can think of our likelihood explicitly as before:</p>
+<p>In the standard regression context, our expected value for the target variable comes from our linear predictor, i.e. the weighted combination of our explanatory variables, and we estimate the regression weights/coefficients and possibly other relevant parameters. We can expand our previous example to the standard linear model without too much change. In this case we estimate a mean for each observation, but otherwise assume the variance is constant across observations. Again we first construct some data so that we know exactly what to expect, then write out the likelihood function with starting parameters. As we need to estimate our intercept and coefficient for the X predictor (collectively referred to as <span class="math inline">\(\beta\)</span>), we can can think of our likelihood explicitly as before:</p>
 <p><span class="math display">\[\ln\mathcal{L}(\beta, \sigma^2) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\frac{(y-X\beta)^2}{2\sigma^2})]\]</span></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># for replication</span>
 <span class="kw">set.seed</span>(<span class="dv">1234</span>)
@@ -262,10 +266,10 @@ Residual standard error: 1.995 on 999 degrees of freedom</code></pre>
 X =<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>)
 
 <span class="co"># coefficients for intercept and predictor</span>
-theta =<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">2</span>) 
+beta =<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">2</span>) 
 
 <span class="co"># add intercept to X and create y with some noise</span>
-y =<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>,X)%*%theta +<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>, <span class="dt">sd=</span><span class="fl">2.5</span>)
+y =<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>,X)%*%beta +<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>, <span class="dt">sd=</span><span class="fl">2.5</span>)
 
 regLL =<span class="st"> </span>function(<span class="dt">sigma=</span><span class="dv">1</span>, <span class="dt">Int=</span><span class="dv">0</span>, <span class="dt">b1=</span><span class="dv">0</span>){
   coefs =<span class="st"> </span><span class="kw">c</span>(Int, b1)
@@ -318,8 +322,8 @@ F-statistic: 757.5 on 1 and 998 DF,  p-value: &lt; 2.2e-16</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">-<span class="dv">2</span>*<span class="kw">logLik</span>(modlm)</code></pre></div>
 <pre><code>&#39;log Lik.&#39; 4628.273 (df=3)</code></pre>
 <p><span class='marginnote'><span class="imgbigger"><img src="img/mlreg.svg" style="display:block; margin: 0 auto;"></span></p>
-<p>As before, our estimates and final log likelihood value are about where they should be, and reflect the lm output. The visualization becomes more difficult, but we can examine slices similar to the previous plot.</p>
-<p>To move to generalized linear models, very little changes of the process outside of the distribution assumed and that we are typically modeling a function of the target variable (e.g. <span class="math inline">\(\log(y)=X\beta; mu = e^{X\beta}\)</span>).</p>
+<p>As before, our estimates and final log likelihood value are about where they should be, and reflect the lm output, as the OLS estimates are the maximum likelihood estimates. The visualization becomes more difficult beyond two parameters, but we can examine slices similar to the previous plot.</p>
+<p>To move to generalized linear models, very little changes of the process outside of the distribution assumed and that we are typically modeling a function of the target variable (e.g. <span class="math inline">\(\log(y)=X\beta; \mu = e^{X\beta}\)</span>).</p>
 </div>
 <div id="binomial-likelihood-example" class="section level2">
 <h2>Binomial Likelihood Example</h2>
@@ -351,11 +355,11 @@ $objective
 <p>I will talk only briefly about a couple of the modeling language options available, as you will have to make your own choice among many.</p>
 <div id="bugs" class="section level3">
 <h3>Bugs</h3>
-<p>BUGS <span class="citation">(Lunn et al. <label for="tufte-mn-3" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-3" class="margin-toggle">2012<span class="marginnote">Lunn, David, Chris Jackson, Nicky Best, Andrew Thomas, and David Spiegelhalter. 2012. <em>The BUGS Book: A Practical Introduction to Bayesian Analysis</em>. Boca Raton, FL: Chapman; Hall/CRC.</span>)</span> (<em>B</em>ayesian inference <em>U</em>sing <em>G</em>ibbs <em>S</em>ampling) is perhaps the most widely known and used Bayesian modeling language, as it has been around for 25 years at this point. It is implemented via <a href="http://www.openbugs.net/">OpenBUGS</a> and freely available for download<label for="tufte-sn-43" class="margin-toggle sidenote-number">43</label><input type="checkbox" id="tufte-sn-43" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">43</span> You might come across a previous incarnation, WinBugs, but it is no longer being developed.</span>. It even has a GUI interface if such a thing is desired.</p>
+<p>BUGS <span class="citation">(Lunn et al. <label for="tufte-mn-3" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-3" class="margin-toggle">2012<span class="marginnote">Lunn, David, Chris Jackson, Nicky Best, Andrew Thomas, and David Spiegelhalter. 2012. <em>The BUGS Book: A Practical Introduction to Bayesian Analysis</em>. Boca Raton, FL: Chapman; Hall/CRC.</span>)</span> (<em>B</em>ayesian inference <em>U</em>sing <em>G</em>ibbs <em>S</em>ampling) is perhaps the most widely known and used Bayesian modeling language, as it has been around for over 25 years at this point. It is implemented via <a href="http://www.openbugs.net/">OpenBUGS</a> and freely available for download<label for="tufte-sn-43" class="margin-toggle sidenote-number">43</label><input type="checkbox" id="tufte-sn-43" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">43</span> You might come across a previous incarnation, WinBugs, but it is no longer being developed.</span>. It even has a GUI interface if such a thing is desired.</p>
 </div>
 <div id="jags" class="section level3">
 <h3>JAGS</h3>
-<p><a href="http://mcmc-jags.sourceforge.net/">JAGS</a> (<em>J</em>ust <em>A</em>nother <em>G</em>ibbs <em>S</em>ampler) is a more recent dialect of the BUGS language, and is also free to download. It offers some technical and modeling advantages to OpenBUGs, but much of the code translates directly from one to the other.</p>
+<p><a href="http://mcmc-jags.sourceforge.net/">JAGS</a> (<em>J</em>ust <em>A</em>nother <em>G</em>ibbs <em>S</em>ampler) is a more recent dialect of the BUGS language, and is also free to use. It offers some technical and modeling advantages to OpenBUGs, but much of the code translates directly from one to the other.</p>
 </div>
 <div id="stan" class="section level3">
 <h3>Stan</h3>
@@ -363,15 +367,15 @@ $objective
 </div>
 <div id="r" class="section level3">
 <h3>R</h3>
-<p>R has many modeling packages devoted to Bayesian analysis such that there is a <a href="http://cran.r-project.org/web/views/Bayesian.html">Task View</a> specific to the topic. Most of them are even specific to the implementation of a certain type of analysis<label for="tufte-sn-44" class="margin-toggle sidenote-number">44</label><input type="checkbox" id="tufte-sn-44" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">44</span> Many of these packages, if not all of them will be less flexible in model specification compared to implementing the aforementioned languages directly, or using the R interface to those languages. What’s more, R has interfaces to the previous language engines via the packages <span class="pack"></span>R2OpenBUGS</span> and <span class="pack"></span>BRugs</span>, <span class="pack"></span>rjags</span>, and <span class="pack">rstan</span>, <span class="pack">rstan_arm brms</span>, and <span></span>.</span>. So not only can you do everything within R and take advantage of the power of those languages, you can then use Bayesian specific R packages on the results. For standard and even some complex models I would suggest using the <span class="pack">rstanarm</span> or <span class="pack">brms</span> packages as a way to stick to the usual R modeling style, unless you have a notably complicated model, at wich point you can use <span class="pack">rstan</span>.</p>
+<p>R has many modeling packages devoted to Bayesian analysis such that there is a <a href="http://cran.r-project.org/web/views/Bayesian.html">Task View</a> specific to the topic. Most of them are even specific to the implementation of a certain type of analysis<label for="tufte-sn-44" class="margin-toggle sidenote-number">44</label><input type="checkbox" id="tufte-sn-44" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">44</span> Many of these packages, if not all of them will be less flexible in model specification compared to implementing the aforementioned languages directly, or using the R interface to those languages. What’s more, R has interfaces to the previous language engines via the packages <span class="pack">R2OpenBUGS</span> and <span class="pack">BRugs</span>, <span class="pack">rjags</span>, and <span class="pack">rstan</span>, <span class="pack">rstan_arm brms</span>, and many others.</span>. So not only can you do everything within R and take advantage of the power of those languages, you can then use Bayesian specific R packages on the results. For standard and even some complex models I would suggest using the <span class="pack">rstanarm</span> or <span class="pack">brms</span> packages as a way to stick to the usual R modeling style, unless you have a notably complicated model, at wich point you can use <span class="pack">rstan</span>.</p>
 </div>
 <div id="general-statistical-packages" class="section level3">
 <h3>General Statistical Packages</h3>
-<p>The general statistical languages such as SAS, SPSS, and Stata were generally very late to the Bayesian game, even for implementations of Bayesian versions of commonly used models. SAS started a few years ago (roughly 2006) with experimental and extremely limited capability, and Stata only very recently (but there is <a href="http://mc-stan.org/interfaces/stata-stan">StataStan</a>). SPSS doesn’t seem to have much capability in this area, much like a lot of other things. Others still seem to be lacking as well. In general, I wouldn’t recommend these packages except as an interface to one of the Bayesian specific languages, assuming they have the capability.</p>
+<p>The general statistical languages such as SAS, SPSS, and Stata were generally <em>very</em> late to the Bayesian game, even for implementations of Bayesian versions of commonly used models. SAS started a few years ago with experimental and extremely limited capability, and Stata only very recently (but there is <a href="http://mc-stan.org/interfaces/stata-stan">StataStan</a>). SPSS doesn’t seem to have much capability in this area, much like a lot of other things. Others still seem to be lacking as well. In general, I wouldn’t recommend these packages for Bayesian analysis, except as an interface to one of the Bayesian specific languages, assuming they have the capability.</p>
 </div>
 <div id="other-programming-languages" class="section level3">
 <h3>Other Programming Languages</h3>
-<p>Python has functionality via modules such as PyMC, and Stan has a Python implementation, PyStan. Julia has some functionality similar in implementation to Matlab’s, which one may also consider, and both have Stan ports as well. And with any programming language that you might use for statistical analysis, you could certainly do a lot of it by hand if you have the time.</p>
+<p>Python has functionality via modules such as PyMC, and Stan has a Python implementation, PyStan. Julia has some functionality similar in implementation to Matlab’s, which one may also consider, and both have Stan ports as well. And with any programming language that you might use for statistical analysis, you could certainly do a lot of it by hand if you have the time, though you should exhaust tested implementations first.</p>
 </div>
 <div id="summary-3" class="section level3">
 <h3>Summary</h3>
@@ -380,7 +384,7 @@ $objective
 </div>
 <div id="bugs-example" class="section level2">
 <h2>BUGS Example</h2>
-<p>The following provides a BUGS example of the primary model used in the document. The applicable code for the data set up is in the <a href="#StanLMExample">Example: Linear Regression Model</a> section of the document. The model matrix X must be a matrix class object. Next we setup a bugs data list as we did with Stan, and create a text file that contains the model code. Note that the data list comprises simple characters which are used to look for objects of those names that are in the environment. Also, I use <span class="func">cat</span> with <span class="func">sink</span> so that I don’t have to go to a separate text editor to create the file.</p>
+<p>The following provides a BUGS example of the primary model used in the document. The applicable code for the data set up is in the <a href="03_models.html#example-linear-regression-model">Example: Linear Regression Model</a> section of the document. The model matrix X must be a matrix class object. Next we setup a BUGS data list as we did with Stan, and create a text file that contains the model code. Note that the data list comprises simple characters which are used to look for objects of those names that are in the environment. Also, I use <span class="func">cat</span> with <span class="func">sink</span> so that I don’t have to go to a separate text editor to create the file.</p>
 <p>One of the big differences between BUGS and other languages is its use of the precision parameter <span class="math inline">\(\frac{1}{\sigma^2}\)</span>, the inverse variance, usually denoted as <span class="math inline">\(\tau\)</span>. While there were some computational niceties to be had in doing so, even the authors admit this was not a good decision in retrospect. Prepare to have that issue come up from time to time when you inevitably forget. Comments and assignments are the same as R, and distributions noted with <span class="math inline">\(\sim\)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##################
 ### BUGS setup ###
@@ -553,9 +557,9 @@ sigma.y  1.8568  1.962498  2.02369  2.0892  2.2188</code></pre>
 <div id="metropolis-hastings-example" class="section level2">
 <h2>Metropolis Hastings Example</h2>
 <p>Next depicted is a random walk Metropolis-Hastings algorithm using the the data and model from prior sections of the document. I had several texts open while cobbling together this code such as <span class="citation">Gelman et al. (<label for="tufte-mn-4" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-4" class="margin-toggle">2013<span class="marginnote">Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed.</span>)</span>, and some oriented towards the social sciences by <span class="citation">Gill (<label for="tufte-mn-5" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-5" class="margin-toggle">2008<span class="marginnote">Gill, Jeff. 2008. <em>Bayesian Methods : A Social and Behavioral Sciences Approach</em>. Second. Boca Raton: Chapman &amp; Hall/CRC.</span>)</span>, <span class="citation">Jackman (<label for="tufte-mn-6" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-6" class="margin-toggle">2009<span class="marginnote">Jackman, Simon. 2009. <em>Bayesian Analysis for the Social Sciences</em>. Chichester, UK: Wiley.</span>)</span>, and <span class="citation">Lynch (<label for="tufte-mn-7" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-7" class="margin-toggle">2007<span class="marginnote">Lynch, Scott M. 2007. <em>Introduction to Applied Bayesian Statistics and Estimation for Social Scientists</em>. New York: Springer.</span>)</span> etc. Some parts of the code reflect information and code examples found therein, and follows Lynch’s code a bit more.</p>
-<p>The primary functions that we need to specify regard the posterior distribution<label for="tufte-sn-45" class="margin-toggle sidenote-number">45</label><input type="checkbox" id="tufte-sn-45" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">45</span> Assuming normal for <span class="math inline">\(\beta\)</span> coefficients, inverse gamma on <span class="math inline">\(\sigma^2\)</span>.</span>, an update step for beta coefficients, and an update step for the variance estimate.</p>
-<p><br></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### posterior function
+<p>The primary functions that we need to specify regard the posterior distribution<label for="tufte-sn-45" class="margin-toggle sidenote-number">45</label><input type="checkbox" id="tufte-sn-45" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">45</span> Assuming normal for <span class="math inline">\(\beta\)</span> coefficients, inverse gamma on <span class="math inline">\(\sigma^2\)</span>.</span>, an update step for beta coefficients, and an update step for the variance estimate.<br><br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># posterior function</span>
+
 post =<span class="st"> </span>function(x, y, b, s2){
   <span class="co"># Args: X is the model matrix; y the target vector; b and s2 the parameters</span>
   <span class="co"># to be esitmated</span>
@@ -574,19 +578,26 @@ post =<span class="st"> </span>function(x, y, b, s2){
   }
   <span class="co"># Note that you will not find the exact same presentation across texts and </span>
   <span class="co"># other media for the log posterior in this conjugate setting.  In the end</span>
-  <span class="co"># they are conceputally still (log) prior + (log) likelihood</span>
+  <span class="co"># they are conceputally still (log) prior + (log) likelihood (See commented &#39;else&#39;)</span>
   else {                            
     -.<span class="dv">5</span>*<span class="kw">nrow</span>(X)*<span class="kw">log</span>(sigma2) -<span class="st"> </span>(.<span class="dv">5</span>*(<span class="dv">1</span>/sigma2) *<span class="st"> </span>(<span class="kw">crossprod</span>(y-mu))) +
 <span class="st">      </span>-.<span class="dv">5</span>*<span class="kw">ncol</span>(X)*<span class="kw">log</span>(sigma2) -<span class="st"> </span>(.<span class="dv">5</span>*(<span class="dv">1</span>/sigma2) *<span class="st"> </span>(<span class="kw">t</span>(beta)%*%priorbvarinv%*%beta)) +<span class="st"> </span>
 <span class="st">      </span>-(prioralpha<span class="dv">+1</span>)*<span class="kw">log</span>(sigma2) +<span class="st"> </span><span class="kw">log</span>(sigma2) -<span class="st"> </span>priorbeta/sigma2 
-  }  
+  }
+  <span class="co"># else {</span>
+  <span class="co">#   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)</span>
+  <span class="co">#   priorb = mvtnorm::dmvnorm(b, mean=rep(0, length(b)), sigma=diag(100, length(b)), log=T)</span>
+  <span class="co">#   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)</span>
+  <span class="co">#   logposterior = ll + priorb + priors2</span>
+  <span class="co">#   logposterior</span>
+  <span class="co"># }</span>
 }
 
-### update step for regression coefficients
+<span class="co"># update step for regression coefficients</span>
+
 updatereg =<span class="st"> </span>function(i, x, y, b, s2){
   <span class="co"># Args are the same as above but with additional i iterator argument.</span>
-  <span class="kw">require</span>(MASS)
-  b[i,] =<span class="st"> </span><span class="kw">mvrnorm</span>(<span class="dv">1</span>, <span class="dt">mu=</span>b[i<span class="dv">-1</span>,], <span class="dt">Sigma=</span>bvarscale)  <span class="co"># proposal/jumping distribution</span>
+  b[i,] =<span class="st"> </span>MASS::<span class="kw">mvrnorm</span>(<span class="dv">1</span>, <span class="dt">mu=</span>b[i<span class="dv">-1</span>,], <span class="dt">Sigma=</span>bvarscale)  <span class="co"># proposal/jumping distribution</span>
   
   <span class="co"># Compare to past- does it increase the posterior probability?</span>
   postdiff =<span class="st"> </span><span class="kw">post</span>(<span class="dt">x=</span>x, <span class="dt">y=</span>y, <span class="dt">b=</span>b[i,],   <span class="dt">s2=</span>s2[i<span class="dv">-1</span>]) -<span class="st"> </span>
@@ -600,6 +611,7 @@ updatereg =<span class="st"> </span>function(i, x, y, b, s2){
 }
 
 <span class="co"># update step for sigma2</span>
+
 updates2 =<span class="st"> </span>function(i, x, y, b, s2){
   s2candidate =<span class="st">  </span><span class="kw">rnorm</span>(<span class="dv">1</span>, s2[i<span class="dv">-1</span>], <span class="dt">sd=</span>sigmascale)
   if(s2candidate &lt;<span class="st"> </span><span class="dv">0</span>) {
@@ -615,7 +627,7 @@ updates2 =<span class="st"> </span>function(i, x, y, b, s2){
   <span class="kw">ifelse</span>(accept, s2candidate, s2[i<span class="dv">-1</span>])
 }</code></pre></div>
 <p>Now we can set things up for the MCMC chain<label for="tufte-sn-46" class="margin-toggle sidenote-number">46</label><input type="checkbox" id="tufte-sn-46" class="margin-toggle"><span class="sidenote"><span class="sidenote-number">46</span> This code regards only one chain, though a simple loop or any number of other approaches would easily extend it to two or more.</span>. Aside from the typical MCMC setup and initializing the parameter matrices to hold the draws from the posterior, we also require scale parameters to use for the jumping/proposal distribution.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### Setup, starting values etc. ###
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Setup, starting values etc. </span>
 nsim =<span class="st"> </span><span class="dv">12000</span>
 burnin =<span class="st"> </span><span class="dv">2000</span>
 thin =<span class="st"> </span><span class="dv">10</span>
@@ -628,18 +640,19 @@ s2 =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</spa
 <span class="co"># acceptance rate of .44 in 1 dimension and declining from there to about </span>
 <span class="co"># .23 in high dimensions. For the sigmascale, the magic number comes from </span>
 <span class="co"># starting with a value of one and fiddling from there to get around .44.</span>
+
 c =<span class="st"> </span><span class="fl">2.4</span>/<span class="kw">sqrt</span>(<span class="kw">ncol</span>(b))
 bvar =<span class="st"> </span><span class="kw">vcov</span>(<span class="kw">lm</span>(y~., <span class="kw">data.frame</span>(X[,-<span class="dv">1</span>]))) 
 bvarscale =<span class="st"> </span>bvar *<span class="st"> </span>c^<span class="dv">2</span>               
 sigmascale =<span class="st"> </span>.<span class="dv">9</span></code></pre></div>
 <p>We can now run and summarize the model with tools from the <span class="pack">coda</span> package.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### Run ###
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run</span>
 for(i in <span class="dv">2</span>:nsim){
   b[i,] =<span class="st"> </span><span class="kw">updatereg</span>(<span class="dt">i=</span>i, <span class="dt">y=</span>y, <span class="dt">x=</span>X, <span class="dt">b=</span>b, <span class="dt">s2=</span>s2)
   s2[i] =<span class="st"> </span><span class="kw">updates2</span>(<span class="dt">i=</span>i, <span class="dt">y=</span>y, <span class="dt">x=</span>X, <span class="dt">b=</span>b, <span class="dt">s2=</span>s2)
 }
 
-<span class="co"># calculate acceptance rates; </span>
+<span class="co"># calculate acceptance rates</span>
 baccrate =<span class="st"> </span><span class="kw">mean</span>(<span class="kw">diff</span>(b[(burnin<span class="dv">+1</span>):nsim,]) !=<span class="st"> </span><span class="dv">0</span>)
 s2accrate =<span class="st"> </span><span class="kw">mean</span>(<span class="kw">diff</span>(s2[(burnin<span class="dv">+1</span>):nsim]) !=<span class="st"> </span><span class="dv">0</span>)            
 baccrate</code></pre></div>
@@ -715,9 +728,9 @@ convergence, Rhat=1).</code></pre>
 </div>
 <div id="hamiltonian-monte-carlo-example" class="section level2">
 <h2>Hamiltonian Monte Carlo Example</h2>
-<p>The following demonstrates Hamiltonian Monte Carlo, the technique that Stan uses, and which is a different estimation approach than Gibbs sampler in BUGS/JAGS. It still assumes the data we used in this document, and is largely based on the code in the appendix of <span class="citation">Gelman et al. (<label for="tufte-mn-8" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-8" class="margin-toggle">2013<span class="marginnote">Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed.</span>)</span>.</p>
+<p>The following demonstrates Hamiltonian Monte Carlo, the technique that Stan uses, and which is a different estimation approach than Gibbs sampler in BUGS/JAGS. If you are interested in the details enough to be reading this, I highly recommend Betancourt’s <a href="https://arxiv.org/pdf/1701.02434.pdf">conceptual introduction to HMC</a>. This example still assumes the data we used in this document, and is largely based on the code in the appendix of <span class="citation">Gelman et al. (<label for="tufte-mn-8" class="margin-toggle">&#8853;</label><input type="checkbox" id="tufte-mn-8" class="margin-toggle">2013<span class="marginnote">Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed.</span>)</span>.</p>
 <p>First we start with the functions.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### Log posterior
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Log posterior function</span>
 log_p_th =<span class="st"> </span>function(X, y, th){
   <span class="co"># Args: X is the model matrix; y the target vector; th is the current </span>
   <span class="co"># parameter estimates.</span>
@@ -743,7 +756,7 @@ log_p_th =<span class="st"> </span>function(X, y, th){
 }
 
 
-### numerical gradient as given in BDA3 p. 602; same args as posterior
+<span class="co"># numerical gradient function as given in BDA3 p. 602; same args as posterior</span>
 gradient_th_numerical =<span class="st"> </span>function(X, y, th){
   d =<span class="st"> </span><span class="kw">length</span>(th)
   e =<span class="st"> </span>.<span class="dv">0001</span>
@@ -759,7 +772,7 @@ gradient_th_numerical =<span class="st"> </span>function(X, y, th){
 }
 
 
-### single HMC iteration
+<span class="co"># single HMC iteration function</span>
 hmc_iteration =<span class="st"> </span>function(X, y, th, epsilon, L, M){
   <span class="co"># Args: epsilon is the stepsize; L is the number of leapfrog steps; epsilon</span>
   <span class="co"># and L are drawn randomly at each iteration to explore other areas of the</span>
@@ -793,7 +806,7 @@ hmc_iteration =<span class="st"> </span>function(X, y, th, epsilon, L, M){
 }
 
 
-### main HMC function
+<span class="co"># main HMC function</span>
 hmc_run =<span class="st"> </span>function(starts, iter, warmup, epsilon_0, L_0, M, X, y){
   <span class="co"># Args: starts are starting values; iter is total number of simulations for </span>
   <span class="co"># each chain (note chain is based on the dimension of starts); warmup</span>
@@ -825,7 +838,7 @@ hmc_run =<span class="st"> </span>function(starts, iter, warmup, epsilon_0, L_0,
   <span class="kw">return</span>(<span class="kw">list</span>(<span class="dt">sims=</span>sims, <span class="dt">p_jump=</span>p_jump))
 }</code></pre></div>
 <p>With the primary functions in place, we set the starting values and choose other settings for for the HMC process. The coefficient starting values are based on random draws from a uniform distribution, while <span class="math inline">\(\sigma\)</span> is set to a value of one in each case. As in the other examples we’ll have 12000 total draws with warm-up set to 2000. I don’t have any thinning option but that could be added or simply done as part of the <span class="pack">coda</span> package preparation.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### Starting values and mcmc settings
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Starting values and mcmc settings</span>
 parnames =<span class="st"> </span><span class="kw">c</span>(<span class="kw">paste0</span>(<span class="st">&#39;beta[&#39;</span>,<span class="dv">1</span>:<span class="dv">4</span>,<span class="st">&#39;]&#39;</span>), <span class="st">&#39;sigma&#39;</span>)
 d =<span class="st"> </span><span class="kw">length</span>(parnames)
 chains =<span class="st"> </span><span class="dv">2</span>
@@ -841,21 +854,60 @@ stepsize =<span class="st"> </span>.<span class="dv">08</span>
 nLeap =<span class="st"> </span><span class="dv">10</span>
 vars =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">5</span>)</code></pre></div>
 <p>We are now ready to run the model. On my machine and with the above settings, it took about two minutes. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">### Run the model
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run the model</span>
 M1 =<span class="st"> </span><span class="kw">hmc_run</span>(<span class="dt">starts=</span>thetastart, <span class="dt">iter=</span>nsim, <span class="dt">warmup=</span>wu, <span class="dt">epsilon_0=</span>stepsize, 
-             <span class="dt">L_0=</span>nLeap, <span class="dt">M=</span>mass_vector, <span class="dt">X=</span>X, <span class="dt">y=</span>y)
-<span class="co"># str(M1, 1)</span>
+             <span class="dt">L_0=</span>nLeap, <span class="dt">M=</span>mass_vector, <span class="dt">X=</span>X, <span class="dt">y=</span>y)</code></pre></div>
+<pre><code>Inference for the input samples (2 chains: each with iter=12000; warmup=2000):
+
+          mean se_mean    sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
+beta[1]  4.900   0.001 0.129  4.648  4.812  4.900  4.987  5.154 12982    1
+beta[2]  0.085   0.001 0.130 -0.167 -0.003  0.084  0.172  0.343 12493    1
+beta[3] -1.468   0.001 0.126 -1.718 -1.550 -1.469 -1.384 -1.223 12577    1
+beta[4]  0.820   0.001 0.121  0.585  0.739  0.821  0.902  1.053 12958    1
+sigma    2.017   0.001 0.093  1.848  1.953  2.013  2.077  2.210 11460    1
+
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).</code></pre>
+<pre><code>Avg acceptance probability for each chain: 0.816, 0.822</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># str(M1, 1)</span>
 
 <span class="co"># use coda if desired</span>
 <span class="kw">library</span>(coda)
 
 theta =<span class="st"> </span><span class="kw">as.mcmc.list</span>(<span class="kw">list</span>(<span class="kw">as.mcmc</span>(M1$sims[(wu<span class="dv">+1</span>):nsim,<span class="dv">1</span>,]), 
                           <span class="kw">as.mcmc</span>(M1$sims[(wu<span class="dv">+1</span>):nsim,<span class="dv">2</span>,])))
-<span class="co"># summary(theta)</span>
-finalest =<span class="st">  </span><span class="kw">summary</span>(theta)$statistics[,<span class="st">&#39;Mean&#39;</span>]
+<span class="kw">summary</span>(theta)</code></pre></div>
+<pre><code>
+Iterations = 1:10000
+Thinning interval = 1 
+Number of chains = 2 
+Sample size per chain = 10000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+            Mean      SD  Naive SE Time-series SE
+beta[1]  4.89979 0.12902 0.0009123      0.0011355
+beta[2]  0.08465 0.13024 0.0009209      0.0011452
+beta[3] -1.46839 0.12609 0.0008916      0.0011047
+beta[4]  0.82028 0.12074 0.0008537      0.0010613
+sigma    2.01700 0.09264 0.0006550      0.0008718
+
+2. Quantiles for each variable:
+
+           2.5%       25%     50%     75%   97.5%
+beta[1]  4.6480  4.812384  4.9002  4.9870  5.1542
+beta[2] -0.1674 -0.002676  0.0838  0.1718  0.3426
+beta[3] -1.7181 -1.550100 -1.4690 -1.3844 -1.2234
+beta[4]  0.5848  0.739022  0.8208  0.9021  1.0529
+sigma    1.8482  1.952584  2.0135  2.0770  2.2100</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">finalest =<span class="st">  </span><span class="kw">summary</span>(theta)$statistics[,<span class="st">&#39;Mean&#39;</span>]
 b =<span class="st"> </span>finalest[<span class="dv">1</span>:<span class="dv">4</span>]
 sig =<span class="st"> </span>finalest[<span class="dv">5</span>]
 <span class="kw">log_p_th</span>(X, y, finalest)</code></pre></div>
+<pre><code>          [,1]
+[1,] -301.7267</code></pre>
 <p>Our estimates look pretty good, and inspection of the diagnostics would show good mixing and convergence as well. At this point we can compare it to the Stan output. For the following, I modified the previous Stan code to use the same inverse gamma prior and tweaked the control options for a little bit more similarity, but that’s not necessary.</p>
 <pre><code>Inference for Stan model: stanmodelcodeIG.
 2 chains, each with iter=12000; warmup=2000; thin=1; 

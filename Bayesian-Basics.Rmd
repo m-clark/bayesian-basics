@@ -1,10 +1,9 @@
 --- 
 title: <span style="font-size:150%; font-variant:small-caps; font-style:italic; ">Bayesian Basics</span>
 author:  |
-  <div class="title"><span style="font-size:125%; font-variant:small-caps; font-style:normal">Michael Clark</span><br>
-  <span style="font-size:75%; margin: 0 auto; font-style:normal">Statistician Lead</span> <br>
-  <img src="img/signature-acronym.png" style="width:24%; padding:10px 0;"> <br>
-  <img src="img/ARC-acronym-signature.png" style="width:17%; padding:10px 0;"> </div>
+  <div class="title"><span style="font-size:150%; font-variant:small-caps; font-style:normal">Michael Clark</span><br><br>
+  <img src="img/signature-acronym.png" style="width:14%; padding:10px 0;"> <br>
+  <img src="img/ARC-acronym-signature.png" style="width:10%; padding:10px 0;"> </div>
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: 
@@ -13,6 +12,9 @@ output:
       number_sections: false
       css: [toc.css, ../css/tufte_bookdown/mytufte.css]
       split_by: rmd
+      config:
+    # bookdown::pdf_book: no
+    # bookdown::epub_book: no # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else
 always_allow_html: yes
 documentclass: book
 bibliography: ['packages.bib', 'BayesBasics.bib']
@@ -47,7 +49,7 @@ library(tufte); library(tidyverse)
 
 # Preface
 
-<span class="marginnote">Initial draft posted 2014 Summer.  Recent updates (2016) include major overhaul from pdf to web-based presentation (twice!). The last pdf version I made is [here](http://m-clark.github.io/docs/IntroBayes.pdf) if anyone wants it, however, it will no longer be updated.  You can download the auto-generated (and ugly) pdf for this document [here](https://m-clark.github.io/docs/bayesian/basics/Bayesian_Basics.pdf).</span>
+<span class="marginnote">Initial draft posted 2014 Summer.  Recent updates (2016-7) include major overhaul from pdf to web-based presentation (twice!). The last pdf version I made is [here](http://m-clark.github.io/docs/IntroBayes.pdf) if anyone wants it, however, it will no longer be updated.  You can download the auto-generated (and ugly) pdf for this document [here](https://m-clark.github.io/docs/bayesian/basics/Bayesian_Basics.pdf).</span>
 The following serves as a practical and applied introduction to Bayesian estimation methods for the uninitiated. The goal is to provide just enough information in a brief format to allow one to feel comfortable exploring Bayesian data analysis for themselves, assuming they have the requisite context to begin with. The idea is to cover a similar amount of material as one would in part of a standard statistics sequence in various applied disciplines where statistics is being introduced in general.  
 
 After a conceptual introduction, a fully visible by-hand example is provided using the binomial distribution.  After that, the document proceeds to introduce fully Bayesian analysis with the standard linear regression model, as that is the basis for most applied statistics courses and is assumed to be most familiar to the reader.  Model diagnostics, model enhancements, and additional modeling issues are then explored.  Supplemental content in the appendix provides more technical detail if desired, and includes a maximum likelihood refresher, an overview of programming options in Bayesian analysis, the same regression model using BUGS and JAGS, and 'by-hand' code for the model using the Metropolis-Hastings and Hamiltonian Monte Carlo algorithms.
@@ -72,7 +74,7 @@ Color coding:
 
 ## Note
 
-While this document focuses more on concepts and teaching the Bayesian approach to modeling, while using Stan more as a practical vehicle, I do want to say something about the development of Stan and the document itself.  Since this document was first put together in 2014, Stan and associated packages have undergone vast and continued development, and tools for publishing documents with R have as well. Packages such as <span class="pack">rstanarm</span> and <span class="pack">brms</span> didn't exist then, but now make even some fairly complicated models easy to pull off with just a line or two of standard R code, and without ever having to use the Stan language directly.  Further, newer visualization tools such as <span class="pack">bayesplot</span> and <span class="pack">shinystan</span> make model exploration even easier than before.  While the document now more or less reflects these developments, it still leans on doing things explicitly so that things are not so much of a black box. However, it's worth noting that the example regression model within and associated diagnostics and visuals would now only take a few lines of code, and fully within R. In short, the combination of R and Stan make Bayesian analysis easier than ever before. Once armed with the basic concepts one should feel able to dive as easily as they would with any other R modeling tool.
+While this document focuses more on concepts and teaching the Bayesian approach to modeling, while using Stan more as a practical vehicle, I do want to say something about the development of Stan and the document itself.  Since this document was first put together in 2014, Stan and associated packages have undergone vast and continued development, and tools for publishing documents with R have as well. Packages such as <span class="pack">rstanarm</span> and <span class="pack">brms</span> didn't exist then, but now make even some fairly complicated models easy to pull off with just a line or two of standard R code, and without ever having to use the Stan language directly.  Further, newer visualization tools such as <span class="pack">bayesplot</span> and <span class="pack">shinystan</span> make model exploration even easier than before.  While the document now more reflects these developments, it still leans on doing things more explicitly so that things are not so much of a black box. However, it's worth noting that the example regression model within and associated diagnostics and visuals would now only take a few lines of code, and fully within R. In short, the combination of R and Stan make Bayesian analysis easier than ever before. Once armed with the basic concepts one should feel able to dive as easily as they would with any other R modeling tool.
 
 <!--chapter:end:00_preface.Rmd-->
 
@@ -1611,7 +1613,7 @@ You certainly don't have to abandon classical and other methods either.  Scienti
 
 # Appendix
 
-NOTE EVAL AND CACHE FALSE UNTIL WE GET TO THIS SECTION. CHange back `startvals[1]` inline to r.
+NOTE EVAL AND CACHE FALSE UNTIL WE GET TO THIS SECTION. 
 
 ```{r temporary, include=FALSE}
 knitr::opts_chunk$set(eval=T)
@@ -1713,19 +1715,17 @@ mlnorm
 summary(lm(y~1))
 ```
 
-We can see that the ML estimates are the same[^MLvOLS] as the intercept only model estimates, which given the sample size are close to the true values.
+We can see that the ML estimates are the same as the intercept only model estimates[^MLvOLS], which given the sample size are close to the true values.
 
 In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a <span class="emph">likelihood surface</span> that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point[^tangent]. For simpler settings such as this, we can  visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum.  I also plot the the path of the optimizer from a top down view.  The large blue dot noted represents the minimum negative log likelihood. 
 
 <span class='marginnote'><span class="imgbigger"><img src="img/mlnorm.svg" style="display:block; margin: 0 auto;"> <br> A bit of jitter was added to the points to better see what's going on.</span>
 
-<span class="imgbigger"><img src="img/mlnormLikelihoodSurface.svg" style="display:block; margin: 0 auto;">
+<span class="imgbigger"><img src="img/mlnormLikelihoodSurface.png" style="display:block; margin: 0 auto;">
 
-Please note that there are many other considerations in optimization completely ignored here, but for our purposes and the audience for which this is intended, we do not want to lose sight of the forest for the trees. We now move next to a slightly more complicated regression example.
+```{r plotSurface, eval=F, echo=FALSE}
+# PLOTLY STILL BREAKS MATHJAX, CAN ONLY USE SCREENSHOT
 
-
-
-```{r plotSurface, eval=FALSE, echo=FALSE}
 mu = seq(4, 6, length=50); sigma=seq(1.5, 3, length=50)
 llsurf = matrix(NA, length(mu), length(sigma))
 
@@ -1736,25 +1736,56 @@ for (i in 1:length(mu)){
 }
 rownames(llsurf) = mu
 colnames(llsurf) = sigma
+
+plotdat = read.csv('data//mleNormEstimates.csv'); colnames(plotdat) = c('mu','sigma', 'll')
+pointdat = subset(plotdat, mu <=6 & mu >=4 & sigma<= 3 & sigma >=1.5)
+# because plotly legend doesn't work correctly with surface, color scale dropped, not needed anyway https://community.plot.ly/t/how-to-name-axis-and-show-legend-in-mesh3d-and-surface-3d-plots/1819
+
+
+library(plotly)
+plot_ly(showscale=F, name='estimate') %>% 
+  add_surface(x=~as.numeric(rownames(llsurf)), y =~ as.numeric(colnames(llsurf)), 
+              z=~t(llsurf), colors = colorRamp(c("red", 'orange', "yellow", 'white'), interpolate='spline')) %>% 
+  add_markers(x=~mu, y=~sigma, z=~ll, marker=list(color='gray', size=4), data=pointdat, showlegend=F) %>% 
+  add_markers(x=coef(mlnorm)[1], y=coef(mlnorm)[2],  z=mlnorm@min, marker=list(color='navy', size=10), showlegend=F) %>% 
+  # config(displayModeBar = F) %>% 
+  layout(scene = list(xaxis = list(title = 'mu', 
+                                   titlefont=list(size=12),
+                                   tickfont=list(size=10), 
+                                   dtick=.25),
+                      yaxis = list(title = 'sigma', 
+                                   titlefont=list(size=12),
+                                   tickfont=list(size=10),
+                                   dtick=.25),
+                      zaxis = list(title = 'Neg. Log Lik ', 
+                                   titlefont=list(size=8),
+                                   tickfont=list(size=10),
+                                   position=.1)),
+         paper_bgcolor='rgba(0,0,0,0)',
+         plot_bgcolor='rgba(0,0,0,0)')
+
+detach(package:plotly)
+```
+
+
+```{r old3d, echo=FALSE, eval=FALSE}
+# Old 3d plot stuff below
 # llsurf
 # # contour(llsurf)
 # png('img/mlnormLikelihoodSurface.png', bg='transparent')
-svg('img/mlnormLikelihoodSurface.svg', bg='transparent')
-library(plot3D)
-plotdat = read.csv('data//mleNormEstimates.csv'); colnames(plotdat) = c('mu','sigma', 'll')
-pointdat = subset(plotdat, mu <=6 & mu >=4 & sigma<= 3 & sigma >=1.5)
-
-# note that on col key, placement of legend (dist) will not match doc result so you'll have to play with it.
-persp3D(x=mu, y=sigma, llsurf, zlim=c(2000, 2454),
-        xlab='mu', ylab='sigma', zlab='neg ll', cex.lab=.75, cex.axis=.5, col.axis='gray50',  
-        col=heat.colors(prod(dim(llsurf))), shade=.1, box=T, alpha=.75,
-        contour=list(col=heat.colors(prod(dim(llsurf))), nlevels=20), addbox=F,
-        phi=30, 
-        ticktype='detailed', nticks=5, bty='u', tck=1, 
-        colkey=list(col.box='white', cex.axis=.7, col.ticks=NA,  length=.75, width=.75)) -> res    ####### see this !
-points(trans3d(pointdat[,1], pointdat[,2], pointdat[,3], pmat=res), pch=19, cex=.8, col=scales::alpha('gray',.5))
-points(trans3d(coef(mlnorm)[1], coef(mlnorm)[2], mlnorm@min, pmat=res), pch=19, col=scales::alpha('navy',.85), cex=2)
-dev.off()
+# svg('img/mlnormLikelihoodSurface.svg', bg='transparent')
+# library(plot3D)
+# # note that on col key, placement of legend (dist) will not match doc result so you'll have to play with it.
+# persp3D(x=mu, y=sigma, llsurf, zlim=c(2000, 2454),
+#         xlab='mu', ylab='sigma', zlab='neg ll', cex.lab=.75, cex.axis=.5, col.axis='gray75', 
+#         col=heat.colors(prod(dim(llsurf))), shade=.1, box=T, alpha=.75, col.panel='transparent',
+#         contour=list(col=heat.colors(prod(dim(llsurf))), nlevels=20, axes=F), addbox=F,
+#         phi=30, 
+#         ticktype='detailed', nticks=5, bty='u', tck=1, 
+#         colkey=list(col.box='white', cex.axis=.7, col.ticks=NA,  length=.75, width=.75)) -> res    ####### see this !
+# points(trans3d(pointdat[,1], pointdat[,2], pointdat[,3], pmat=res), pch=19, cex=.8, col=scales::alpha('gray',.5))
+# points(trans3d(coef(mlnorm)[1], coef(mlnorm)[2], mlnorm@min, pmat=res), pch=19, col=scales::alpha('navy',.85), cex=2)
+# dev.off()
 
 
 ### alternate via surface
@@ -1783,6 +1814,12 @@ dev.off()
 # dev.off()
 ```
 
+
+Please note that there are many other considerations in optimization completely ignored here, but for our purposes and the audience for which this is intended, we do not want to lose sight of the forest for the trees. We now move next to a slightly more complicated regression example.
+
+
+
+
 ```{r plotNormMLEpath, cache=F, message=FALSE, warning=FALSE, eval=FALSE, echo=FALSE}
 plotdat = read.csv('data//mleNormEstimates.csv'); colnames(plotdat) = c('mu','sigma', 'll')
 plotdat$nll = -plotdat$ll
@@ -1808,12 +1845,12 @@ ggsave('img/mlnorm.svg', bg='transparent')
 
 ## Linear Model
 
-In the standard regression context, our expected value for the target comes from our linear predictor, i.e. the weighted combination of our explanatory variables, and we estimate the regression weights/coefficients and possibly other relevant parameters.  We can expand our previous example to the standard linear model without too much change.  In this case we estimate a mean for each observation, but otherwise assume the variance is constant across observations.  Again we first construct some data so that we know exactly what to expect, then write out the likelihood function with starting parameters.  As we need to estimate our intercept and  coefficient for the X predictor (collectively referred to as $\beta$), we can can think of our likelihood  explicitly as before:
+In the standard regression context, our expected value for the target variable comes from our linear predictor, i.e. the weighted combination of our explanatory variables, and we estimate the regression weights/coefficients and possibly other relevant parameters.  We can expand our previous example to the standard linear model without too much change.  In this case we estimate a mean for each observation, but otherwise assume the variance is constant across observations.  Again we first construct some data so that we know exactly what to expect, then write out the likelihood function with starting parameters.  As we need to estimate our intercept and  coefficient for the X predictor (collectively referred to as $\beta$), we can can think of our likelihood  explicitly as before:
 
 $$\ln\mathcal{L}(\beta, \sigma^2) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\frac{(y-X\beta)^2}{2\sigma^2})]$$
 
 
-```{r bblmeReg}
+```{r bblmeReg, cache=TRUE}
 # for replication
 set.seed(1234)
 
@@ -1821,10 +1858,10 @@ set.seed(1234)
 X = rnorm(1000)
 
 # coefficients for intercept and predictor
-theta = c(5,2) 
+beta = c(5,2) 
 
 # add intercept to X and create y with some noise
-y = cbind(1,X)%*%theta + rnorm(1000, sd=2.5)
+y = cbind(1,X)%*%beta + rnorm(1000, sd=2.5)
 
 regLL = function(sigma=1, Int=0, b1=0){
   coefs = c(Int, b1)
@@ -1847,9 +1884,9 @@ summary(modlm)
 
 <span class='marginnote'><span class="imgbigger"><img src="img/mlreg.svg" style="display:block; margin: 0 auto;"></span>
 
-As before, our estimates and final log likelihood value are about where they should be, and reflect the lm output.  The visualization becomes more difficult, but we can examine slices similar to the previous plot. 
+As before, our estimates and final log likelihood value are about where they should be, and reflect the lm output, as the OLS estimates are the maximum likelihood estimates.  The visualization becomes more difficult beyond two parameters, but we can examine slices similar to the previous plot. 
 
-To move to generalized linear models, very little changes of the process outside of the distribution assumed and that we are typically modeling a function of the target variable (e.g. $\log(y)=X\beta; mu = e^{X\beta}$).
+To move to generalized linear models, very little changes of the process outside of the distribution assumed and that we are typically modeling a function of the target variable (e.g. $\log(y)=X\beta; \mu = e^{X\beta}$).
 
 ```{r mlmisc, eval=FALSE, echo=FALSE}
 plotdat = read.csv('data//mleEstimates.csv'); colnames(plotdat) = c('sigma', 'Intercept', 'beta_x', 'll')
@@ -1907,11 +1944,11 @@ I will talk only briefly about a couple of the modeling language options availab
 
 ### Bugs
 
-BUGS [@bugsbook] (*B*ayesian inference *U*sing *G*ibbs *S*ampling) is perhaps the most widely known and used Bayesian modeling language, as it has been around for 25 years at this point.  It is implemented via [OpenBUGS](http://www.openbugs.net/) and freely available for download[^winbugs]. It even has a GUI interface if such a thing is desired.
+BUGS [@bugsbook] (*B*ayesian inference *U*sing *G*ibbs *S*ampling) is perhaps the most widely known and used Bayesian modeling language, as it has been around for over 25 years at this point.  It is implemented via [OpenBUGS](http://www.openbugs.net/) and freely available for download[^winbugs]. It even has a GUI interface if such a thing is desired.
 
 ### JAGS
 
-[JAGS](http://mcmc-jags.sourceforge.net/) (*J*ust *A*nother *G*ibbs *S*ampler) is a more recent dialect of the BUGS language, and is also free to download.  It offers some technical and modeling advantages to OpenBUGs, but much of the code translates directly from one to the other.
+[JAGS](http://mcmc-jags.sourceforge.net/) (*J*ust *A*nother *G*ibbs *S*ampler) is a more recent dialect of the BUGS language, and is also free to use.  It offers some technical and modeling advantages to OpenBUGs, but much of the code translates directly from one to the other.
 
 ### Stan
 
@@ -1925,11 +1962,11 @@ R has many modeling packages devoted to Bayesian analysis such that there is a [
 
 ### General Statistical Packages
 
-The general statistical languages such as SAS, SPSS, and Stata were generally very late to the Bayesian game, even for implementations of Bayesian versions of commonly used models.  SAS started a few years ago (roughly 2006) with experimental and extremely limited capability, and Stata only very recently (but there is [StataStan](http://mc-stan.org/interfaces/stata-stan)).  SPSS doesn't seem to have much capability in this area, much like a lot of other things.  Others still seem to be lacking as well.  In general, I wouldn't recommend these packages except as an interface to one of the Bayesian specific languages, assuming they have the capability.
+The general statistical languages such as SAS, SPSS, and Stata were generally *very* late to the Bayesian game, even for implementations of Bayesian versions of commonly used models.  SAS started a few years ago with experimental and extremely limited capability, and Stata only very recently (but there is [StataStan](http://mc-stan.org/interfaces/stata-stan)).  SPSS doesn't seem to have much capability in this area, much like a lot of other things.  Others still seem to be lacking as well.  In general, I wouldn't recommend these packages for Bayesian analysis, except as an interface to one of the Bayesian specific languages, assuming they have the capability.
 
 ### Other Programming Languages
 
-Python has functionality via modules such as PyMC, and Stan has a Python implementation, PyStan.  Julia has some functionality similar in implementation to Matlab's, which one may also consider, and both have Stan ports as well.  And with any programming language that you might use for statistical analysis, you could certainly do a lot of it by hand if you have the time.
+Python has functionality via modules such as PyMC, and Stan has a Python implementation, PyStan.  Julia has some functionality similar in implementation to Matlab's, which one may also consider, and both have Stan ports as well.  And with any programming language that you might use for statistical analysis, you could certainly do a lot of it by hand if you have the time, though you should exhaust tested implementations first. 
 
 ### Summary
 
@@ -1939,7 +1976,7 @@ In short, you have plenty of options.  I would suggest starting with a Bayesian 
 
 ## BUGS Example
 
-The following provides a BUGS example of the primary model used in the document. The applicable code for the data set up is in the [Example: Linear Regression Model](#StanLMExample) section of the document. The model matrix X must be a matrix class object. Next we setup a bugs data list as we did with Stan, and create a text file that contains the model code.  Note that the data list comprises simple characters which are used to look for objects of those names that are in the environment. Also, I use <span class="func">cat</span> with <span class="func">sink</span> so that I don't have to go to a separate text editor to create the file.  
+The following provides a BUGS example of the primary model used in the document. The applicable code for the data set up is in the [Example: Linear Regression Model][Example: Linear Regression Model] section of the document. The model matrix X must be a matrix class object. Next we setup a BUGS data list as we did with Stan, and create a text file that contains the model code.  Note that the data list comprises simple characters which are used to look for objects of those names that are in the environment. Also, I use <span class="func">cat</span> with <span class="func">sink</span> so that I don't have to go to a separate text editor to create the file.  
 
 One of the big differences between BUGS and other languages is its use of the precision parameter $\frac{1}{\sigma^2}$, the inverse variance, usually denoted as $\tau$.  While there were some computational niceties to be had in doing so, even the authors admit this was not a good decision in retrospect. Prepare to have that issue come up from time to time when you inevitably forget.  Comments and assignments are the same as R, and distributions noted with $\sim$.
 
@@ -2135,12 +2172,11 @@ par(mar=c(5, 4, 4, 2) + 0.1) # reset margins
 
 Next depicted is a random walk Metropolis-Hastings algorithm using the the data and model from prior sections of the document.  I had several texts open while cobbling together this code such as @gelman_bda, and some oriented towards the social sciences by @jeff_gill_bayesian_2008, @simon_jackman_bayesian_2009, and @scott_lynch_2007 etc.  Some parts of the code reflect information and code examples found therein, and follows Lynch's code a bit more.
 
-The primary functions that we need to specify regard the posterior distribution[^MHexample], an update step for beta coefficients, and an update step for the variance estimate.
-
-<br>
+The primary functions that we need to specify regard the posterior distribution[^MHexample], an update step for beta coefficients, and an update step for the variance estimate.<br><br>
 
 ```{r MHexample, cache=TRUE, eval=TRUE}
-### posterior function
+# posterior function
+
 post = function(x, y, b, s2){
   # Args: X is the model matrix; y the target vector; b and s2 the parameters
   # to be esitmated
@@ -2159,19 +2195,26 @@ post = function(x, y, b, s2){
   }
   # Note that you will not find the exact same presentation across texts and 
   # other media for the log posterior in this conjugate setting.  In the end
-  # they are conceputally still (log) prior + (log) likelihood
+  # they are conceputally still (log) prior + (log) likelihood (See commented 'else')
   else {                            
     -.5*nrow(X)*log(sigma2) - (.5*(1/sigma2) * (crossprod(y-mu))) +
       -.5*ncol(X)*log(sigma2) - (.5*(1/sigma2) * (t(beta)%*%priorbvarinv%*%beta)) + 
       -(prioralpha+1)*log(sigma2) + log(sigma2) - priorbeta/sigma2 
-  }  
+  }
+  # else {
+  #   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)
+  #   priorb = mvtnorm::dmvnorm(b, mean=rep(0, length(b)), sigma=diag(100, length(b)), log=T)
+  #   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)
+  #   logposterior = ll + priorb + priors2
+  #   logposterior
+  # }
 }
 
-### update step for regression coefficients
+# update step for regression coefficients
+
 updatereg = function(i, x, y, b, s2){
   # Args are the same as above but with additional i iterator argument.
-  require(MASS)
-  b[i,] = mvrnorm(1, mu=b[i-1,], Sigma=bvarscale)  # proposal/jumping distribution
+  b[i,] = MASS::mvrnorm(1, mu=b[i-1,], Sigma=bvarscale)  # proposal/jumping distribution
   
   # Compare to past- does it increase the posterior probability?
   postdiff = post(x=x, y=y, b=b[i,],   s2=s2[i-1]) - 
@@ -2185,6 +2228,7 @@ updatereg = function(i, x, y, b, s2){
 }
 
 # update step for sigma2
+
 updates2 = function(i, x, y, b, s2){
   s2candidate =  rnorm(1, s2[i-1], sd=sigmascale)
   if(s2candidate < 0) {
@@ -2205,7 +2249,7 @@ updates2 = function(i, x, y, b, s2){
 Now we can set things up for the MCMC chain[^MHmcmc].  Aside from the typical MCMC setup and initializing the parameter matrices to hold the draws from the posterior, we also require scale parameters to use for the jumping/proposal distribution.
 
 ```{r MHexampleSetup, cache=TRUE, eval=TRUE}
-### Setup, starting values etc. ###
+# Setup, starting values etc. 
 nsim = 12000
 burnin = 2000
 thin = 10
@@ -2218,6 +2262,7 @@ s2 = rep(1, nsim)                    # initialize sigma vector
 # acceptance rate of .44 in 1 dimension and declining from there to about 
 # .23 in high dimensions. For the sigmascale, the magic number comes from 
 # starting with a value of one and fiddling from there to get around .44.
+
 c = 2.4/sqrt(ncol(b))
 bvar = vcov(lm(y~., data.frame(X[,-1]))) 
 bvarscale = bvar * c^2               
@@ -2227,13 +2272,13 @@ sigmascale = .9
 We can now run and summarize the model with tools from the <span class="pack">coda</span> package.
 
 ```{r MHexampleRun, cache=TRUE, eval=TRUE}
-### Run ###
+# Run
 for(i in 2:nsim){
   b[i,] = updatereg(i=i, y=y, x=X, b=b, s2=s2)
   s2[i] = updates2(i=i, y=y, x=X, b=b, s2=s2)
 }
 
-# calculate acceptance rates; 
+# calculate acceptance rates
 baccrate = mean(diff(b[(burnin+1):nsim,]) != 0)
 s2accrate = mean(diff(s2[(burnin+1):nsim]) != 0)            
 baccrate
@@ -2260,12 +2305,12 @@ print(fit, digits=3, prob=c(.025,.5,.975))
 ## Hamiltonian Monte Carlo Example
 
 
-The following demonstrates Hamiltonian Monte Carlo, the technique that Stan uses, and which is a different estimation approach than Gibbs sampler in BUGS/JAGS.  It still assumes the data we used in this document, and is largely based on the code in the appendix of @gelman_bda.
+The following demonstrates Hamiltonian Monte Carlo, the technique that Stan uses, and which is a different estimation approach than Gibbs sampler in BUGS/JAGS.  If you are interested in the details enough to be reading this, I highly recommend Betancourt's [conceptual introduction to HMC](https://arxiv.org/pdf/1701.02434.pdf).  This example still assumes the data we used in this document, and is largely based on the code in the appendix of @gelman_bda.  
 
 First we start with the functions.
 
 ```{r HMCexample, cache=TRUE}
-### Log posterior
+# Log posterior function
 log_p_th = function(X, y, th){
   # Args: X is the model matrix; y the target vector; th is the current 
   # parameter estimates.
@@ -2291,7 +2336,7 @@ log_p_th = function(X, y, th){
 }
 
 
-### numerical gradient as given in BDA3 p. 602; same args as posterior
+# numerical gradient function as given in BDA3 p. 602; same args as posterior
 gradient_th_numerical = function(X, y, th){
   d = length(th)
   e = .0001
@@ -2307,7 +2352,7 @@ gradient_th_numerical = function(X, y, th){
 }
 
 
-### single HMC iteration
+# single HMC iteration function
 hmc_iteration = function(X, y, th, epsilon, L, M){
   # Args: epsilon is the stepsize; L is the number of leapfrog steps; epsilon
   # and L are drawn randomly at each iteration to explore other areas of the
@@ -2341,7 +2386,7 @@ hmc_iteration = function(X, y, th, epsilon, L, M){
 }
 
 
-### main HMC function
+# main HMC function
 hmc_run = function(starts, iter, warmup, epsilon_0, L_0, M, X, y){
   # Args: starts are starting values; iter is total number of simulations for 
   # each chain (note chain is based on the dimension of starts); warmup
@@ -2378,7 +2423,7 @@ hmc_run = function(starts, iter, warmup, epsilon_0, L_0, M, X, y){
 With the primary functions in place, we set the starting values and choose other settings for for the HMC process. The coefficient starting values are based on random draws from a uniform distribution, while $\sigma$ is set to a value of one in each case.  As in the other examples we'll have 12000 total draws with warm-up set to 2000.  I don't have any thinning option but that could be added or simply done as part of the <span class="pack">coda</span> package preparation.
 
 ```{r HMCexampleSetup, cache=TRUE, echo=c(1:5, 7:16)}
-### Starting values and mcmc settings
+# Starting values and mcmc settings
 parnames = c(paste0('beta[',1:4,']'), 'sigma')
 d = length(parnames)
 chains = 2
@@ -2400,8 +2445,8 @@ mass_vector = 1/vars
 
 We are now ready to run the model.  On my machine and with the above settings, it took about two minutes. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.
 
-```{r HMCexampleRun, cache=TRUE, message=T, eval=F}
-### Run the model
+```{r HMCexampleRun, cache=TRUE, message=T, eval=T}
+# Run the model
 M1 = hmc_run(starts=thetastart, iter=nsim, warmup=wu, epsilon_0=stepsize, 
              L_0=nLeap, M=mass_vector, X=X, y=y)
 # str(M1, 1)
@@ -2411,7 +2456,7 @@ library(coda)
 
 theta = as.mcmc.list(list(as.mcmc(M1$sims[(wu+1):nsim,1,]), 
                           as.mcmc(M1$sims[(wu+1):nsim,2,])))
-# summary(theta)
+summary(theta)
 finalest =  summary(theta)$statistics[,'Mean']
 b = finalest[1:4]
 sig = finalest[5]
@@ -2422,8 +2467,7 @@ Our estimates look pretty good, and inspection of the diagnostics would show goo
 
 
 ```{r HMCexampleStanCompare, cache=TRUE, eval=TRUE, echo=FALSE}
-# Note: you ran and saved image to get around all the output being spit out.
-### Stan
+# Note: you ran and save image to get around all the output being spit out.
 stanmodelcodeIG = "
 data {                      // Data block
   int<lower=1> N;           // Sample size
@@ -2499,8 +2543,8 @@ print(fitIG, digits_summary=3, probs=c(.025,.5,.975))
 
 [^winbugs]: You might come across a previous incarnation, WinBugs, but it is no longer being developed.
 
-[^rbayes]: Many of these packages, if not all of them will be less flexible in model specification compared to implementing the aforementioned languages directly, or using the R interface to those languages.   What's more, R has interfaces to the previous language engines via the packages <span class="pack"></span>R2OpenBUGS</span> and <span class="pack"></span>BRugs</span>, <span class="pack"></span>rjags</span>, and <span class="pack">rstan</span>, <span class="pack">rstan_arm
-brms</span>, and <span class=""></span>.
+[^rbayes]: Many of these packages, if not all of them will be less flexible in model specification compared to implementing the aforementioned languages directly, or using the R interface to those languages.   What's more, R has interfaces to the previous language engines via the packages <span class="pack">R2OpenBUGS</span> and <span class="pack">BRugs</span>, <span class="pack">rjags</span>, and <span class="pack">rstan</span>, <span class="pack">rstan_arm
+brms</span>, and many others.
 
 [^MHexample]: Assuming normal for $\beta$ coefficients, inverse gamma on $\sigma^2$.
 
@@ -2512,19 +2556,21 @@ brms</span>, and <span class=""></span>.
 
 ## Texts
 
+Unless otherwise noted, these can be a bit more intermediate or advanced depending on how statistical/data analysis is taught within one's discipline. I've noted the more introductory or applied texts.
+
 Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). *Bayesian Data Analysis*.
 
-Gill, J. (2008). *Bayesian methods : a social and behavioral sciences approach*.
+Gill, J. (2015). *Bayesian methods : a social and behavioral sciences approach*.
 
 Jackman, S. (2009). *Bayesian analysis for the social sciences*.
 
-Kruschke, J. *Doing Bayesian Data Analysis*. Very intro book, but might be good for those not too confident in statistics generally speaking. And who doesn't like puppies? Second edition has Stan examples. (intro)
+Kruschke, J. (2014) *Doing Bayesian Data Analysis*. Very intro book, but might be good for those not too confident in statistics generally speaking. And who doesn't like puppies? Second edition has Stan examples. (intro)
 
-Lunn, D., Jackson, C., Best, N., Thomas, A., and Spiegelhalter, D. (2012). *The BUGS Book: A Practical Introduction to Bayesian Analysis*.
+Lunn, D., Jackson, C., Best, N., Thomas, A., and Spiegelhalter, D. (2012). *The BUGS Book: A Practical Introduction to Bayesian Analysis*. Very applied with easily digestible examples.
 
 Lynch, S. M. (2007). *Introduction to applied Bayesian statistics and estimation for social scientists*.
 
-McElreath, R. *Statistical Rethinking*.  A good modeling book in general, by one who has contributed a lot to helping others learn Stan.  Comes with its own R package too. (intro to moderate)
+McElreath, R. (2015). *Statistical Rethinking*.  A good modeling book in general, by one who has contributed a lot to helping others learn Stan.  Comes with its own R package too. (intro to moderate)
 
 
 
@@ -2532,9 +2578,14 @@ McElreath, R. *Statistical Rethinking*.  A good modeling book in general, by one
 
 Statisticat, LLC. [*Bayesian Inference*](https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf). A quick overview from the original author's of the <span class="pack">LaplacesDemon</span> package.
 
-http://mc-stan.org/ Main website
 
-http://stan.fit/ The Stan Group
+### Stan Specific
+
+[Main website](http://mc-stan.org/ )
+
+[Stan Users Group](https://groups.google.com/d/forum/stan-users )
+
+[The Stan Group](http://stan.fit/ )
 
 More resources [here](http://mc-stan.org/documentation/)
 

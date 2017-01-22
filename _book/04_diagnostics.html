@@ -16,7 +16,7 @@
 <meta name="github-repo" content="m-clark/docs" />
 
 
-<meta name="date" content="2017-01-07" />
+<meta name="date" content="2017-01-22" />
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -91,9 +91,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="col-sm-12">
 <div id="TOC">
 <ul>
-<li><a href="index.html#home"><span style="color:transparent">Home</span></a></li>
+<li><a href="index.html#section"><span style="color:transparent"></span></a></li>
 <li class="has-sub"><a href="00_preface.html#preface">Preface</a><ul>
 <li><a href="00_preface.html#prerequisites">Prerequisites</a></li>
+<li><a href="00_preface.html#note">Note</a></li>
 </ul></li>
 <li class="has-sub"><a href="01_intro.html#introduction">Introduction</a><ul>
 <li class="has-sub"><a href="01_intro.html#bayesian-probability">Bayesian Probability</a><ul>
@@ -114,7 +115,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="03_models.html#running-the-model">Running the Model</a></li>
 </ul></li>
 </ul></li>
-<li class="has-sub"><a href="04_diagnostics.html#model-checking-diagnostics">Model Checking &amp; Diagnostics</a><ul>
+<li class="has-sub"><a href="04_diagnostics.html#model-exploration">Model Exploration</a><ul>
 <li class="has-sub"><a href="04_diagnostics.html#monitoring-convergence">Monitoring Convergence</a><ul>
 <li><a href="04_diagnostics.html#visual-inspection-traceplot-densities">Visual Inspection: Traceplot &amp; Densities</a></li>
 <li><a href="04_diagnostics.html#statistical-measures">Statistical Measures</a></li>
@@ -138,6 +139,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="has-sub"><a href="06_issues.html#choice-of-prior">Choice of Prior</a><ul>
 <li><a href="06_issues.html#noninformative-weakly-informative-informative">Noninformative, Weakly Informative, Informative</a></li>
 <li><a href="06_issues.html#conjugacy">Conjugacy</a></li>
+<li><a href="06_issues.html#hierarchical-priors">Hierarchical Priors</a></li>
 <li><a href="06_issues.html#sensitivity-analysis-revisited">Sensitivity Analysis Revisited</a></li>
 <li><a href="06_issues.html#summary-1">Summary</a></li>
 </ul></li>
@@ -173,7 +175,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="has-sub"><a href="1002_references.html#references">References</a><ul>
 <li><a href="1002_references.html#texts">Texts</a></li>
-<li><a href="1002_references.html#other">Other</a></li>
+<li class="has-sub"><a href="1002_references.html#other">Other</a><ul>
+<li><a href="1002_references.html#stan-specific">Stan Specific</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -181,8 +185,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div class="row">
 <div class="col-sm-12">
-<div id="model-checking-diagnostics" class="section level1">
-<h1>Model Checking &amp; Diagnostics</h1>
+<div id="model-exploration" class="section level1">
+<h1>Model Exploration</h1>
 <p><span class="marginnote">I wonder how many results have been published on models that didn’t converge with the standard MLE. People will often ignore warnings as long as they get some sort of result.</span>As with modeling in traditional approaches, it is not enough to simply run a model and go with whatever results are returned without further inspection. One must examine the results to assess model integrity and have more confidence in the results that have been produced.</p>
 <div id="monitoring-convergence" class="section level2">
 <h2>Monitoring Convergence</h2>

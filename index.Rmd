@@ -1,10 +1,9 @@
 --- 
 title: <span style="font-size:150%; font-variant:small-caps; font-style:italic; ">Bayesian Basics</span>
 author:  |
-  <div class="title"><span style="font-size:125%; font-variant:small-caps; font-style:normal">Michael Clark</span><br>
-  <span style="font-size:75%; margin: 0 auto; font-style:normal">Statistician Lead</span> <br>
-  <img src="img/signature-acronym.png" style="width:24%; padding:10px 0;"> <br>
-  <img src="img/ARC-acronym-signature.png" style="width:17%; padding:10px 0;"> </div>
+  <div class="title"><span style="font-size:150%; font-variant:small-caps; font-style:normal">Michael Clark</span><br><br>
+  <img src="img/signature-acronym.png" style="width:14%; padding:10px 0;"> <br>
+  <img src="img/ARC-acronym-signature.png" style="width:10%; padding:10px 0;"> </div>
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: 
@@ -13,6 +12,9 @@ output:
       number_sections: false
       css: [toc.css, ../css/tufte_bookdown/mytufte.css]
       split_by: rmd
+      config:
+    # bookdown::pdf_book: no
+    # bookdown::epub_book: no # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else
 always_allow_html: yes
 documentclass: book
 bibliography: ['packages.bib', 'BayesBasics.bib']

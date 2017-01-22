@@ -16,7 +16,7 @@
 <meta name="github-repo" content="m-clark/docs" />
 
 
-<meta name="date" content="2017-01-07" />
+<meta name="date" content="2017-01-22" />
 
 <script type="text/x-mathjax-config">
 MathJax.Hub.Config({
@@ -91,9 +91,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="col-sm-12">
 <div id="TOC">
 <ul>
-<li><a href="index.html#home"><span style="color:transparent">Home</span></a></li>
+<li><a href="index.html#section"><span style="color:transparent"></span></a></li>
 <li class="has-sub"><a href="00_preface.html#preface">Preface</a><ul>
 <li><a href="00_preface.html#prerequisites">Prerequisites</a></li>
+<li><a href="00_preface.html#note">Note</a></li>
 </ul></li>
 <li class="has-sub"><a href="01_intro.html#introduction">Introduction</a><ul>
 <li class="has-sub"><a href="01_intro.html#bayesian-probability">Bayesian Probability</a><ul>
@@ -114,7 +115,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li><a href="03_models.html#running-the-model">Running the Model</a></li>
 </ul></li>
 </ul></li>
-<li class="has-sub"><a href="04_diagnostics.html#model-checking-diagnostics">Model Checking &amp; Diagnostics</a><ul>
+<li class="has-sub"><a href="04_diagnostics.html#model-exploration">Model Exploration</a><ul>
 <li class="has-sub"><a href="04_diagnostics.html#monitoring-convergence">Monitoring Convergence</a><ul>
 <li><a href="04_diagnostics.html#visual-inspection-traceplot-densities">Visual Inspection: Traceplot &amp; Densities</a></li>
 <li><a href="04_diagnostics.html#statistical-measures">Statistical Measures</a></li>
@@ -138,6 +139,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="has-sub"><a href="06_issues.html#choice-of-prior">Choice of Prior</a><ul>
 <li><a href="06_issues.html#noninformative-weakly-informative-informative">Noninformative, Weakly Informative, Informative</a></li>
 <li><a href="06_issues.html#conjugacy">Conjugacy</a></li>
+<li><a href="06_issues.html#hierarchical-priors">Hierarchical Priors</a></li>
 <li><a href="06_issues.html#sensitivity-analysis-revisited">Sensitivity Analysis Revisited</a></li>
 <li><a href="06_issues.html#summary-1">Summary</a></li>
 </ul></li>
@@ -173,7 +175,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </ul></li>
 <li class="has-sub"><a href="1002_references.html#references">References</a><ul>
 <li><a href="1002_references.html#texts">Texts</a></li>
-<li><a href="1002_references.html#other">Other</a></li>
+<li class="has-sub"><a href="1002_references.html#other">Other</a><ul>
+<li><a href="1002_references.html#stan-specific">Stan Specific</a></li>
+</ul></li>
 </ul></li>
 </ul>
 </div>
@@ -183,13 +187,24 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="col-sm-12">
 <div id="summary-2" class="section level1">
 <h1>Summary</h1>
+<p>We begin our wrap-up with a list of advantages of taking the Bayesian approach:</p>
+<ul>
+<li>Use of prior information</li>
+<li>Probability values and intervals have intuitive interpretation</li>
+<li>More useful and unbiased with small samples</li>
+<li>While not immune to overfitting, at least has built in regularization</li>
+<li>Can estimate complicated models that traditional approaches cannot</li>
+<li>Does not rely on hypothetical data for inference</li>
+<li>Accounts for uncertainty in parameters, leading to more accurate prediction</li>
+</ul>
+<p>And there are many others. Traditional approaches may be easier, but that definitely does not mean better, and being easier often instills false confidence in problematic results. This is not a good thing. For the same models traditional approaches will run faster, but for common, even complicated models we might be talking about time frames on the order of seconds, possibly undetectable if approximation methods are used. In short, there is little reason not to use Bayesian methods for most situations.</p>
 <p>Hopefully this document has provided a path toward easing into Bayesian analysis for those that are interested but might not have had the confidence or particular skill set that many texts and courses assume. Conceptually, Bayesian inference can be fairly straightforward, and inferentially is more akin to the ways people naturally think about probability. Many of the steps taken in classical statistical analysis are still present, but have been enriched via the incorporation of prior information, a more flexible modeling scheme, and the ability to enhance even standard analyses with new means of investigation.</p>
-<p>Of course it will not necessarily be easy, particularly for complex models, though such models might actually be relatively easier compared to the classical framework. While not necessary for all models, oftentimes the process will involve a more hands-on approach. However this allows for more understanding of the model and its results, and gets easier with practice just like anything else.</p>
+<p>Of course, it will not necessarily be easy, particularly for complex models, though such models might actually be relatively easier compared to the classical framework. While not necessary for all models, oftentimes the process will involve a more hands-on approach. However this allows for more understanding of the model and its results, and gets easier with practice just like anything else.</p>
 <p>You certainly don’t have to abandon classical and other methods either. Scientific research involves applying the best tool for the job, and in some cases the Bayesian approach may not be the best fit for a particular problem. But when it is, it’s hoped you’ll be willing to take the plunge, and know there are many tools and a great community of people to help you along the way.</p>
 <p><br></p>
-<div style="text-align:center">
+<p style="text-align:center">
 Best of luck with your research!
-</div>
+</p>
 
 </div>
 <p style="text-align: center;">
