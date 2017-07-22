@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Bayesian Basics</title>
+  <meta name="description" content="An introduction to Bayesian data analysis.">
+  <meta name="generator" content="bookdown 0.4 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Bayesian Basics" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://m-clark.github.io/Workshops/text_analysis/" />
+  <meta property="og:image" content="https://m-clark.github.io/Workshops/text_analysis/img/nineteeneightyR.png" />
+  <meta property="og:description" content="An introduction to Bayesian data analysis." />
+  <meta name="github-repo" content="m-clark/docs" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Bayesian Basics" />
+  
+  <meta name="twitter:description" content="An introduction to Bayesian data analysis." />
+  <meta name="twitter:image" content="https://m-clark.github.io/Workshops/text_analysis/img/nineteeneightyR.png" />
+
+
+
+<meta name="date" content="2017-07-22">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="summary-2.html">
+<link rel="next" href="references.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="libs/datatables-binding-0.2/datatables.js"></script>
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="css\book.css" type="text/css" />
+<link rel="stylesheet" href="css\standard_html.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="index.html#section"></a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#note"><i class="fa fa-check"></i>Note</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a><ul>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html"><i class="fa fa-check"></i>A Hands-on Example</a><ul>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#prior-likelihood-posterior-distributions"><i class="fa fa-check"></i>Prior, likelihood, &amp; posterior distributions</a></li>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#prior"><i class="fa fa-check"></i>Prior</a></li>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#likelihood"><i class="fa fa-check"></i>Likelihood</a></li>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#posterior"><i class="fa fa-check"></i>Posterior</a></li>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html"><i class="fa fa-check"></i>Regression Models</a><ul>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a></li>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#setup"><i class="fa fa-check"></i>Setup</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html"><i class="fa fa-check"></i>Model Exploration</a><ul>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#model-checking"><i class="fa fa-check"></i>Model Checking</a></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#summary"><i class="fa fa-check"></i>Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a><ul>
+<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html#generating-new-variables-of-interest"><i class="fa fa-check"></i>Generating New Variables of Interest</a></li>
+<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html#robust-regression"><i class="fa fa-check"></i>Robust Regression</a></li>
+<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html#generalized-linear-model"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#debugging"><i class="fa fa-check"></i>Debugging</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#choice-of-prior"><i class="fa fa-check"></i>Choice of Prior</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sampling-procedure"><i class="fa fa-check"></i>Sampling Procedure</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#number-of-draws-thinning-warm-up"><i class="fa fa-check"></i>Number of draws, thinning, warm-up</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#model-complexity"><i class="fa fa-check"></i>Model Complexity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="summary-2.html"><a href="summary-2.html"><i class="fa fa-check"></i>Summary</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#linear-model"><i class="fa fa-check"></i>Linear Model</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#binomial-likelihood-example"><i class="fa fa-check"></i>Binomial Likelihood Example</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#modeling-languages"><i class="fa fa-check"></i>Modeling Languages</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#bugs-example"><i class="fa fa-check"></i>BUGS Example</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#jags-example"><i class="fa fa-check"></i>JAGS Example</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#metropolis-hastings-example"><i class="fa fa-check"></i>Metropolis Hastings Example</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#hamiltonian-monte-carlo-example"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a><ul>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts"><i class="fa fa-check"></i>Texts</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#other"><i class="fa fa-check"></i>Other</a></li>
+</ul></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39; ">Bayesian Basics</span></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="appendix" class="section level1">
+<h1>Appendix</h1>
+<p>NOTE EVAL AND CACHE FALSE UNTIL WE GET TO THIS SECTION.</p>
+<div id="maximum-likelihood-review" class="section level2">
+<h2>Maximum Likelihood Review</h2>
+<p>This is a very brief refresher on <span class="emph">maximum likelihood estimation</span> using a standard regression approach as an example, and more or less assumes one hasn’t tried to roll their own such function in a programming environment before. Given the likelihood’s role in Bayesian estimation and statistics in general, and the ties between specific Bayesian results and maximum likelihood estimates one typically comes across, one should be conceptually comfortable with some basic likelihood estimation.</p>
+<p>In the standard model setting we attempt to find parameters <span class="math inline">\(\theta\)</span> that will maximize the probability of the data we actually observe. We’ll start with an observed random target vector <span class="math inline">\(y\)</span> with <span class="math inline">\(i...N\)</span> independent and identically distributed observations and some data-generating process underlying it <span class="math inline">\(f(\cdot|\theta)\)</span>. We are interested in estimating the model parameter(s), <span class="math inline">\(\theta\)</span>, that would make the data most likely to have occurred. The probability density function for <span class="math inline">\(y\)</span> given some particular estimate for the parameters can be noted as <span class="math inline">\(f(y_i|\theta)\)</span>. The joint probability distribution of the (independent) observations given those parameters, <span class="math inline">\(f(y_i|\theta)\)</span>, is the product of the individual densities, and is our <em>likelihood function</em>. We can write it out generally as: <span class='marginnote'><span class="imgbigger"><img src="img/maxLikeNormalCompareLLforDifferentMeans.svg" style="display:block; margin: 0 auto; width:90%"></span></p>
+<p><span class="math display">\[\mathcal{L}(\theta) = \prod_{i=1}^N f(y_i|\theta)\]</span></p>
+<p>Thus the <em>likelihood</em> for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates. Furthermore we can compare one set, <span class="math inline">\(\mathcal{L}(\theta_A)\)</span>, to that of another, <span class="math inline">\(\mathcal{L}(\theta_B)\)</span>, and whichever produces the greater likelihood would be the preferred set of estimates. We can get a sense of this with the graph to the right, based on a single parameter, Poisson distributed variable. The data is drawn from a variable with mean <span class="math inline">\(\theta=5\)</span>. We note the calculated likelihood increases as we estimate values for <span class="math inline">\(\theta\)</span> closer to <span class="math inline">\(5\)</span>.</p>
+<p>For computational reasons we instead work with the sum of the natural log probabilities<a href="#fn44" class="footnoteRef" id="fnref44"><sup>44</sup></a>, and thus the <em>log likelihood</em>:</p>
+<p><span class="math display">\[\ln\mathcal{L}(\theta) = \sum_{i=1}^N \ln[f(y_i|\theta)]\]</span></p>
+<p>Concretely, we calculate a log likelihood for each observation and then sum them for the total likelihood for parameter(s) <span class="math inline">\(\theta\)</span>.</p>
+<p>The likelihood function incorporates our assumption about the sampling distribution of the data given some estimate for the parameters. It can take on many forms and be notably complex depending on the model in question, but once specified, we can use any number of optimization approaches to find the estimates of the parameter that make the data most likely. As an example, for a normally distributed variable of interest we can write the log likelihood as follows:</p>
+<p><span class="math display">\[\ln\mathcal{L}(\theta) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\frac{(y-\mu)^2}{2\sigma^2})]\]</span></p>
+<div id="example" class="section level3">
+<h3>Example</h3>
+<p>In the following we will demonstrate the maximum likelihood approach to estimation for a simple setting incorporating a normal distribution where we estimate the mean and variance/sd for a set of values <span class="math inline">\(y\)</span><a href="#fn45" class="footnoteRef" id="fnref45"><sup>45</sup></a>. First the data is created, and then we create the function that will compute the log likelihood. Using the built in R distributions<a href="#fn46" class="footnoteRef" id="fnref46"><sup>46</sup></a> makes it fairly straightforward to create our own likelihood function and feed it into an optimization function to find the best parameters. We will set things up to work with the <span class="pack">bbmle</span> package, which has some nice summary functionality and other features. However, one should take a glance at <span class="func">optim</span> and the other underlying functions that do the work.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># for replication</span>
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+<span class="co"># create the data</span>
+y =<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>, <span class="dt">mean=</span><span class="dv">5</span>, <span class="dt">sd=</span><span class="dv">2</span>)
+startvals =<span class="st"> </span><span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">1</span>)
+
+<span class="co"># the log likelihood function</span>
+LL =<span class="st"> </span>function(<span class="dt">mu=</span>startvals[<span class="dv">1</span>], <span class="dt">sigma=</span>startvals[<span class="dv">2</span>]){
+  ll =<span class="st"> </span>-<span class="kw">sum</span>(<span class="kw">dnorm</span>(y, <span class="dt">mean=</span>mu, <span class="dt">sd=</span>sigma, <span class="dt">log=</span>T))
+  <span class="kw">message</span>(<span class="kw">paste</span>(mu, sigma, ll))
+  ll
+}</code></pre></div>
+<p>The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them <span class="math inline">\(\mu\)</span> and <span class="math inline">\(\sigma\)</span>, which will be set to 0 and 1 respectively. Only the first line (ll = -sum…) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point<a href="#fn47" class="footnoteRef" id="fnref47"><sup>47</sup></a>. Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood. Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values. I do not show that here but you’ll see it in your console.</p>
+<p>We are now ready to obtain maximum likelihood estimates for the parameters. For the <span class="func">mle2</span> function we will need the function we’ve created, plus other inputs related to that function or the underlying optimizing function used (by default <span class="func">optim</span>). In this case we will use an optimization procedure that will allow us to set a lower bound for <span class="math inline">\(\sigma\)</span>. This isn’t strictly necessary, but otherwise you would get get warnings and possibly lack of convergence if negative estimates for <span class="math inline">\(\sigma\)</span> were allowed<a href="#fn48" class="footnoteRef" id="fnref48"><sup>48</sup></a></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(bbmle)
+<span class="co"># using optim, and L-BFGS-B so as to contrain sigma to be positive by setting</span>
+<span class="co"># the lower bound at zero</span>
+mlnorm =<span class="st">  </span><span class="kw">mle2</span>(LL, <span class="dt">method=</span><span class="st">&quot;L-BFGS-B&quot;</span>, <span class="dt">lower=</span><span class="kw">c</span>(<span class="dt">sigma=</span><span class="dv">0</span>)) 
+mlnorm</code></pre></div>
+<pre><code>
+Call:
+mle2(minuslogl = LL, method = &quot;L-BFGS-B&quot;, lower = c(sigma = 0))
+
+Coefficients:
+      mu    sigma 
+4.946809 1.993676 
+
+Log-likelihood: -2108.92 </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># compare to an intercept only regression model</span>
+<span class="kw">summary</span>(<span class="kw">lm</span>(y~<span class="dv">1</span>))</code></pre></div>
+<pre><code>
+Call:
+lm(formula = y ~ 1)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.7389 -1.2933 -0.0264  1.2848  6.4450 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  4.94681    0.06308   78.42   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 1.995 on 999 degrees of freedom</code></pre>
+<p>We can see that the ML estimates are the same as the intercept only model estimates<a href="#fn49" class="footnoteRef" id="fnref49"><sup>49</sup></a>, which given the sample size are close to the true values.</p>
+<p>In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a <span class="emph">likelihood surface</span> that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point<a href="#fn50" class="footnoteRef" id="fnref50"><sup>50</sup></a>. For simpler settings such as this, we can visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum. I also plot the the path of the optimizer from a top down view. The large blue dot noted represents the minimum negative log likelihood.</p>
+<p><span class='marginnote'><span class="imgbigger"><img src="img/mlnorm.svg" style="display:block; margin: 0 auto;"> <br> A bit of jitter was added to the points to better see what’s going on.</span></p>
+<p><span class="imgbigger"><img src="img/mlnormLikelihoodSurface.png" style="display:block; margin: 0 auto;"></p>
+<p>Please note that there are many other considerations in optimization completely ignored here, but for our purposes and the audience for which this is intended, we do not want to lose sight of the forest for the trees. We now move next to a slightly more complicated regression example.</p>
+</div>
+</div>
+<div id="linear-model" class="section level2">
+<h2>Linear Model</h2>
+<p>In the standard regression context, our expected value for the target variable comes from our linear predictor, i.e. the weighted combination of our explanatory variables, and we estimate the regression weights/coefficients and possibly other relevant parameters. We can expand our previous example to the standard linear model without too much change. In this case we estimate a mean for each observation, but otherwise assume the variance is constant across observations. Again we first construct some data so that we know exactly what to expect, then write out the likelihood function with starting parameters. As we need to estimate our intercept and coefficient for the X predictor (collectively referred to as <span class="math inline">\(\beta\)</span>), we can can think of our likelihood explicitly as before:</p>
+<p><span class="math display">\[\ln\mathcal{L}(\beta, \sigma^2) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\frac{(y-X\beta)^2}{2\sigma^2})]\]</span></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># for replication</span>
+<span class="kw">set.seed</span>(<span class="dv">1234</span>)
+
+<span class="co"># predictor</span>
+X =<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>)
+
+<span class="co"># coefficients for intercept and predictor</span>
+beta =<span class="st"> </span><span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">2</span>) 
+
+<span class="co"># add intercept to X and create y with some noise</span>
+y =<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>,X)%*%beta +<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1000</span>, <span class="dt">sd=</span><span class="fl">2.5</span>)
+
+regLL =<span class="st"> </span>function(<span class="dt">sigma=</span><span class="dv">1</span>, <span class="dt">Int=</span><span class="dv">0</span>, <span class="dt">b1=</span><span class="dv">0</span>){
+  coefs =<span class="st"> </span><span class="kw">c</span>(Int, b1)
+  mu =<span class="st"> </span><span class="kw">cbind</span>(<span class="dv">1</span>,X)%*%coefs
+  ll =<span class="st"> </span>-<span class="kw">sum</span>(<span class="kw">dnorm</span>(y, <span class="dt">mean=</span>mu, <span class="dt">sd=</span>sigma, <span class="dt">log=</span>T))
+  
+  <span class="kw">message</span>(<span class="kw">paste</span>(sigma, Int, b1, ll))
+  ll
+}
+
+<span class="kw">library</span>(bbmle)
+mlopt =<span class="st">  </span><span class="kw">mle2</span>(regLL, <span class="dt">method=</span><span class="st">&quot;L-BFGS-B&quot;</span>, <span class="dt">lower=</span><span class="kw">c</span>(<span class="dt">sigma=</span><span class="dv">0</span>)) 
+<span class="kw">summary</span>(mlopt)</code></pre></div>
+<pre><code>Maximum likelihood estimation
+
+Call:
+mle2(minuslogl = regLL, method = &quot;L-BFGS-B&quot;, lower = c(sigma = 0))
+
+Coefficients:
+      Estimate Std. Error z value     Pr(z)    
+sigma 2.447823   0.054735  44.721 &lt; 2.2e-16 ***
+Int   5.039976   0.077435  65.087 &lt; 2.2e-16 ***
+b1    2.139284   0.077652  27.549 &lt; 2.2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+-2 log L: 4628.273 </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># plot(profile(mlopt), absVal=F)</span>
+
+modlm =<span class="st"> </span><span class="kw">lm</span>(y~X)
+<span class="kw">summary</span>(modlm)</code></pre></div>
+<pre><code>
+Call:
+lm(formula = y ~ X)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-7.9152 -1.6097  0.0363  1.6343  7.6711 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  5.03998    0.07751   65.02   &lt;2e-16 ***
+X            2.13928    0.07773   27.52   &lt;2e-16 ***
+---
+Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+
+Residual standard error: 2.45 on 998 degrees of freedom
+Multiple R-squared:  0.4315,    Adjusted R-squared:  0.4309 
+F-statistic: 757.5 on 1 and 998 DF,  p-value: &lt; 2.2e-16</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">-<span class="dv">2</span>*<span class="kw">logLik</span>(modlm)</code></pre></div>
+<pre><code>&#39;log Lik.&#39; 4628.273 (df=3)</code></pre>
+<p><span class='marginnote'><span class="imgbigger"><img src="img/mlreg.svg" style="display:block; margin: 0 auto;"></span></p>
+<p>As before, our estimates and final log likelihood value are about where they should be, and reflect the lm output, as the OLS estimates are the maximum likelihood estimates. The visualization becomes more difficult beyond two parameters, but we can examine slices similar to the previous plot.</p>
+<p>To move to generalized linear models, very little changes of the process outside of the distribution assumed and that we are typically modeling a function of the target variable (e.g. <span class="math inline">\(\log(y)=X\beta; \mu = e^{X\beta}\)</span>).</p>
+</div>
+<div id="binomial-likelihood-example" class="section level2">
+<h2>Binomial Likelihood Example</h2>
+<p>This regards the example seen in the early part of the document with the hands-on example.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">x1 =<span class="st"> </span><span class="kw">rbinom</span>(<span class="dv">1000</span>, <span class="dt">size=</span><span class="dv">10</span>, <span class="dt">p=</span>.<span class="dv">5</span>)
+x2 =<span class="st"> </span><span class="kw">rbinom</span>(<span class="dv">1000</span>, <span class="dt">size=</span><span class="dv">10</span>, <span class="dt">p=</span>.<span class="dv">85</span>)
+
+binomLL =<span class="st"> </span>function(theta, x) {
+  -<span class="kw">sum</span>(<span class="kw">dbinom</span>(x, <span class="dt">size=</span><span class="dv">10</span>, <span class="dt">p=</span>theta, <span class="dt">log=</span>T))
+}
+
+<span class="kw">optimize</span>(binomLL, <span class="dt">x=</span>x1, <span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>); <span class="kw">mean</span>(x1)</code></pre></div>
+<pre><code>$minimum
+[1] 0.5043001
+
+$objective
+[1] 1902.557</code></pre>
+<pre><code>[1] 5.043</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">optimize</span>(binomLL, <span class="dt">x=</span>x2, <span class="dt">lower=</span><span class="dv">0</span>, <span class="dt">upper=</span><span class="dv">1</span>); <span class="kw">mean</span>(x2)</code></pre></div>
+<pre><code>$minimum
+[1] 0.8568963
+
+$objective
+[1] 1438.786</code></pre>
+<pre><code>[1] 8.569</code></pre>
+</div>
+<div id="modeling-languages" class="section level2">
+<h2>Modeling Languages</h2>
+<p>I will talk only briefly about a couple of the modeling language options available, as you will have to make your own choice among many.</p>
+<div id="bugs" class="section level3">
+<h3>Bugs</h3>
+<p>BUGS <span class="citation">(Lunn et al. <a href="#ref-bugsbook">2012</a>)</span> (<em>B</em>ayesian inference <em>U</em>sing <em>G</em>ibbs <em>S</em>ampling) is perhaps the most widely known and used Bayesian modeling language, as it has been around for over 25 years at this point. It is implemented via <a href="http://www.openbugs.net/">OpenBUGS</a> and freely available for download<a href="#fn51" class="footnoteRef" id="fnref51"><sup>51</sup></a>. It even has a GUI interface if such a thing is desired.</p>
+</div>
+<div id="jags" class="section level3">
+<h3>JAGS</h3>
+<p><a href="http://mcmc-jags.sourceforge.net/">JAGS</a> (<em>J</em>ust <em>A</em>nother <em>G</em>ibbs <em>S</em>ampler) is a more recent dialect of the BUGS language, and is also free to use. It offers some technical and modeling advantages to OpenBUGs, but much of the code translates directly from one to the other.</p>
+</div>
+<div id="stan" class="section level3">
+<h3>Stan</h3>
+<p><a href="http://mc-stan.org/">Stan</a> is a relative newcomer to Bayesian modeling languages, having only been out a couple years now. It uses a different estimation procedure than the BUGS language and this makes it more flexible and perhaps better behaved for many types of models. It actually compiles Stan code to C++, and so can be very fast as well. I personally prefer it as I find it more clear in its expression, but your mileage may vary.</p>
+</div>
+<div id="r" class="section level3">
+<h3>R</h3>
+<p>R has many modeling packages devoted to Bayesian analysis such that there is a <a href="http://cran.r-project.org/web/views/Bayesian.html">Task View</a> specific to the topic. Most of them are even specific to the implementation of a certain type of analysis<a href="#fn52" class="footnoteRef" id="fnref52"><sup>52</sup></a>. So not only can you do everything within R and take advantage of the power of those languages, you can then use Bayesian specific R packages on the results. For standard and even some complex models I would suggest using the <span class="pack">rstanarm</span> or <span class="pack">brms</span> packages as a way to stick to the usual R modeling style, unless you have a notably complicated model, at wich point you can use <span class="pack">rstan</span>.</p>
+</div>
+<div id="general-statistical-packages" class="section level3">
+<h3>General Statistical Packages</h3>
+<p>The general statistical languages such as SAS, SPSS, and Stata were generally <em>very</em> late to the Bayesian game, even for implementations of Bayesian versions of commonly used models. SAS started a few years ago with experimental and extremely limited capability, and Stata only very recently (but there is <a href="http://mc-stan.org/interfaces/stata-stan">StataStan</a>). SPSS doesn’t seem to have much capability in this area, much like a lot of other things. Others still seem to be lacking as well. In general, I wouldn’t recommend these packages for Bayesian analysis, except as an interface to one of the Bayesian specific languages, assuming they have the capability.</p>
+</div>
+<div id="other-programming-languages" class="section level3">
+<h3>Other Programming Languages</h3>
+<p>Python has functionality via modules such as PyMC, and Stan has a Python implementation, PyStan. Julia has some functionality similar in implementation to Matlab’s, which one may also consider, and both have Stan ports as well. And with any programming language that you might use for statistical analysis, you could certainly do a lot of it by hand if you have the time, though you should exhaust tested implementations first.</p>
+</div>
+<div id="summary-3" class="section level3">
+<h3>Summary</h3>
+<p>In short, you have plenty of options. I would suggest starting with a Bayesian programming language or using that language within your chosen statistical environment or package. This gives you the most modeling flexibility, choice, and opportunity to learn.</p>
+</div>
+</div>
+<div id="bugs-example" class="section level2">
+<h2>BUGS Example</h2>
+<p>The following provides a BUGS example of the primary model used in the document. The applicable code for the data set up is in the <a href="regression-models.html#example-linear-regression-model">Example: Linear Regression Model</a> section of the document. The model matrix X must be a matrix class object. Next we setup a BUGS data list as we did with Stan, and create a text file that contains the model code. Note that the data list comprises simple characters which are used to look for objects of those names that are in the environment. Also, I use <span class="func">cat</span> with <span class="func">sink</span> so that I don’t have to go to a separate text editor to create the file.</p>
+<p>One of the big differences between BUGS and other languages is its use of the precision parameter <span class="math inline">\(\frac{1}{\sigma^2}\)</span>, the inverse variance, usually denoted as <span class="math inline">\(\tau\)</span>. While there were some computational niceties to be had in doing so, even the authors admit this was not a good decision in retrospect. Prepare to have that issue come up from time to time when you inevitably forget. Comments and assignments are the same as R, and distributions noted with <span class="math inline">\(\sim\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">##################
+### BUGS setup ###
+##################
+
+bugsdat =<span class="st"> </span><span class="kw">list</span>(<span class="st">&#39;y&#39;</span>, <span class="st">&#39;X&#39;</span>, <span class="st">&#39;N&#39;</span>, <span class="st">&#39;K&#39;</span>)
+
+<span class="co"># This will create a file, lmbugs.txt that will subsequently be called </span>
+<span class="kw">sink</span>(<span class="st">&#39;data/lmbugs.txt&#39;</span>)
+<span class="kw">cat</span>(
+<span class="st">&#39;model {</span>
+<span class="st">  for (n in 1:N){</span>
+<span class="st">    mu[n] &lt;- beta[1]*X[n,1] + beta[2]*X[n,2] + beta[3]*X[n,3] + beta[4]*X[n,4]</span>
+<span class="st">    y[n] ~ dnorm(mu[n], inv.sigma.sq)</span>
+<span class="st">  }</span>
+<span class="st">  for (k in 1:K){</span>
+<span class="st">    beta[k] ~ dnorm(0, .001) # prior for reg coefs</span>
+<span class="st">  }</span>
+<span class="st">  # Half-cauchy as in Gelman 2006</span>
+<span class="st">  # Scale parameter is 5, so precision of z = 1/5^2 = 0.04</span>
+<span class="st">  sigma.y &lt;- abs(z)/sqrt(chSq) # prior for sigma; cauchy = normal/sqrt(chi^2)</span>
+<span class="st">  z ~ dnorm(0, .04)I(0,)</span>
+<span class="st">  chSq ~ dgamma(0.5, 0.5) # chi^2 with 1 d.f.</span>
+<span class="st">  inv.sigma.sq &lt;- pow(sigma.y, -2) # precision</span>
+<span class="st">  # sigma.y ~ dgamma(.001, .001) # prior for sigma; a typical approach used.</span>
+<span class="st">}&#39;</span>
+)
+<span class="kw">sink</span>()
+
+<span class="co"># explicitly provided initial values not necessary, but one can specify them  </span>
+<span class="co"># as follows, and you may have problems with variance parameters if you don&#39;t. </span>
+<span class="co"># Note also that sigma.y is unnecesary if using the half-cauchy approach as  </span>
+<span class="co"># it is defined based on other values.</span>
+
+<span class="co"># inits &lt;- list(list(beta=rep(0,4), sigma.y=runif(1,0,10)),</span>
+<span class="co">#               list(beta=rep(0,4), sigma.y=runif(1,0,10)),</span>
+<span class="co">#               list(beta=rep(0,4), sigma.y=runif(1,0,10)))</span>
+<span class="co"># parameters &lt;- c(&#39;beta&#39;, &#39;sigma.y&#39;)</span></code></pre></div>
+<p>Now we are ready to run the model. You’ll want to examine the help file for the <span class="func">bugs</span> function for more information. In addition, depending on your setup you may need to set the working directory and other options. Note that <code>n.thin</code> argument is used differently than other packages. One specifies the n posterior draws (per chain) you to keep want as n.iter-n.burnin. The thinned samples aren’t stored. Compare this to other packages where n.iter is the total before thinning and including burn-in, and n.keep is (n.iter-n.burnin)/n.thin. With the function used here, n.keep is the same, but as far as arguments your you’ll want to think of n.iter as the number of posterior draws <em>after</em> thinning. So the following all produce 1000 posterior draws in <span class="pack">R2OpenBUGS</span>:</p>
+<table>
+<tbody>
+<tr>
+<td style="text-align:left;">
+n.iter=3000,
+</td>
+<td style="text-align:left;">
+n.thin=1,
+</td>
+<td style="text-align:left;">
+n.burnin=2000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+n.iter=3000,
+</td>
+<td style="text-align:left;">
+n.thin=10,
+</td>
+<td style="text-align:left;">
+n.burnin=2000
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+n.iter=3000,
+</td>
+<td style="text-align:left;">
+n.thin=100,
+</td>
+<td style="text-align:left;">
+n.burnin=2000
+</td>
+</tr>
+</tbody>
+</table>
+<p>In other packages, with those arguments you’d end up with 1000, 100, and 10 posterior draws.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">#####################
+### Run the model ###
+#####################
+
+lmbugs &lt;-<span class="st"> </span><span class="kw">bugs</span>(bugsdat, <span class="dt">inits=</span><span class="ot">NULL</span>, <span class="dt">parameters=</span><span class="kw">c</span>(<span class="st">&#39;beta&#39;</span>, <span class="st">&#39;sigma.y&#39;</span>), 
+               <span class="dt">model.file=</span><span class="st">&#39;lmbugs.txt&#39;</span>, <span class="dt">n.chains=</span><span class="dv">3</span>, <span class="dt">n.iter=</span><span class="dv">3000</span>, <span class="dt">n.thin=</span><span class="dv">10</span>, 
+               <span class="dt">n.burnin=</span><span class="dv">2000</span>)</code></pre></div>
+<p>Now we are ready for the results, which will be the same as what we saw with Stan. In addition to the usual output, you get the <span class="emph">deviance information criterion</span> as a potential means for model comparison.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">## lmbugs$summary</code></pre></div>
+<pre><code>             mean    sd     2.5%      50%    97.5%  Rhat n.eff
+beta[1]     4.900 0.127    4.648    4.903    5.143 1.001  2400
+beta[2]     0.084 0.130   -0.166    0.084    0.336 1.001  3000
+beta[3]    -1.468 0.125   -1.721   -1.470   -1.224 1.001  2100
+beta[4]     0.824 0.121    0.587    0.827    1.053 1.001  3000
+sigma.y     2.028 0.092    1.860    2.024    2.218 1.001  3000
+deviance 1063.611 3.148 1059.000 1063.000 1071.000 1.001  3000</code></pre>
+<p>The usual model diagnostics are available with conversion of the results to an object the  package can work with. Figures are not shown, but they are the typical traceplots and density plots.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lmbugscoda =<span class="st"> </span><span class="kw">as.mcmc.list</span>(lmbugs)
+<span class="kw">traceplot</span>(lmbugscoda)
+<span class="kw">densityplot</span>(lmbugscoda)
+<span class="kw">plot</span>(lmbugscoda)
+corrplot:::<span class="kw">corrplot</span>(<span class="kw">cor</span>(lmbugscoda[[<span class="dv">2</span>]])) <span class="co"># noticeably better than levelplot</span></code></pre></div>
+</div>
+<div id="jags-example" class="section level2">
+<h2>JAGS Example</h2>
+<p>The following shows how to run the regression model presented earlier in the document via JAGS. Once you have the data set up as before, the data list is done in the same fashion as with BUGS. The code itself is mostly identical, save for the use of T instead of I for truncation. JAGS, being a BUGS dialect, also uses the precision parameter in lieu of the variance.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">jagsdat =<span class="st"> </span><span class="kw">list</span>(<span class="st">&#39;y&#39;</span>=y, <span class="st">&#39;X&#39;</span>=X, <span class="st">&#39;N&#39;</span>=N, <span class="st">&#39;K&#39;</span>=K)
+
+<span class="kw">sink</span>(<span class="st">&#39;data/lmjags.txt&#39;</span>)
+<span class="kw">cat</span>(
+<span class="st">&#39;model {</span>
+<span class="st">  for (n in 1:N){</span>
+<span class="st">    mu[n] &lt;- beta[1]*X[n,1] + beta[2]*X[n,2] + beta[3]*X[n,3] + beta[4]*X[n,4]</span>
+<span class="st">    y[n] ~ dnorm(mu[n], inv.sigma.sq)</span>
+<span class="st">  }</span>
+<span class="st">  </span>
+<span class="st">  for (k in 1:K){</span>
+<span class="st">    beta[k] ~ dnorm(0, .001)                               </span>
+<span class="st">  }</span>
+<span class="st">  </span>
+<span class="st">  # Half-cauchy as in Gelman 2006</span>
+<span class="st">  # Scale parameter is 5, so precision of z = 1/5^2 = 0.04</span>
+<span class="st">  sigma.y &lt;- z/sqrt(chSq)       </span>
+<span class="st">  z ~ dnorm(0, .04)T(0,)</span>
+<span class="st">  chSq ~ dgamma(0.5, 0.5)                                  </span>
+<span class="st">  inv.sigma.sq &lt;- pow(sigma.y, -2)                         </span>
+<span class="st">}&#39;</span>
+)
+<span class="kw">sink</span>()
+
+
+<span class="co"># explicitly provided initial values not necessary, but can specify as follows</span>
+<span class="co"># inits &lt;- function(){</span>
+<span class="co">#   list(beta=rep(0,4), sigma.y=runif(1,0,10))</span>
+<span class="co"># }</span>
+parameters &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&#39;beta&#39;</span>, <span class="st">&#39;sigma.y&#39;</span>)</code></pre></div>
+<p>With everything set, we can now run the model. With JAGS, we have what might be called an initialization stage that sets the model up and runs through the warm-up period, after which we can then flexibly sample from the posterior via the <span class="func">coda.samples</span> function.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rjags); <span class="kw">library</span>(coda)
+lmjagsmod =<span class="st"> </span><span class="kw">jags.model</span>(<span class="dt">file=</span><span class="st">&#39;data/lmjags.txt&#39;</span>, <span class="dt">data=</span>jagsdat, <span class="co"># inits=inits</span>
+                        <span class="dt">n.chains=</span><span class="dv">3</span>, <span class="dt">n.adapt=</span><span class="dv">2000</span>)
+lmjags =<span class="st"> </span><span class="kw">coda.samples</span>(lmjagsmod, <span class="kw">c</span>(<span class="st">&#39;beta&#39;</span>, <span class="st">&#39;sigma.y&#39;</span>), <span class="dt">n.iter=</span><span class="dv">10000</span>, 
+                      <span class="dt">thin=</span><span class="dv">10</span>, <span class="dt">n.chains=</span><span class="dv">3</span>)</code></pre></div>
+<p>Now we have a model identical to the others, and can summarize the posterior distribution in similar fashion.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(lmjags)</code></pre></div>
+<pre><code>
+Iterations = 2010:12000
+Thinning interval = 10 
+Number of chains = 3 
+Sample size per chain = 1000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+            Mean      SD Naive SE Time-series SE
+beta[1]  4.89499 0.12834 0.002343       0.002342
+beta[2]  0.08122 0.13080 0.002388       0.002260
+beta[3] -1.46928 0.12534 0.002288       0.002289
+beta[4]  0.81466 0.12310 0.002247       0.002248
+sigma.y  2.02802 0.09398 0.001716       0.001716
+
+2. Quantiles for each variable:
+
+           2.5%       25%      50%     75%   97.5%
+beta[1]  4.6440  4.810914  4.89334  4.9827  5.1490
+beta[2] -0.1737 -0.008208  0.08151  0.1696  0.3361
+beta[3] -1.7133 -1.553251 -1.46970 -1.3849 -1.2200
+beta[4]  0.5748  0.732970  0.81730  0.8961  1.0552
+sigma.y  1.8568  1.962498  2.02369  2.0892  2.2188</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">coda::<span class="kw">effectiveSize</span>(lmjags)</code></pre></div>
+<pre><code> beta[1]  beta[2]  beta[3]  beta[4]  sigma.y 
+3000.000 3453.261 3000.000 3000.000 3000.000 </code></pre>
+</div>
+<div id="metropolis-hastings-example" class="section level2">
+<h2>Metropolis Hastings Example</h2>
+<p>Next depicted is a random walk Metropolis-Hastings algorithm using the the data and model from prior sections of the document. I had several texts open while cobbling together this code such as <span class="citation">Gelman et al. (<a href="#ref-gelman_bda">2013</a>)</span>, and some oriented towards the social sciences by <span class="citation">Gill (<a href="#ref-jeff_gill_bayesian_2008">2008</a>)</span>, <span class="citation">Jackman (<a href="#ref-simon_jackman_bayesian_2009">2009</a>)</span>, and <span class="citation">Lynch (<a href="#ref-scott_lynch_2007">2007</a>)</span> etc. Some parts of the code reflect information and code examples found therein, and follows Lynch’s code a bit more.</p>
+<p>The primary functions that we need to specify regard the posterior distribution<a href="#fn53" class="footnoteRef" id="fnref53"><sup>53</sup></a>, an update step for beta coefficients, and an update step for the variance estimate.<br><br></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># posterior function</span>
+
+post =<span class="st"> </span>function(x, y, b, s2){
+  <span class="co"># Args: X is the model matrix; y the target vector; b and s2 the parameters</span>
+  <span class="co"># to be esitmated</span>
+
+  beta =<span class="st"> </span>b           
+  sigma =<span class="st"> </span><span class="kw">sqrt</span>(s2)
+  sigma2 =<span class="st"> </span>s2
+  mu =<span class="st"> </span>X %*%<span class="st"> </span>beta
+  
+  <span class="co"># priors are b0 ~ N(0, sd=10), sigma2 ~ invGamma(.001, .001)</span>
+  priorbvarinv =<span class="st"> </span><span class="kw">diag</span>(<span class="dv">1</span>/<span class="dv">100</span>, <span class="dv">4</span>) 
+  prioralpha =<span class="st"> </span>priorbeta =<span class="st"> </span>.<span class="dv">001</span>
+  
+  if(<span class="kw">is.nan</span>(sigma) |<span class="st"> </span>sigma&lt;=<span class="dv">0</span>){     <span class="co"># scale parameter must be positive</span>
+    <span class="kw">return</span>(-<span class="ot">Inf</span>)
+  }
+  <span class="co"># Note that you will not find the exact same presentation across texts and </span>
+  <span class="co"># other media for the log posterior in this conjugate setting.  In the end</span>
+  <span class="co"># they are conceputally still (log) prior + (log) likelihood (See commented &#39;else&#39;)</span>
+  else {                            
+    -.<span class="dv">5</span>*<span class="kw">nrow</span>(X)*<span class="kw">log</span>(sigma2) -<span class="st"> </span>(.<span class="dv">5</span>*(<span class="dv">1</span>/sigma2) *<span class="st"> </span>(<span class="kw">crossprod</span>(y-mu))) +
+<span class="st">      </span>-.<span class="dv">5</span>*<span class="kw">ncol</span>(X)*<span class="kw">log</span>(sigma2) -<span class="st"> </span>(.<span class="dv">5</span>*(<span class="dv">1</span>/sigma2) *<span class="st"> </span>(<span class="kw">t</span>(beta)%*%priorbvarinv%*%beta)) +<span class="st"> </span>
+<span class="st">      </span>-(prioralpha<span class="dv">+1</span>)*<span class="kw">log</span>(sigma2) +<span class="st"> </span><span class="kw">log</span>(sigma2) -<span class="st"> </span>priorbeta/sigma2 
+  }
+  <span class="co"># else {</span>
+  <span class="co">#   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)</span>
+  <span class="co">#   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)</span>
+  <span class="co">#   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)</span>
+  <span class="co">#   logposterior = ll + priorb + priors2</span>
+  <span class="co">#   logposterior</span>
+  <span class="co"># }</span>
+}
+
+<span class="co"># update step for regression coefficients</span>
+
+updatereg =<span class="st"> </span>function(i, x, y, b, s2){
+  <span class="co"># Args are the same as above but with additional i iterator argument.</span>
+  b[i,] =<span class="st"> </span>MASS::<span class="kw">mvrnorm</span>(<span class="dv">1</span>, <span class="dt">mu=</span>b[i<span class="dv">-1</span>,], <span class="dt">Sigma=</span>bvarscale)  <span class="co"># proposal/jumping distribution</span>
+  
+  <span class="co"># Compare to past- does it increase the posterior probability?</span>
+  postdiff =<span class="st"> </span><span class="kw">post</span>(<span class="dt">x=</span>x, <span class="dt">y=</span>y, <span class="dt">b=</span>b[i,],   <span class="dt">s2=</span>s2[i<span class="dv">-1</span>]) -<span class="st"> </span>
+<span class="st">             </span><span class="kw">post</span>(<span class="dt">x=</span>x, <span class="dt">y=</span>y, <span class="dt">b=</span>b[i<span class="dv">-1</span>,], <span class="dt">s2=</span>s2[i<span class="dv">-1</span>]) 
+  
+  <span class="co"># Acceptance phase</span>
+  unidraw =<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)
+  accept =<span class="st"> </span>unidraw &lt;<span class="st"> </span><span class="kw">min</span>(<span class="kw">exp</span>(postdiff), <span class="dv">1</span>)  <span class="co"># accept if so</span>
+  if(accept) b[i,]
+  else b[i<span class="dv">-1</span>,]
+}
+
+<span class="co"># update step for sigma2</span>
+
+updates2 =<span class="st"> </span>function(i, x, y, b, s2){
+  s2candidate =<span class="st">  </span><span class="kw">rnorm</span>(<span class="dv">1</span>, s2[i<span class="dv">-1</span>], <span class="dt">sd=</span>sigmascale)
+  if(s2candidate &lt;<span class="st"> </span><span class="dv">0</span>) {
+    accept =<span class="st"> </span><span class="ot">FALSE</span>
+  } 
+  else {
+    s2diff =<span class="st"> </span><span class="kw">post</span>(<span class="dt">x=</span>x, <span class="dt">y=</span>y, <span class="dt">b=</span>b[i,], <span class="dt">s2=</span>s2candidate) -<span class="st"> </span>
+<span class="st">             </span><span class="kw">post</span>(<span class="dt">x=</span>x, <span class="dt">y=</span>y, <span class="dt">b=</span>b[i,], <span class="dt">s2=</span>s2[i<span class="dv">-1</span>])
+    unidraw =<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)
+    accept =<span class="st"> </span>unidraw &lt;<span class="st"> </span><span class="kw">min</span>(<span class="kw">exp</span>(s2diff), <span class="dv">1</span>)
+  }
+  
+  <span class="kw">ifelse</span>(accept, s2candidate, s2[i<span class="dv">-1</span>])
+}</code></pre></div>
+<p>Now we can set things up for the MCMC chain<a href="#fn54" class="footnoteRef" id="fnref54"><sup>54</sup></a>. Aside from the typical MCMC setup and initializing the parameter matrices to hold the draws from the posterior, we also require scale parameters to use for the jumping/proposal distribution.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Setup, starting values etc. </span>
+nsim =<span class="st"> </span><span class="dv">12000</span>
+burnin =<span class="st"> </span><span class="dv">2000</span>
+thin =<span class="st"> </span><span class="dv">10</span>
+
+b =<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>, nsim, <span class="kw">ncol</span>(X))         <span class="co"># initialize beta update matrix</span>
+s2 =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>, nsim)                    <span class="co"># initialize sigma vector</span>
+
+
+<span class="co"># For the following this c term comes from BDA3 12.2 and will produce an</span>
+<span class="co"># acceptance rate of .44 in 1 dimension and declining from there to about </span>
+<span class="co"># .23 in high dimensions. For the sigmascale, the magic number comes from </span>
+<span class="co"># starting with a value of one and fiddling from there to get around .44.</span>
+
+c =<span class="st"> </span><span class="fl">2.4</span>/<span class="kw">sqrt</span>(<span class="kw">ncol</span>(b))
+bvar =<span class="st"> </span><span class="kw">vcov</span>(<span class="kw">lm</span>(y~., <span class="kw">data.frame</span>(X[,-<span class="dv">1</span>]))) 
+bvarscale =<span class="st"> </span>bvar *<span class="st"> </span>c^<span class="dv">2</span>               
+sigmascale =<span class="st"> </span>.<span class="dv">9</span></code></pre></div>
+<p>We can now run and summarize the model with tools from the <span class="pack">coda</span> package.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run</span>
+for(i in <span class="dv">2</span>:nsim){
+  b[i,] =<span class="st"> </span><span class="kw">updatereg</span>(<span class="dt">i=</span>i, <span class="dt">y=</span>y, <span class="dt">x=</span>X, <span class="dt">b=</span>b, <span class="dt">s2=</span>s2)
+  s2[i] =<span class="st"> </span><span class="kw">updates2</span>(<span class="dt">i=</span>i, <span class="dt">y=</span>y, <span class="dt">x=</span>X, <span class="dt">b=</span>b, <span class="dt">s2=</span>s2)
+}
+
+<span class="co"># calculate acceptance rates</span>
+baccrate =<span class="st"> </span><span class="kw">mean</span>(<span class="kw">diff</span>(b[(burnin<span class="dv">+1</span>):nsim,]) !=<span class="st"> </span><span class="dv">0</span>)
+s2accrate =<span class="st"> </span><span class="kw">mean</span>(<span class="kw">diff</span>(s2[(burnin<span class="dv">+1</span>):nsim]) !=<span class="st"> </span><span class="dv">0</span>)            
+baccrate</code></pre></div>
+<pre><code>[1] 0.2970297</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">s2accrate</code></pre></div>
+<pre><code>[1] 0.4288429</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get final chain</span>
+<span class="kw">library</span>(coda)
+bfinal =<span class="st"> </span><span class="kw">as.mcmc</span>(b[<span class="kw">seq</span>(burnin<span class="dv">+1</span>, nsim, <span class="dt">by=</span>thin),])
+s2final =<span class="st"> </span><span class="kw">as.mcmc</span>(s2[<span class="kw">seq</span>(burnin<span class="dv">+1</span>, nsim, <span class="dt">by=</span>thin)])
+
+<span class="co"># get summaries; compare to lm and stan</span>
+<span class="kw">summary</span>(bfinal); <span class="kw">summary</span>(s2final)</code></pre></div>
+<pre><code>
+Iterations = 1:1000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 1000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+         Mean     SD Naive SE Time-series SE
+[1,]  4.89475 0.1252 0.003958       0.005070
+[2,]  0.08252 0.1299 0.004109       0.004922
+[3,] -1.46055 0.1202 0.003801       0.004599
+[4,]  0.82669 0.1221 0.003861       0.004666
+
+2. Quantiles for each variable:
+
+        2.5%       25%     50%     75%   97.5%
+var1  4.6543  4.809621  4.8940  4.9764  5.1497
+var2 -0.1662 -0.007982  0.0776  0.1723  0.3337
+var3 -1.6851 -1.545646 -1.4612 -1.3806 -1.2203
+var4  0.6107  0.741037  0.8217  0.9085  1.0756</code></pre>
+<pre><code>
+Iterations = 1:1000
+Thinning interval = 1 
+Number of chains = 1 
+Sample size per chain = 1000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+          Mean             SD       Naive SE Time-series SE 
+       4.07995        0.37404        0.01183        0.01183 
+
+2. Quantiles for each variable:
+
+ 2.5%   25%   50%   75% 97.5% 
+3.382 3.827 4.060 4.308 4.904 </code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">round</span>(<span class="kw">c</span>(<span class="kw">coef</span>(modlm), <span class="kw">summary</span>(modlm)$sigma^<span class="dv">2</span>), <span class="dv">3</span>)</code></pre></div>
+<pre><code>(Intercept)          X1          X2          X3             
+      4.898       0.084      -1.469       0.820       4.084 </code></pre>
+<p>Here is the previous Stan fit for comparison.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(fit, <span class="dt">digits=</span><span class="dv">3</span>, <span class="dt">prob=</span><span class="kw">c</span>(.<span class="dv">025</span>,.<span class="dv">5</span>,.<span class="dv">975</span>))</code></pre></div>
+<pre><code>Inference for Stan model: stanmodelcode.
+3 chains, each with iter=12000; warmup=2000; thin=10; 
+post-warmup draws per chain=1000, total post-warmup draws=3000.
+
+            mean se_mean    sd     2.5%      50%    97.5% n_eff  Rhat
+beta[1]    4.894   0.002 0.132    4.630    4.896    5.144  3000 1.001
+beta[2]    0.085   0.002 0.131   -0.178    0.086    0.340  3000 1.001
+beta[3]   -1.471   0.002 0.127   -1.716   -1.471   -1.221  2795 1.000
+beta[4]    0.819   0.002 0.121    0.576    0.820    1.057  3000 0.999
+sigma      2.032   0.002 0.091    1.862    2.029    2.215  2997 0.999
+lp__    -301.008   0.029 1.579 -304.855 -300.700 -298.853  3000 1.000
+
+Samples were drawn using NUTS(diag_e) at Sun May 18 14:01:52 2014.
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).</code></pre>
+</div>
+<div id="hamiltonian-monte-carlo-example" class="section level2">
+<h2>Hamiltonian Monte Carlo Example</h2>
+<p>The following demonstrates Hamiltonian Monte Carlo, the technique that Stan uses, and which is a different estimation approach than Gibbs sampler in BUGS/JAGS. If you are interested in the details enough to be reading this, I highly recommend Betancourt’s <a href="https://arxiv.org/pdf/1701.02434.pdf">conceptual introduction to HMC</a>. This example still assumes the data we used in this document, and is largely based on the code in the appendix of <span class="citation">Gelman et al. (<a href="#ref-gelman_bda">2013</a>)</span>.</p>
+<p>First we start with the functions.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Log posterior function</span>
+log_p_th =<span class="st"> </span>function(X, y, th){
+  <span class="co"># Args: X is the model matrix; y the target vector; th is the current </span>
+  <span class="co"># parameter estimates.</span>
+  beta =<span class="st"> </span>th[-<span class="kw">length</span>(th)]            <span class="co"># reg coefs to be estimated</span>
+  sigma =<span class="st"> </span>th[<span class="kw">length</span>(th)]            <span class="co"># sigma to be estimated</span>
+  sigma2 =<span class="st"> </span>sigma^<span class="dv">2</span>
+  mu =<span class="st"> </span>X %*%<span class="st"> </span>beta
+  
+  <span class="co"># priors are b0 ~ N(0, sd=10), sigma2 ~ invGamma(.001, .001)</span>
+  priorbvarinv =<span class="st"> </span><span class="kw">diag</span>(<span class="dv">1</span>/<span class="dv">100</span>, <span class="dv">4</span>) 
+  prioralpha =<span class="st"> </span>priorbeta =<span class="st"> </span>.<span class="dv">001</span>
+  
+  if(<span class="kw">is.nan</span>(sigma) |<span class="st"> </span>sigma&lt;=<span class="dv">0</span>){     <span class="co"># scale parameter must be positive, so post</span>
+    <span class="kw">return</span>(-<span class="ot">Inf</span>)                    <span class="co"># density is zero if it jumps below zero</span>
+  }
+  <span class="co"># log posterior in this conjugate setting. Conceputally it&#39;s </span>
+  <span class="co"># (log) prior + (log) likelihood. (See commented &#39;else&#39;)</span>
+  else {
+    -.<span class="dv">5</span>*<span class="kw">nrow</span>(X)*<span class="kw">log</span>(sigma2) -<span class="st"> </span>(.<span class="dv">5</span>*(<span class="dv">1</span>/sigma2) *<span class="st"> </span>(<span class="kw">crossprod</span>(y-mu))) +
+<span class="st">      </span>-.<span class="dv">5</span>*<span class="kw">ncol</span>(X)*<span class="kw">log</span>(sigma2) -<span class="st"> </span>(.<span class="dv">5</span>*(<span class="dv">1</span>/sigma2) *<span class="st"> </span>(<span class="kw">t</span>(beta)%*%priorbvarinv%*%beta)) +
+<span class="st">      </span>-(prioralpha<span class="dv">+1</span>)*<span class="kw">log</span>(sigma2) +<span class="st"> </span><span class="kw">log</span>(sigma2) -<span class="st"> </span>priorbeta/sigma2
+  }
+  <span class="co"># else {</span>
+  <span class="co">#   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)</span>
+  <span class="co">#   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)</span>
+  <span class="co">#   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)</span>
+  <span class="co">#   logposterior = ll + priorb + priors2</span>
+  <span class="co">#   logposterior</span>
+  <span class="co"># }</span>
+}
+
+
+<span class="co"># numerical gradient function as given in BDA3 p. 602; same args as posterior</span>
+gradient_th_numerical =<span class="st"> </span>function(X, y, th){
+  d =<span class="st"> </span><span class="kw">length</span>(th)
+  e =<span class="st"> </span>.<span class="dv">0001</span>
+  diffs =<span class="st"> </span><span class="kw">numeric</span>(<span class="dv">5</span>)
+  for(k in <span class="dv">1</span>:d){
+    th_hi =<span class="st"> </span>th
+    th_lo =<span class="st"> </span>th
+    th_hi[k] =<span class="st"> </span>th[k] +<span class="st"> </span>e
+    th_lo[k] =<span class="st"> </span>th[k] -<span class="st"> </span>e
+    diffs[k] =<span class="st"> </span>(<span class="kw">log_p_th</span>(X, y, th_hi) -<span class="st"> </span><span class="kw">log_p_th</span>(X, y, th_lo)) /<span class="st"> </span>(<span class="dv">2</span>*e)
+  }
+  <span class="kw">return</span>(diffs)
+}
+
+
+<span class="co"># single HMC iteration function</span>
+hmc_iteration =<span class="st"> </span>function(X, y, th, epsilon, L, M){
+  <span class="co"># Args: epsilon is the stepsize; L is the number of leapfrog steps; epsilon</span>
+  <span class="co"># and L are drawn randomly at each iteration to explore other areas of the</span>
+  <span class="co"># posterior (starting with epsilon0 and L0); M is a diagonal mass matrix </span>
+  <span class="co"># (expressed as a vector), a bit of a magic number in this setting. It regards</span>
+  <span class="co"># the mass of a particle whose position is represented by theta, and momentum </span>
+  <span class="co"># by phi. See the sampling section of chapter 1 in the Stan manual for more</span>
+  <span class="co"># detail.</span>
+
+  M_inv =<span class="st"> </span><span class="dv">1</span>/M
+  d =<span class="st"> </span><span class="kw">length</span>(th)
+  phi =<span class="st"> </span><span class="kw">rnorm</span>(d, <span class="dv">0</span>, <span class="kw">sqrt</span>(M))
+  th_old =<span class="st"> </span>th
+  log_p_old =<span class="st"> </span><span class="kw">log_p_th</span>(X, y, th) -<span class="st"> </span>.<span class="dv">5</span>*<span class="kw">sum</span>(M_inv*phi^<span class="dv">2</span>)
+  phi =<span class="st"> </span>phi +<span class="st"> </span>.<span class="dv">5</span>*epsilon*<span class="kw">gradient_th_numerical</span>(X, y, th)
+  
+  for (l in <span class="dv">1</span>:L){
+    th =<span class="st"> </span>th +<span class="st"> </span>epsilon*M_inv*phi
+    phi =<span class="st"> </span>phi +<span class="st"> </span><span class="kw">ifelse</span>(l==L, .<span class="dv">5</span>, <span class="dv">1</span>) *<span class="st"> </span>epsilon*<span class="kw">gradient_th_numerical</span>(X, y, th)
+  }
+  
+  <span class="co"># here we get into standard MCMC stuff, jump or not based on a draw from a</span>
+  <span class="co"># proposal distribution</span>
+  phi =<span class="st"> </span>-phi
+  log_p_star =<span class="st"> </span><span class="kw">log_p_th</span>(X, y, th) -<span class="st"> </span>.<span class="dv">5</span>*<span class="kw">sum</span>(M_inv*phi^<span class="dv">2</span>)    
+  r =<span class="st"> </span><span class="kw">exp</span>(log_p_star -<span class="st"> </span>log_p_old)
+  if (<span class="kw">is.nan</span>(r)) r =<span class="st"> </span><span class="dv">0</span>
+  p_jump =<span class="st"> </span><span class="kw">min</span>(r, <span class="dv">1</span>)
+  th_new =<span class="st"> </span>if(<span class="kw">runif</span>(<span class="dv">1</span>) &lt;<span class="st"> </span>p_jump) th else th_old
+  <span class="kw">return</span>(<span class="kw">list</span>(<span class="dt">th=</span>th_new, <span class="dt">p_jump=</span>p_jump))  <span class="co"># returns estimates and acceptance rate</span>
+}
+
+
+<span class="co"># main HMC function</span>
+hmc_run =<span class="st"> </span>function(starts, iter, warmup, epsilon_0, L_0, M, X, y){
+  <span class="co"># Args: starts are starting values; iter is total number of simulations for </span>
+  <span class="co"># each chain (note chain is based on the dimension of starts); warmup</span>
+  <span class="co"># determines which of the initial iterations will be ignored for inference</span>
+  <span class="co"># purposes; edepsilon0 is the baseline stepsize; L0 is the baseline number </span>
+  <span class="co"># of leapfrog steps; M is the mass vector</span>
+  chains =<span class="st"> </span><span class="kw">nrow</span>(starts)
+  d =<span class="st"> </span><span class="kw">ncol</span>(starts)
+  sims =<span class="st"> </span><span class="kw">array</span>(<span class="ot">NA</span>, <span class="kw">c</span>(iter, chains, d), 
+               <span class="dt">dimnames=</span><span class="kw">list</span>(<span class="ot">NULL</span>, <span class="ot">NULL</span>, <span class="kw">colnames</span>(starts)))
+  p_jump =<span class="st"> </span><span class="kw">matrix</span>(<span class="ot">NA</span>, iter, chains)
+  
+  for(j in <span class="dv">1</span>:chains){
+    th =<span class="st"> </span>starts[j,]
+    for(t in <span class="dv">1</span>:iter){
+      epsilon =<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="dv">2</span>*epsilon_0)
+      L =<span class="st"> </span><span class="kw">ceiling</span>(<span class="dv">2</span>*L_0*<span class="kw">runif</span>(<span class="dv">1</span>))
+      temp =<span class="st"> </span><span class="kw">hmc_iteration</span>(X, y, th, epsilon, L, M)
+      p_jump[t,j] =<span class="st"> </span>temp$p_jump
+      sims[t,j,] =<span class="st"> </span>temp$th
+      th =<span class="st"> </span>temp$th
+    }
+  }
+  
+  rstan::<span class="kw">monitor</span>(sims, warmup, <span class="dt">digits_summary=</span><span class="dv">3</span>)
+  acc =<span class="st"> </span><span class="kw">round</span>(<span class="kw">colMeans</span>(p_jump[(warmup<span class="dv">+1</span>):iter,]), <span class="dv">3</span>)  <span class="co"># acceptance rate</span>
+  <span class="kw">message</span>(<span class="st">&#39;Avg acceptance probability for each chain: &#39;</span>, 
+          <span class="kw">paste0</span>(acc[<span class="dv">1</span>],<span class="st">&#39;, &#39;</span>,acc[<span class="dv">2</span>]), <span class="st">&#39;</span><span class="ch">\n</span><span class="st">&#39;</span>) 
+  <span class="kw">return</span>(<span class="kw">list</span>(<span class="dt">sims=</span>sims, <span class="dt">p_jump=</span>p_jump))
+}</code></pre></div>
+<p>With the primary functions in place, we set the starting values and choose other settings for for the HMC process. The coefficient starting values are based on random draws from a uniform distribution, while <span class="math inline">\(\sigma\)</span> is set to a value of one in each case. As in the other examples we’ll have 12000 total draws with warm-up set to 2000. I don’t have any thinning option but that could be added or simply done as part of the <span class="pack">coda</span> package preparation.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Starting values and mcmc settings</span>
+parnames =<span class="st"> </span><span class="kw">c</span>(<span class="kw">paste0</span>(<span class="st">&#39;beta[&#39;</span>,<span class="dv">1</span>:<span class="dv">4</span>,<span class="st">&#39;]&#39;</span>), <span class="st">&#39;sigma&#39;</span>)
+d =<span class="st"> </span><span class="kw">length</span>(parnames)
+chains =<span class="st"> </span><span class="dv">2</span>
+
+thetastart =<span class="st"> </span><span class="kw">t</span>(<span class="kw">replicate</span>(chains, <span class="kw">c</span>(<span class="kw">runif</span>(d<span class="dv">-1</span>, -<span class="dv">1</span>, <span class="dv">1</span>), <span class="dv">1</span>)))
+<span class="kw">colnames</span>(thetastart) =<span class="st"> </span>parnames
+nsim =<span class="st"> </span><span class="dv">12000</span>
+wu =<span class="st"> </span><span class="dv">2000</span>
+
+<span class="co"># fiddle with these to get a desirable acceptance rate of around .80. The</span>
+<span class="co"># following work well with the document data.</span>
+stepsize =<span class="st"> </span>.<span class="dv">08</span>
+nLeap =<span class="st"> </span><span class="dv">10</span>
+vars =<span class="st"> </span><span class="kw">rep</span>(<span class="dv">1</span>, <span class="dv">5</span>)</code></pre></div>
+<p>We are now ready to run the model. On my machine and with the above settings, it took about two minutes. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Run the model</span>
+M1 =<span class="st"> </span><span class="kw">hmc_run</span>(<span class="dt">starts=</span>thetastart, <span class="dt">iter=</span>nsim, <span class="dt">warmup=</span>wu, <span class="dt">epsilon_0=</span>stepsize, 
+             <span class="dt">L_0=</span>nLeap, <span class="dt">M=</span>mass_vector, <span class="dt">X=</span>X, <span class="dt">y=</span>y)</code></pre></div>
+<pre><code>Inference for the input samples (2 chains: each with iter=12000; warmup=2000):
+
+          mean se_mean    sd   2.5%    25%    50%    75%  97.5% n_eff Rhat
+beta[1]  4.900   0.001 0.129  4.648  4.812  4.900  4.987  5.154 12982    1
+beta[2]  0.085   0.001 0.130 -0.167 -0.003  0.084  0.172  0.343 12493    1
+beta[3] -1.468   0.001 0.126 -1.718 -1.550 -1.469 -1.384 -1.223 12577    1
+beta[4]  0.820   0.001 0.121  0.585  0.739  0.821  0.902  1.053 12958    1
+sigma    2.017   0.001 0.093  1.848  1.953  2.013  2.077  2.210 11460    1
+
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).</code></pre>
+<pre><code>Avg acceptance probability for each chain: 0.816, 0.822</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># str(M1, 1)</span>
+
+<span class="co"># use coda if desired</span>
+<span class="kw">library</span>(coda)
+
+theta =<span class="st"> </span><span class="kw">as.mcmc.list</span>(<span class="kw">list</span>(<span class="kw">as.mcmc</span>(M1$sims[(wu<span class="dv">+1</span>):nsim,<span class="dv">1</span>,]), 
+                          <span class="kw">as.mcmc</span>(M1$sims[(wu<span class="dv">+1</span>):nsim,<span class="dv">2</span>,])))
+<span class="kw">summary</span>(theta)</code></pre></div>
+<pre><code>
+Iterations = 1:10000
+Thinning interval = 1 
+Number of chains = 2 
+Sample size per chain = 10000 
+
+1. Empirical mean and standard deviation for each variable,
+   plus standard error of the mean:
+
+            Mean      SD  Naive SE Time-series SE
+beta[1]  4.89979 0.12902 0.0009123      0.0011355
+beta[2]  0.08465 0.13024 0.0009209      0.0011452
+beta[3] -1.46839 0.12609 0.0008916      0.0011047
+beta[4]  0.82028 0.12074 0.0008537      0.0010613
+sigma    2.01700 0.09264 0.0006550      0.0008718
+
+2. Quantiles for each variable:
+
+           2.5%       25%     50%     75%   97.5%
+beta[1]  4.6480  4.812384  4.9002  4.9870  5.1542
+beta[2] -0.1674 -0.002676  0.0838  0.1718  0.3426
+beta[3] -1.7181 -1.550100 -1.4690 -1.3844 -1.2234
+beta[4]  0.5848  0.739022  0.8208  0.9021  1.0529
+sigma    1.8482  1.952584  2.0135  2.0770  2.2100</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">finalest =<span class="st">  </span><span class="kw">summary</span>(theta)$statistics[,<span class="st">&#39;Mean&#39;</span>]
+b =<span class="st"> </span>finalest[<span class="dv">1</span>:<span class="dv">4</span>]
+sig =<span class="st"> </span>finalest[<span class="dv">5</span>]
+<span class="kw">log_p_th</span>(X, y, finalest)</code></pre></div>
+<pre><code>          [,1]
+[1,] -301.7267</code></pre>
+<p>Our estimates look pretty good, and inspection of the diagnostics would show good mixing and convergence as well. At this point we can compare it to the Stan output. For the following, I modified the previous Stan code to use the same inverse gamma prior and tweaked the control options for a little bit more similarity, but that’s not necessary.</p>
+<pre><code>Inference for Stan model: stanmodelcodeIG.
+2 chains, each with iter=12000; warmup=2000; thin=1; 
+post-warmup draws per chain=10000, total post-warmup draws=20000.
+
+            mean se_mean    sd     2.5%      50%    97.5% n_eff Rhat
+beta[1]    4.894   0.001 0.128    4.641    4.895    5.144 15354    1
+beta[2]    0.083   0.001 0.130   -0.172    0.083    0.339 14592    1
+beta[3]   -1.469   0.001 0.127   -1.717   -1.469   -1.219 13756    1
+beta[4]    0.819   0.001 0.121    0.583    0.819    1.055 15600    1
+sigma      2.027   0.001 0.092    1.856    2.023    2.219 13883    1
+lp__    -301.532   0.018 1.584 -305.432 -301.213 -299.425  8079    1
+
+Samples were drawn using NUTS(diag_e) at Sun Jun 01 21:53:10 2014.
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).</code></pre>
+
+<!-- # References {-} -->
+</div>
+</div>
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-bugsbook">
+<p>Lunn, David, Chris Jackson, Nicky Best, Andrew Thomas, and David Spiegelhalter. 2012. <em>The BUGS Book: A Practical Introduction to Bayesian Analysis</em>. Boca Raton, FL: Chapman; Hall/CRC.</p>
+</div>
+<div id="ref-gelman_bda">
+<p>Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed.</p>
+</div>
+<div id="ref-jeff_gill_bayesian_2008">
+<p>Gill, Jeff. 2008. <em>Bayesian Methods : A Social and Behavioral Sciences Approach</em>. Second. Boca Raton: Chapman &amp; Hall/CRC.</p>
+</div>
+<div id="ref-simon_jackman_bayesian_2009">
+<p>Jackman, Simon. 2009. <em>Bayesian Analysis for the Social Sciences</em>. Chichester, UK: Wiley.</p>
+</div>
+<div id="ref-scott_lynch_2007">
+<p>Lynch, Scott M. 2007. <em>Introduction to Applied Bayesian Statistics and Estimation for Social Scientists</em>. New York: Springer.</p>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="44">
+<li id="fn44"><p>Math refresher on logs: <span style="font-family='Consolas'">log(A*B) = log(A)+log(B)</span>. So summing the log probabilities will result in the same values for <span class="math inline">\(\theta\)</span>, but won’t result in extremely small values that will break our computer.<a href="appendix.html#fnref44">↩</a></p></li>
+<li id="fn45"><p>Of course we could just use the sample estimates, but this is for demonstration.<a href="appendix.html#fnref45">↩</a></p></li>
+<li id="fn46"><p>Type <span style="font-family=&#39;Consolas&#39;">?Distributions</span> at the console for some of the basic R distributions available.<a href="appendix.html#fnref46">↩</a></p></li>
+<li id="fn47"><p>Much more straightforward than writing the likelihood function as above.<a href="appendix.html#fnref47">↩</a></p></li>
+<li id="fn48"><p>An alternative approach would be to work with the log of <span class="math inline">\(\sigma\)</span> which can take on negative values, and then convert it back to the original scale.<a href="appendix.html#fnref48">↩</a></p></li>
+<li id="fn49"><p>Actually there is a difference between the sigma estimates in that OLS estimates are based on a variance estimate divided by <span class="math inline">\(N-1\)</span> while the MLE estimate has a divisor of <span class="math inline">\(N\)</span>.<a href="appendix.html#fnref49">↩</a></p></li>
+<li id="fn50"><p>Which is equivalent to finding the point where the slope of the tangent line to some function, i.e. the derivative, to the surface is zero. The derivative, or gradient in the case of multiple parameters, of the likelihood function with respect to the parameters is known as the <span class="emph">score function</span>.<a href="appendix.html#fnref50">↩</a></p></li>
+<li id="fn51"><p>You might come across a previous incarnation, WinBugs, but it is no longer being developed.<a href="appendix.html#fnref51">↩</a></p></li>
+<li id="fn52"><p>Many of these packages, if not all of them will be less flexible in model specification compared to implementing the aforementioned languages directly, or using the R interface to those languages. What’s more, R has interfaces to the previous language engines via the packages <span class="pack">R2OpenBUGS</span> and <span class="pack">BRugs</span>, <span class="pack">rjags</span>, and <span class="pack">rstan</span>, <span class="pack">rstan_arm brms</span>, and many others.<a href="appendix.html#fnref52">↩</a></p></li>
+<li id="fn53"><p>Assuming normal for <span class="math inline">\(\beta\)</span> coefficients, inverse gamma on <span class="math inline">\(\sigma^2\)</span>.<a href="appendix.html#fnref53">↩</a></p></li>
+<li id="fn54"><p>This code regards only one chain, though a simple loop or any number of other approaches would easily extend it to two or more.<a href="appendix.html#fnref54">↩</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="summary-2.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="references.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"download": null,
+"toc": {
+"collapse": "section",
+"scroll_highlight": true
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

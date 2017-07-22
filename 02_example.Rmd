@@ -4,7 +4,7 @@
 
 The following is an attempt to provide a small example to show the connection between prior distribution, likelihood and posterior distribution.  Let's say we want to estimate the probability that a soccer/football player[^football] will score a penalty kick in a shootout.  We will employ the binomial distribution to model this.
 
-Our goal is to estimate a parameter $\theta$, the probability that the random knucklehead from your favorite football team will score the penalty in a overtime shootout.  Let's say that for this match takes 10 shots per team before the game is decided.
+Our goal is to estimate a parameter $\theta$, the probability that the random knucklehead from your favorite football team will score the penalty in a overtime shootout.  Let's say that for this match takes 10 shots per team before the game is decided[^rooney].
 
 In R, we can represent the following data for your team as follows, as well as setup some other things for later.
 
@@ -18,11 +18,11 @@ N = length(shots)                      # sample size
 nGoal = sum(shots=='goal')             # number of shots made
 nMiss = sum(shots=='miss')             # number of those miss
 ```
-<span class="marginnote">The fifth shot would have won the game but was taken by Wayne Rooney.</span>
+
 
 Recall the binomial distribution where we specify the number of trials for a particular observation and the probability of an event. Let's look at the distribution for a couple values for $\theta$ equal to .5 and .85 and $N=10$ observations.  We will repeat this 1000 times.
 
-```{r binomdist, fig.show='hide', echo=-1, results='hold'}
+```{r binomdist, fig.show='hide', echo=-1}
 set.seed(1234)
 x1 = rbinom(1000, size=10, p=.5)
 x2 = rbinom(1000, size=10, p=.85)
@@ -31,7 +31,7 @@ mean(x1); hist(x1)
 mean(x2); hist(x2)
 ```
 
-The histograms not shown, but we can see the means are roughly around $N*p$ as we expect with the binomial. 
+The histograms are not shown, but we can see the means are roughly around $N*p$ as we expect with the binomial. 
 
 
 ## Prior
@@ -42,7 +42,7 @@ For our current situation, we don't know $\theta$ and are trying to estimate it.
 theta = seq(from=1/(N+1), to=N/(N+1), length=10)
 ```
 
-For the Bayesian approach we must choose a <span class="emph">prior distribution</span> representing our initial beliefs about the estimates we might potentially consider.  I provide three possibilities and note that any one of them would work just fine for this situation. We'll go with a triangular distribution, which will put most of the weight toward values around $.5$. While we will talk more about this later, I will go ahead and mention that this is where some specifically have taken issue with Bayesian estimation in the past, because this part of the process is too *subjective* for their tastes.  Setting aside the fact that subjectivity is an inherent part of the scientific process, and that ignoring prior information (if explicitly available from prior research) would be blatantly unscientific, the main point to make here is that this choice *is not an arbitrary one*.  There are many distributions we might work with, but some will be better for us than others.  Again, we'll revisit this topic later. While we will only work with one prior, I provide others you can play with. <span class="marginnote">Choose the prior that makes most sense to you.  If I were thinking logically, I might choose a prior that reflects that all advantage is to a person that spends their entire life kicking a ball, and if they can simply kick to the upper right or left of the goal, even with only moderate pace, they could point it out like Babe Ruth and simple physics (i.e. that the goalie can never reach the ball) would mean they score 95% of the time under perfect conditions. We might revise it downward to account for unspecified things, e.g. how tired they are, weather etc. A prior based on a beta distribution $\texttt{beta(9,1)}$, with a mean of .90, would perhaps be about right.  Of course the *data* would eventually suggest something much lower.</span>
+For the Bayesian approach we must choose a <span class="emph">prior distribution</span> representing our initial beliefs about the estimates we might potentially consider.  I provide three possibilities and note that any one of them would work just fine for this situation. We'll go with a triangular distribution, which will put most of the weight toward values around $.5$. While we will talk more about this later, I will go ahead and mention that this is where some specifically have taken issue with Bayesian estimation in the past, because this part of the process is too *subjective* for their tastes.  Setting aside the fact that subjectivity is an inherent part of the scientific process, and that ignoring prior information (if explicitly available from prior research) would be blatantly unscientific, the main point to make here is that this choice *is not an arbitrary one*.  There are many distributions we might work with, but some will be better for us than others.  Again, we'll revisit this topic later. While we will only work with one prior, I provide others you can play with[^chooseprior]. 
 
 ```{r binomGoalPrior}
 ### prior distribution
@@ -77,7 +77,7 @@ Specifically, the likelihood function for the binomial can be expressed as:
 $$p(y|\theta) = {N \choose k}\, \theta^k\,  (1-\theta)^{N-k}$$
 
 
-where $N$ is the total number of possible times in which the event  of interest could occur, and $k$ number of times the event of interest occurs. Our maximum likelihood estimate in this simple setting would simply be the proportion of events witnessed out of the total number of samples[^binomll]. We'll use the formula presented above.  Technically, the first term is not required, but it serves to normalize the likelihood as we did with the prior.  
+where $N$ is the total number of possible times in which the event  of interest could occur, and $k$ number of times the event of interest occurs. Our maximum likelihood estimate in this simple setting would simply be the proportion of events witnessed out of the total number of samples[^binomll]. We'll use the formula presented above.  Technically, the first term is not required, but it serves to normalize the likelihood as we did with the prior[^addcovariates].  
 
 ```{r binomGoallikelihood, echo=2}
 # use the formula
@@ -97,7 +97,6 @@ pDataGivenTheta = choose(N, nGoal) * theta^nGoal * (1-theta)^nMiss
 # pDataGivenTheta3 = pDataGivenTheta/sum(pDataGivenTheta) #normalize as with the prior
 ```
 
-<span class="marginnote">Note that if we had covariates as in a regression model, we would have different estimates of theta for each observation, and thus would calculate each observation's likelihood and then take their product or sum their log values, see the [Maximum Likelihhood Review][Maximum Likelihood Review] for further details). Even here, if you turn this into binary logistic regression with 10 outcomes of goal scored vs. not, the 'intercept only' model would be identical to our results here.</span>
 
 ## Posterior
 
@@ -124,7 +123,7 @@ DT::datatable(format(round(out, 3), nsmall = 3), width='50%',
 
 Starting with the *prior* column, we can see that with the triangular distribution, we've given most of our prior probability to the middle values with probability tapering off somewhat slowly towards either extreme.  The likelihood suggests the data is most likely for $\theta$ values .55-.64, though we know the specific maximum likelihood estimate for $\theta$ is the proportion for the sample, or .6.  Our posterior will fall somewhere between the prior and likelihood estimates, and we can see it has shifted the bulk of the probability slightly away from most likely values suggested by the prior distribution towards a $\theta$ value suggested by the data of .6.
 
-Let's go ahead and see what the mean is: <span class="marginnote">The expected value for a continuous parameter is $\operatorname{E}[X] = \int_{-\infty}^\infty xp(x)\mathrm{d}x$, and for a discrete parameter $\operatorname{E}[X] = \sum_{i=1}^\infty x_i\, p_i$, i.e. a weighted sum of the possible values times their respective probability of occurrence.</span>
+Let's go ahead and see what the mean[^expectedvalue] is: 
 
 
 ```{r binomPosteriorMean}
@@ -154,13 +153,13 @@ probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaG
 # use ggplot or plotly depending on what works
 library(ggplot2)
 g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  # annotate('text',x=.2, y=3e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color=alpha('blue', .75), parse=T) + # doesn't work with ggplot (use~); but does with plotly
-  annotate('text',x=.2, y=3e-4, label='Prior~with~beta(10, 10)', color=alpha('blue', .75), parse=T) + # doesn't work with ggplot (use~); but does with plotly
+  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
+  # annotate('text',x=.2, y=3e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color=alpha(palettes$Rblue$Rblue, .75), parse=T) + # doesn't work with ggplot (use~); but does with plotly
+  annotate('text',x=.2, y=3e-4, label='Prior~with~beta(10, 10)', color=alpha(palettes$Rblue$Rblue, .75), parse=T) + # doesn't work with ggplot (use~); but does with plotly
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  annotate('text', x=.8, y=4e-4, label='Likelihood', color='darkred') +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  annotate('text', x=.4, y=8e-4, label='Posterior', color='purple') +
+  annotate('text', x=.8, y=4e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
+  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
+  annotate('text', x=.4, y=8e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
   xlab(substitute('theta')) +
   lazerhawk::theme_trueMinimal() +
@@ -171,8 +170,8 @@ g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
         plot.background = element_rect(fill = "transparent",colour = NA),
         panel.background=element_rect(fill = "transparent",colour = NA))
 g
-
-# PLOTLY CURRENTLY BREAKS MATHJAX, FANTASTIC!
+# plotly::ggplotly(width='50%')
+# PLOTLY CURRENTLY BREAKS MATHJAX FOR TUFTE, FANTASTIC!
 # library(plotly)
 # ggplotly(tooltip='none') %>%
 #   config(displayModeBar=F) %>%
@@ -180,7 +179,7 @@ g
 ```
 
 
-The second utilizes a more diffuse prior of $\beta(2,2)$. <span class="marginnote">$\beta(1,1)$ is a uniform distribution.</span>  The result of using the vague prior is that the likelihood gets more weight with regard to the posterior.  In fact, if we used a uniform distribution, *we would essentially be doing the equivalent of maximum likelihood estimation*.  In that sense, many of the commonly used methods that implement maximum likelihood can be seen as a special case of a Bayesian approach.
+The second utilizes a more diffuse prior of $\beta(2,2)$[^betadist].  The result of using the vague prior is that the likelihood gets more weight with regard to the posterior.  In fact, if we used a uniform distribution, *we would essentially be doing the equivalent of maximum likelihood estimation*.  In that sense, many of the commonly used methods that implement maximum likelihood can be seen as a special case of a Bayesian approach.
 
 ```{r prior2post_2, echo=FALSE}
 ### more vague prior
@@ -198,13 +197,13 @@ probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaG
 
 
 g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  # annotate('text',x=.25, y=3e-4, label='Prior&nbsp;with&nbsp;beta(2, 2)', color='blue', parse=T) +
-  annotate('text',x=.25, y=3e-4, label='Prior~with~beta(2, 2)', color='blue', parse=T) +
+  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
+  # annotate('text',x=.25, y=3e-4, label='Prior&nbsp;with&nbsp;beta(2, 2)', color=palettes$Rblue$Rblue, parse=T) +
+  annotate('text',x=.25, y=3e-4, label='Prior~with~beta(2, 2)', color=palettes$Rblue$Rblue, parse=T) +
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  annotate('text', x=.8, y=5e-4, label='Likelihood', color='darkred') +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  annotate('text', x=.4, y=5e-4, label='Posterior', color='purple') +
+  annotate('text', x=.8, y=5e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
+  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
+  annotate('text', x=.4, y=5e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
   xlab(expression('theta')) +
   lazerhawk::theme_trueMinimal() +
@@ -242,13 +241,13 @@ probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaG
 
 
 g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  # annotate('text',x=.25, y=6e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color='blue', parse=T) +
-  annotate('text',x=.25, y=6e-4, label='Prior~with~beta(10, 10)', color='blue', parse=T) +
+  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
+  # annotate('text',x=.25, y=6e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color=palettes$Rblue$Rblue, parse=T) +
+  annotate('text',x=.25, y=6e-4, label='Prior~with~beta(10, 10)', color=palettes$Rblue$Rblue, parse=T) +
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  annotate('text', x=.8, y=1e-3, label=paste('Likelihood with N =', N), color='darkred') +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  annotate('text', x=.45, y=1e-3, label='Posterior', color='purple') +
+  annotate('text', x=.8, y=1e-3, label=paste('Likelihood with N =', N), color=palettes$stan_red$stan_red) +
+  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
+  annotate('text', x=.45, y=1e-3, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
   xlab('theta') +
   lazerhawk::theme_trueMinimal() +
@@ -310,6 +309,7 @@ We can implement the simulation process with the data and model at hand, given a
 # yrep = extract(shotres, 'yRep')$yRep
 # dim(yrep)
 
+library(rstanarm)
 shotres = stan_glm(shotsNum~1, family='binomial', iter=2250, warmup=1000, thin=10, prior=student_t())
 yrep = data.frame(posterior_predict(shotres)); colnames(yrep) = paste0('Player_', 1:10)
 
@@ -317,9 +317,9 @@ sampleIndex = sample(1:500, 16)
 yrepLong = tidyr::gather(data.frame(Sim=1:500, yrep)[sampleIndex, ], key=Player, value=Goal, -Sim) %>% 
   arrange(Sim)
 
-library(ggplot2)
+
 ggplot(aes(x=factor(Goal, labels=c('Misses', 'Makes'))), data=yrepLong) +
-  geom_bar(fill='#ff5503', color=NA, alpha=.5, width=.5) +
+  geom_bar(fill='#ff5500', color=NA, alpha=.5, width=.5) +
   facet_wrap(~Sim, ncol=4) +
   labs(x='', y='') +
   theme_minimal() + 
@@ -340,7 +340,7 @@ With an understanding of the key elements of Bayesian inference in hand, we can 
 
 <!-- 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Prior likeilihood posterior triplots for posterity
+% Prior likelihood posterior triplots for posterity
  -->
 ```{r binomDriveDistplot, eval=FALSE, echo=FALSE}
 set.seed(1234)
@@ -358,14 +358,13 @@ pThetaGivenData = pDataGivenTheta*pTheta  / pData
 
 probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaGivenData)
 
-library(ggplot2)
 ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  annotate('text',x=.2, y=3e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color='blue', parse=T) + # doesn't work with ggplot (use~); but does with plotly
+  geom_polygon(aes(y=prior), fill=palettes$stan_red$tetradic[2], alpha=.25) +
+  annotate('text',x=.2, y=3e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color=palettes$Rblue$Rblue, parse=T) + # doesn't work with ggplot (use~); but does with plotly
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  geom_text(x=.8, y=4e-4, label='Likelihood', color='darkred') +
+  geom_text(x=.8, y=4e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
   geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  geom_text(x=.4, y=8e-4, label='Posterior', color='purple') +
+  geom_text(x=.4, y=8e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
 #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
 #   labs(title = expression("Prior~with~ beta(10, 10)"))
@@ -374,7 +373,7 @@ ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
         axis.text.y=element_text(color='white'),
         plot.background = element_rect(fill = "transparent",colour = NA))
 # ggsave('figure/priorlikepost1.svg', width=3, height=3)
-ggsave('figure/priorlikepost1.png', width=8, height=8, bg = "transparent") # png for faster loading
+ggsave('img/priorlikepost1_test.png', width=8, height=8, bg = "transparent") # png for faster loading
 
 ### more vague prior
 set.seed(1234)
@@ -391,12 +390,12 @@ probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaG
 
 
 ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  annotate('text',x=.3, y=3e-4, label='Prior~with~beta(2, 2)', color='blue', parse=T) +
+  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
+  annotate('text',x=.3, y=3e-4, label='Prior~with~beta(2, 2)', color=palettes$Rblue$Rblue, parse=T) +
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  geom_text(x=.8, y=5e-4, label='Likelihood', color='darkred') +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  geom_text(x=.4, y=5e-4, label='Posterior', color='purple') +
+  geom_text(x=.8, y=5e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
+  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
+  geom_text(x=.4, y=5e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
 #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
 #   labs(title = 'A more vague prior') +
@@ -426,12 +425,12 @@ probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaG
 
 
 ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  annotate('text',x=.3, y=6e-4, label='Prior~with~beta(10, 10)', color='blue', parse=T) +
+  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
+  annotate('text',x=.3, y=6e-4, label='Prior~with~beta(10, 10)', color=palettes$Rblue$Rblue, parse=T) +
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  geom_text(x=.8, y=1e-3, label=paste('Likelihood with N =', N), color='darkred') +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  geom_text(x=.45, y=1e-3, label='Posterior', color='purple') +
+  geom_text(x=.8, y=1e-3, label=paste('Likelihood with N =', N), color=palettes$stan_red$stan_red) +
+  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
+  geom_text(x=.45, y=1e-3, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
 #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
 #   labs(title = expression("Prior~with~ beta(10, 10)"))
@@ -447,9 +446,16 @@ ggsave('figure/priorlikepost3.png', width=8, height=8, bg = "transparent") # png
 
 [^football]: Don't even start, it's always been both 'football' and 'soccer'.
 
+[^rooney]: The fifth shot would have won the game but was taken by Wayne Rooney.
+
 [^binomll]: See for yourself in the [binmoial likelihood][Binomial Likelihood Example] section in the appendix.
 
+[^postpred]: Mathematically represented as: $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$ <br><br> We can get a sense of the structure of this process via the following table, taken from Gelman: <br><br> <img src="img/gelmanTable.png" style="display:block; margin: 0 auto;" width='50%'>
 
+[^chooseprior]: Choose the prior that makes most sense to you.  If I were thinking logically, I might choose a prior that reflects that all advantage is to a person that spends their entire life kicking a ball, and if they can simply kick to the upper right or left of the goal, even with only moderate pace, they could point it out like Babe Ruth and simple physics (i.e. that the goalie can never reach the ball) would mean they score 95% of the time under perfect conditions. We might revise it downward to account for unspecified things, e.g. how tired they are, weather etc. A prior based on a beta distribution $\texttt{beta(9,1)}$, with a mean of .90, would perhaps be about right.  Of course the *data* would eventually suggest something much lower.
 
-[^postpred]: Mathematically represented as: $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$ <br><br> We can get a sense of the structure of this process via the following table, taken from Gelman: <br><br> <img src="img/gelmanTable.png" style="display:block; margin: 0 auto;">
+[^addcovariates]: Note that if we had covariates as in a regression model, we would have different estimates of theta for each observation, and thus would calculate each observation's likelihood and then take their product or sum their log values, see the [Maximum Likelihhood Review][Maximum Likelihood Review] for further details). Even here, if you turn this into binary logistic regression with 10 outcomes of goal scored vs. not, the 'intercept only' model would be identical to our results here.
 
+[^expectedvalue]: The expected value for a continuous parameter is $\operatorname{E}[X] = \int_{-\infty}^\infty xp(x)\mathrm{d}x$, and for a discrete parameter $\operatorname{E}[X] = \sum_{i=1}^\infty x_i\, p_i$, i.e. a weighted sum of the possible values times their respective probability of occurrence.
+
+[^betadist]: $\beta(1,1)$ is a uniform distribution.

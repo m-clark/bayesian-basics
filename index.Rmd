@@ -1,20 +1,58 @@
 --- 
-title: <span style="font-size:150%; font-variant:small-caps; font-style:italic; ">Bayesian Basics</span>
+title: <span style="font-size:250%; font-style:italic; font-family:'Alex Brush' ">Bayesian Basics</span>
 author:  |
-  <div class="title"><span style="font-size:150%; font-variant:small-caps; font-style:normal">Michael Clark</span><br><br>
-  <img src="img/signature-acronym.png" style="width:14%; padding:10px 0;"> <br>
-  <img src="img/ARC-acronym-signature.png" style="width:10%; padding:10px 0;"> </div>
+  <div class="title"><span style="font-size:150%; font-variant:small-caps; font-style:normal;  font-family:'Open Sans'">Michael Clark</span><br><br>
+  <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br>
+  <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> </div>
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output: 
-    bookdown::tufte_html_book: 
-      toc: yes
-      number_sections: false
-      css: [toc.css, ../css/tufte_bookdown/mytufte.css]
-      split_by: rmd
+    bookdown::gitbook:
+      # template: null
+      css: [css/book.css, css/standard_html.css]
+      highlight: pygments
+      # split_by: section
+      toc_depth: 2
+      # toc_float: yes
+      number_sections: no
+      # toc:
+      #   collapse: part
+      #   scroll_highlight: yes
+      #   number: no
+      #   before: null
+      #   after: null
+      # toolbar:
+      #   position: fixed
       config:
-    # bookdown::pdf_book: no
-    # bookdown::epub_book: no # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else
+        toc:
+          collapse: section
+          scroll_highlight: yes
+          before: null
+          after: null
+        edit : null
+        download: null
+        search: yes
+        # fontsettings:
+        #   theme: white
+        #   family: sans
+        #   size: 2
+        sharing:
+          facebook: yes
+          twitter: yes
+          google: no
+          weibo: no
+          instapper: no
+          vk: no
+          all: ['facebook', 'google', 'twitter', 'weibo', 'instapaper']
+    # bookdown::tufte_html_book: 
+    #   toc: yes
+    #   number_sections: false
+    #   css: [toc.css, ../css/tufte_bookdown/mytufte.css]
+    #   split_by: rmd
+    #   config:
+    bookdown::pdf_book: no
+    bookdown::epub_book: no # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else
+
 always_allow_html: yes
 documentclass: book
 bibliography: ['packages.bib', 'BayesBasics.bib']
@@ -22,6 +60,9 @@ biblio-style: apalike
 link-citations: yes
 github-repo: m-clark/docs
 description: "An introduction to Bayesian data analysis."
+cover-image: img/nineteeneightyR.png
+url: 'https\://m-clark.github.io/Workshops/text_analysis/'  # evidently the \: is required or you'll get text in the title/toc area
+
 
 
 # this is for pdf but also to paste into references; tufte style refs at point of citation in margin
@@ -31,16 +72,21 @@ nocite: |
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, comment=NA, cache=F, message = F, warning=F, 
-                      R.options=list(width=120), fig.align='center')
+knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.options=list(width=220),   # code 
+                      dev.args=list(bg = 'transparent'), dev='svg', fig.align='center',     # viz
+                      cache.rebuild=F, cache=T)   
 
 # automatically create a bib database for R packages
 knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib')
 ```
 
 ```{r echo=FALSE}
-library(tufte); library(tidyverse)
+library(tufte); library(tidyverse); library(ggplot2); library(lazerhawk)
 ```
 
 
-#  <span style="color:transparent"></span>
+#  
+
+```{r fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html')}
+knitr::include_graphics('img/nineteeneightyR.png', dpi = NA)
+```

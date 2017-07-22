@@ -21,16 +21,14 @@ Bayes theorem is illustrated in terms of probability as follows:
 
 $$p(\mathcal{A}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A})p(\mathcal{A})}{p(\mathcal{B})}$$
   
-<span class="marginnote">The denominator reflects the sum of the numerator for *all* values $\mathcal{A}$ might take on. For example:
-$$p(\mathcal{A_i}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i})}{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i}) + \dots + p(\mathcal{B}|\mathcal{A_n})p(\mathcal{A_n})}$$</span>
-In short, we are attempting to ascertain the conditional probability of $\mathcal{A}$ given $\mathcal{B}$ based on the conditional probability of $\mathcal{B}$ given $\mathcal{A}$ and the respective probabilities of $\mathcal{A}$ and $\mathcal{B}$.  This is perhaps not altogether enlightening in and of itself, so we will frame it in other ways, and for the upcoming depictions we will ignore the denominator.
+
+In short, we are attempting to ascertain the conditional probability of $\mathcal{A}$ given $\mathcal{B}$ based on the conditional probability of $\mathcal{B}$ given $\mathcal{A}$ and the respective probabilities of $\mathcal{A}$ and $\mathcal{B}$.  This is perhaps not altogether enlightening in and of itself, so we will frame it in other ways, and for the upcoming depictions we will ignore the denominator[^denominator].
 
 
-<span class="marginnote">The $\propto$ means 'proportional to'.</span>
 $$p(hypothesis|data) \propto p(data|hypothesis)p(hypothesis)$$ 
   
 
-In the above formulation, we are trying to obtain the probability of an hypothesis given the evidence at hand (data) and our initial (prior) beliefs regarding that hypothesis.  Here we are already able to see at least one key difference between Bayesian and classical statistics. The Bayesian approach provides a probability of the hypothesis given the data, which is something generally highly desirable from a scientific perspective.
+In the above formulation[^propto], we are trying to obtain the probability of an hypothesis given the evidence at hand (data) and our initial (prior) beliefs regarding that hypothesis.  Here we are already able to see at least one key difference between Bayesian and classical statistics. The Bayesian approach provides a probability of the hypothesis given the data, which is something generally highly desirable from a scientific perspective.
 
 Here is yet another way to consider this:
 
@@ -38,7 +36,7 @@ Here is yet another way to consider this:
 $$posterior \propto likelihood * prior$$
 
 
-For this depiction let us consider a standard regression coefficient $b$<span class='marginnote'>If we think of y as our outcome and $\Theta$ as our *set* of coefficients that include all the regression coefficents $b$ and $\sigma^2$ variance, i.e. all parameters we need to estimate for the model: $$p(\mathcal{\Theta}|\mathcal{y}) = \frac{p(\mathcal{y}|\mathcal{\Theta})p(\mathcal{\Theta})}{p(\mathcal{y})}$$</span>. Here we have a prior belief about $b$ expressed as a probability distribution.  As a preliminary example we will assume perhaps that the distribution is normal, and is centered on some value $\mu_b$ and with some variance $\sigma_b^2$.  The likelihood here is the exact same one used in classical statistics- if $y$ is our variable of interest, then the likelihood is $p(y|b)$ as in the standard regression approach using maximum likelihood estimation.  What we end up with in the Bayesian context however is not a specific value of $b$ that would make the data most likely, but a probability distribution for $b$ that serves as a weighted combination of the likelihood and prior.  Given that <span class="emph">posterior distribution</span> for $b$, we can then get the mean, median, 95% <span class="emph">credible interval</span>[^credible] and technically a host of other statistics that might be of interest to us.
+For this depiction let us consider a standard regression coefficient $b$[^parameters]. Here we have a prior belief about $b$ expressed as a probability distribution.  As a preliminary example we will assume perhaps that the distribution is normal, and is centered on some value $\mu_b$ and with some variance $\sigma_b^2$.  The likelihood here is the exact same one used in classical statistics- if $y$ is our variable of interest, then the likelihood is $p(y|b)$ as in the standard regression approach using maximum likelihood estimation.  What we end up with in the Bayesian context however is not a specific value of $b$ that would make the data most likely, but a probability distribution for $b$ that serves as a weighted combination of the likelihood and prior.  Given that <span class="emph">posterior distribution</span> for $b$, we can then get the mean, median, 95% <span class="emph">credible interval</span>[^credible] and technically a host of other statistics that might be of interest to us.
 
 To summarize conceptually, we have some belief about the state of the world, expressed as a mathematical model (such as the linear model used in regression).  The Bayesian approach provides an updated belief as a weighted combination of prior beliefs regarding that state and the currently available evidence, with the possibility of the current evidence overwhelming prior beliefs, or prior beliefs remaining largely intact in the face of scant evidence.
 
@@ -48,10 +46,17 @@ $$\text{updated belief} = \text{current evidence} * \text{prior belief or eviden
 
 We will make these concepts more concrete in the next section.
 
-[^evenolder]: Bayes theorem possibly [predates](https://en.wikipedia.org/wiki/Nicholas_Saunderson) Bayes by some accounts.
+[^evenolder]: Bayes theorem possibly [predates](https://en.wikipedia.org/wiki/Nicholas_Saunderson) Bayes himself by some accounts.
 
 [^old]: Jeffreys, Metropolis etc.
 
 [^justify]: Though some might suggest that the typical practice of hypothesis testing that comes with standard methods would need *more*.
+
+[^denominator]: The denominator reflects the sum of the numerator for *all* values $\mathcal{A}$ might take on. For example:
+$$p(\mathcal{A_i}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i})}{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i}) + \dots + p(\mathcal{B}|\mathcal{A_n})p(\mathcal{A_n})}$$
+
+[^propto]: The $\propto$ means 'proportional to'.
+
+[^parameters]: If we think of y as our outcome and $\Theta$ as our *set* of coefficients that include all the regression coefficients $b$ and $\sigma^2$ variance, i.e. all parameters we need to estimate for the model: $$p(\mathcal{\Theta}|\mathcal{y}) = \frac{p(\mathcal{y}|\mathcal{\Theta})p(\mathcal{\Theta})}{p(\mathcal{y})}$$
 
 [^credible]: More on this later.

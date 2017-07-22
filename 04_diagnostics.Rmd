@@ -13,7 +13,9 @@ In the previous model we noted the traceplot for a single parameter, and a visua
 
 To the right I provide an example where things have gone horribly wrong.  The chains never converge nor do they mix with one another.  One reason for running multiple chains is that any individual chain might converge toward one target, while another chain might converge elsewhere, and this would still be a problem.  Also you might see otherwise healthy chains get stuck on occasion over the course of the series, which might suggest more model tweaking or a change in the sampler settings is warranted.
 
-We can examine the mixed chains and density plots of the posterior with standard functions in the <span class="pack">rstan</span> package displayed previously, various functions in the <span class="pack">bayesplot</span> package, or interactively via <span class="pack">shinyStan</span> package and its <span class="func">launch_shiny</span> function.  In the Bayesian approach, increasing amounts of data leads to a posterior distribution of the parameter vector approaching multivariate normality.  The figure to the right shows a density, trace and autocorrelation plots for one of the regression coefficients using <span class="pack">shinyStan</span>.<span class="marginnote"><span class="imgbigger"><img src="img/shinyStan.png" style="display:block; margin: 0 auto;"></span></span>
+We can examine the mixed chains and density plots of the posterior with standard functions in the <span class="pack">rstan</span> package displayed previously, various functions in the <span class="pack">bayesplot</span> package, or interactively via <span class="pack">shinyStan</span> package and its <span class="func">launch_shiny</span> function.  In the Bayesian approach, increasing amounts of data leads to a posterior distribution of the parameter vector approaching multivariate normality.  The figure to the right shows a density, trace and autocorrelation plots for one of the regression coefficients using <span class="pack">shinyStan</span>.
+
+<span class="marginnote"><span class="imgbigger"><img src="img/shinyStan.png" style="display:block; margin: 0 auto;"></span></span>
 
 ```{r badChain, eval=FALSE, echo=FALSE}
 # see https://groups.google.com/forum/#!topic/stan-users/hio0siMTvhE
@@ -95,14 +97,14 @@ betas.mcmc = as.mcmc(betas)
 # pdf('img/acfPlotNoSerial.pdf')
 # acfplot(betas.mcmc[,1])
 # dev.off()
-# acf(betas.mcmc[,1], bty='n', col='#ff5503', lwd=3, main='', ci.col=scales::alpha('blue',.5), 
+# acf(betas.mcmc[,1], bty='n', col='#ff5500', lwd=3, main='', ci.col=scales::alpha('blue',.5), 
 #     xaxt='n', ylab='Autocorrelation', col.lab='gray25', col.axis='gray50')
 
 test0 <- acf(betas.mcmc[,1], plot = FALSE)
 test <- with(test0, data.frame(lag, acf))
 ggplot(data = test, mapping = aes(x = lag, y = acf)) +
   geom_hline(aes(yintercept = 0), col='gray90') +
-  geom_segment(mapping = aes(xend = lag, yend = 0), col='#ff5503', lwd=6) +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col='#ff5500', lwd=6) +
   labs(x='Lag',  y='Autocorrelation') +
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
@@ -121,7 +123,7 @@ test0 <- acf(as.mcmc(pres2), plot = FALSE)
 test <- with(test0, data.frame(lag, acf))
 ggplot(data = test, mapping = aes(x = lag, y = acf)) +
        geom_hline(aes(yintercept = 0), col='gray90') +
-       geom_segment(mapping = aes(xend = lag, yend = 0), col='#ff5503', lwd=6) +
+       geom_segment(mapping = aes(xend = lag, yend = 0), col='#ff5500', lwd=6) +
   labs(x='Lag',  y='Autocorrelation') +
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
@@ -185,7 +187,7 @@ prop.table(table(min_rep>sort(y)[3]))
 # hist(min_rep, main='', 'FD', yaxt='n', ylab='', border='gray50'); abline(v=min_y, col='gray50')
 # dev.off()
 qplot(x=min_rep) + 
-  geom_histogram(fill=scales::alpha('#ff5503', .95), color='gray50') + 
+  geom_histogram(fill=scales::alpha('#ff5500', .95), color='gray50') + 
   geom_vline(xintercept=min_y, color='gray50') + 
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
@@ -203,7 +205,7 @@ q10 = function(y) quantile(y, 0.1)
 q10_rep = ppc_stat(y, t(yRep), stat=q10)$data
 
 qplot(x=q10_rep) + 
-  geom_histogram(fill=scales::alpha('#ff5503', .95), color='gray50') + 
+  geom_histogram(fill=scales::alpha('#ff5500', .95), color='gray50') + 
   geom_vline(xintercept=quantile(y, .1), color='gray50', size=1.5, alpha=.75) + 
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
@@ -226,7 +228,7 @@ library(ggplot2); library(reshape2)
 fits = sapply(1:nsims, function(s) X%*%betas[s,])
 avgfits = rowMeans(fits)
 ggplot(aes(x=y, y=avgfits), data=data.frame(y=y, avgfits=avgfits)) +
-  geom_point(col='#FF5503', alpha=.75, size=3) +
+  geom_point(col='#ff5500', alpha=.75, size=3) +
   labs(x='Observed y', y='Expected y') +
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),

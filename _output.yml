@@ -11,6 +11,14 @@ bookdown::tufte_html_book:
     edit:
       link: https://github.com/rstudio/bookdown-demo/edit/master/%s
     highlight: pygments
+bookdown::html_book:
+  css: [css/standard_html.css]
+  font-import: http://fonts.googleapis.com/css?family=Risque|Roboto|Open+Sans|Alex+Brush
+  font-family: 'Roboto'
+bookdown::gitbook:
+  css: [css/standard_html.css]
+  font-import: http://fonts.googleapis.com/css?family=Risque|Roboto|Open+Sans|Alex+Brush
+  font-family: 'Roboto'
 bookdown::pdf_book:
   includes:
     in_header: preamble.tex

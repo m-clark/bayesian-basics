@@ -3,4 +3,6 @@
 .RData
 .Ruserdata
 _bookdown_files/
+*_book/index*
+*cache*
 data/

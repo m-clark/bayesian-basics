@@ -34,11 +34,11 @@ diff(pbeta(c(.6, .9), 8, 3))
 diff(pbeta(c(.6, .9), 9, 3))
 
 # pdf('img/betaDistr2and6.pdf', paper='USr')
-hist(rbeta(10000, 2, 6), border='gray50', col='#ff5503', xlab=expression(theta), breaks='FD')
+hist(rbeta(10000, 2, 6), border='gray50', col='#ff5500', xlab=expression(theta), breaks='FD')
 # dev.off()
 library(ggplot2)
 ggplot(aes(x=x), data=data.frame(x=rbeta(10000, 9, 3))) + 
-  geom_histogram(fill=scales::alpha('#ff5503', .95), color='gray50') + 
+  geom_histogram(fill=scales::alpha('#ff5500', .95), color='gray50') + 
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
         axis.title.y=element_text(color='gray25'),

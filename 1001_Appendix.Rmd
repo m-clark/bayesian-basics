@@ -40,7 +40,7 @@ library(ggplot2)
 ggplot(data.frame(mus, L)) + 
   geom_vline(aes(xintercept=5), alpha=.5, lty=2) +
   geom_hline(aes(yintercept=max(L)), alpha=.5, lty=2) +
-  geom_path(aes(x=mus, y=L), color='#ff5503', lwd=2) + 
+  geom_path(aes(x=mus, y=L), color='#ff5500', lwd=2) + 
   labs(x=expression(theta), y='Likelihood') +
   lazerhawk::theme_trueMinimal() +
   theme(axis.ticks.y=element_blank(),
@@ -590,7 +590,7 @@ post = function(x, y, b, s2){
   }
   # else {
   #   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)
-  #   priorb = mvtnorm::dmvnorm(b, mean=rep(0, length(b)), sigma=diag(100, length(b)), log=T)
+  #   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)
   #   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)
   #   logposterior = ll + priorb + priors2
   #   logposterior
@@ -714,12 +714,19 @@ log_p_th = function(X, y, th){
     return(-Inf)                    # density is zero if it jumps below zero
   }
   # log posterior in this conjugate setting. Conceputally it's 
-  # (log) prior + (log) likelihood.
-  else {                            
+  # (log) prior + (log) likelihood. (See commented 'else')
+  else {
     -.5*nrow(X)*log(sigma2) - (.5*(1/sigma2) * (crossprod(y-mu))) +
-      -.5*ncol(X)*log(sigma2) - (.5*(1/sigma2) * (t(beta)%*%priorbvarinv%*%beta)) + 
-      -(prioralpha+1)*log(sigma2) + log(sigma2) - priorbeta/sigma2 
-  }  
+      -.5*ncol(X)*log(sigma2) - (.5*(1/sigma2) * (t(beta)%*%priorbvarinv%*%beta)) +
+      -(prioralpha+1)*log(sigma2) + log(sigma2) - priorbeta/sigma2
+  }
+  # else {
+  #   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)
+  #   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)
+  #   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)
+  #   logposterior = ll + priorb + priors2
+  #   logposterior
+  # }
 }
 
 
