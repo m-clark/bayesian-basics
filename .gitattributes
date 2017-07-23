@@ -1,0 +1,15 @@
+*.html linguist-vendored
+*.css linguist-vendored
+*.stan linguist-language=Stan
+
+
+# Source files
+# ============
+*.Rdata text
+*.rdb binary
+*.rds binary
+*.Rd text
+*.Rdx binary
+*.Rmd text
+*.R text
+*.stan text
