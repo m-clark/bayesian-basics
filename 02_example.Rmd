@@ -276,41 +276,10 @@ However there is yet another distribution of interest to us- the <span class="em
 
 We can implement the simulation process with the data and model at hand, given a sample of values of $\theta$ drawn from the posterior. I provide the results of such a process with the following graph. Each bar graph of frequencies represents a replication of the 10 shots taken, i.e. $y^{\textrm{Rep}}$, given an estimate of $\theta$ from the posterior distribution (16 total).  These are plausible sets of 10 makes and misses, given $\theta$.
 
-<img src="img/histofyrepBinom.svg" style="display:block; margin: 0 auto; width=20%"></span>
+<img src="img/histofyrepBinom.svg" style="display:block; margin: 0 auto;" width=50%></span>
 
 ```{r binomPostPred, cache=TRUE, message=FALSE, warning=FALSE, eval=FALSE, echo=FALSE}
-# using bernoulli for 1 trial at a time; see Gelman p.32 
-# NO LONGER NECESSARY, use rstan_arm
-# datalist = list(y=shotsNum, N=length(shotsNum))
-# modelcode <- "
-# data{
-#   int N;
-#   int y[N];
-# }
-# 
-# parameters{
-#   real<lower=0, upper=1> theta;
-# }
-# 
-# model{
-#   theta ~ beta(5,5);
-#   y ~ bernoulli(theta);
-# }
-# 
-# generated quantities{
-#   vector[N] yRep;
-#   for (i in 1:N){
-#     yRep[i] <- bernoulli_rng(theta);
-#   }
-# }
-# "
-# library(rstan)
-# shotres = stan(model_code=modelcode, data=datalist, iter=12000, warmup=2000, thin=10, chains=2)
-# shotres
-# traceplot(shotres, 'theta')
-# yrep = extract(shotres, 'yRep')$yRep
-# dim(yrep)
-
+## Do keep <img> so you don't have to run rstanarm
 library(rstanarm)
 shotres = stan_glm(shotsNum~1, family='binomial', iter=2250, warmup=1000, thin=10, prior=student_t())
 yrep = data.frame(posterior_predict(shotres)); colnames(yrep) = paste0('Player_', 1:10)

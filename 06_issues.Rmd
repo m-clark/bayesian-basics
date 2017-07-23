@@ -26,24 +26,25 @@ As an example, let's assume a uniform distribution $(-\infty,\infty)$ for some p
 
 In general there are several issues with using a noninformative or reference prior.  For many models there may be no clear choice of what to use.  In any case, if the data are sufficient, the prior won't matter as much, so establishing some reference to be used automatically isn't exactly in keeping with Bayesian thinking. In addition, such choices can still have unintended effects on the results.  Furthermore, if you had clear prior information, e.g. from previous research, one should use it. 
 
-In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague.  As an example, consider our earlier [binomial distribution example](#prior-likelihood-posterior-distributions).  Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80%  of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a $\mathcal{B}(9,3)$ would probably be a good way to proceed.  One can examine the distribution to the right. <span class="marginnote"><span class="imgbigger"><img src="img/betaDistr9and3.svg" style="display:block; margin: 0 auto;" width=50%></span></span>
+In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague.  As an example, consider our earlier [binomial distribution example][prior-likelihood-posterior-distributions].  Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80%  of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a $\mathcal{B}(9,3)$ would probably be a good way to proceed.  One can examine such a distribution in the subsequent density plot. 
 
-```{r chooseBetaPrior, results='hold', echo=c(1:3), fig.keep='none'}
+
+```{r chooseBetaPrior, results='hold', echo=c(1:3)}
 diff(pbeta(c(.6, .9), 3, 1))
 diff(pbeta(c(.6, .9), 8, 3))
 diff(pbeta(c(.6, .9), 9, 3))
+```
 
-# pdf('img/betaDistr2and6.pdf', paper='USr')
-hist(rbeta(10000, 2, 6), border='gray50', col='#ff5500', xlab=expression(theta), breaks='FD')
-# dev.off()
-library(ggplot2)
+```{r chooseBetaPrior2, echo=F, out.width='500px'}
+
 ggplot(aes(x=x), data=data.frame(x=rbeta(10000, 9, 3))) + 
-  geom_histogram(fill=scales::alpha('#ff5500', .95), color='gray50') + 
+  geom_line(stat='density', color=palettes$orange$complementary) + 
+  geom_density(fill=scales::alpha('#ff5500', .75), color='transparent') + 
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
         axis.title.y=element_text(color='gray25'),
         plot.background = element_rect(fill = "transparent",colour = NA))
-ggsave('img/betaDistr9and3.svg', bg='transparent')
+# ggsave('img/betaDistr9and3.svg', bg='transparent')
 ```
 
 With our regression model we were dealing with standardized predictors, so even choosing a $\mathcal{N}(0, 10)$ might be overly vague, though it would be near flat from -1 to 1.  The nice part about setting the prior mean on zero is that it has a regularizing effect, shrinking coefficients toward 0, that can help avoid overfitting with smaller samples.
@@ -74,8 +75,8 @@ As a reminder, we pointed out in the [sensitivity analysis][Sensitivity Analysis
 
 ### Summary
 
-<span class="marginnote">The BUGS book has many examples for a wide variety of applications.  The [Stan github page](https://github.com/stan-dev/example-models/wiki) has Stan examples for each of those BUGS examples and many more.</span>
-It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors.  One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot.  While the choice might be considered subjective in some respects, it is not arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.
+
+It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors[^bugsbook].  One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot for simpler models.  While the choice might be considered subjective in some respects, it is not arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.
 
 
 
@@ -90,7 +91,7 @@ We have mentioned that BUGS and JAGS use <span class="emph">Gibbs sampling</span
 1. Start with initial values for the parameters $\theta^0$
 
 
-For $t=1,2...N_{sim}:$
+For $t=1,2...N_{sim}$ :
 
 
 2. Sample from some proposal distribution a potential candidate $\theta^*$, given $\theta^{t-1}$
@@ -107,7 +108,7 @@ nsim = numberSimulatedDraws
 theta0 = initValue
 theta = c(theta0, rep(NA, nsim))
 
-for (t in 2:nsim){
+for (t in 2:nsim) {
   thetaStar = rnorm(1, theta[-1], sd)
   u = runif(1)
   r = exp(logPosterior_thetaStar - logPosterior_theta0)
@@ -124,23 +125,23 @@ The Gibbs sampler takes an alternating approach for multiparameter problems, sam
 
 Start with initial values for some ordering of the parameters $\theta_1^0, \theta_2^0,..., \theta_p^0$
 
-For $t=1,2..., N_{sim}:$
+For $t=1,2..., N_{sim}$ :
 
-At iteration $t$, for $p=1,2..., P:$
+At iteration $t$, for $p=1,2..., P$ :
 
 
-- 1. $\theta_1^t \sim p(\theta_1^t | \theta_2^{t-1}, \theta_3^{t-1}, ..., \theta_p^{t-1})$
-- 2.  Generate $\theta_2^t \sim p(\theta_2^t | \theta_1^{t}, \theta_3^{t-1}, ..., \theta_p^{t-1})$
+1. $\theta_1^t \sim p(\theta_1^t | \theta_2^{t-1}, \theta_3^{t-1}, ..., \theta_p^{t-1})$
+2.  Generate $\theta_2^t \sim p(\theta_2^t | \theta_1^{t}, \theta_3^{t-1}, ..., \theta_p^{t-1})$
 
-- &nbsp;&nbsp;&nbsp;&nbsp; $\vdots$
+$\qquad\vdots$
 
-- p. Generate $\theta_p^t \sim p(\theta_p^t | \theta_1^{t}, \theta_2^{t}, ..., \theta_{p-1}^{t})$
+p. Generate $\theta_p^t \sim p(\theta_p^t | \theta_1^{t}, \theta_2^{t}, ..., \theta_{p-1}^{t})$
 
 Again, some generic code may provide another way to understand it:
 
 ```{r Gibbsgeneric, eval=FALSE}
-for (t in 1:nsim){
-  for (p in 1:P){
+for (t in 1:nsim) {
+  for (p in 1:P) {
     thetaNew[p] = rDistribution(1, theta[t,-p])
   }
   theta[t,] = thetaNew
@@ -159,8 +160,7 @@ Stan uses <span class="emph">Hamiltonian Monte Carlo</span>, another variant of 
 4. Set $\theta^t = \theta^*$ with probability $min(r, 1)$, else  $\theta^t = \theta^{t-1}$
 
 
-
-The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow.  An example using HMC on the regression model data can be found in the [Hamiltonian Monte Carlo Example][Hamiltonian Monte Carlo Example]<span class="marginnote">See this entry at David Mimno's blog for a [visualization of HMC](http://www.mimno.org/articles/hmc/), and Betancourt's [Conceptual Introduction to Hamiltonian Monte Carlo](https://arxiv.org/pdf/1701.02434.pdf).</span>
+The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow.  An example using HMC on the regression model data can be found in the [Hamiltonian Monte Carlo Example][Hamiltonian Monte Carlo Example][^hmc].
 
 
 ### Other Variations and Approximate Methods
@@ -193,3 +193,7 @@ One of the great things about the Bayesian approach is its ability to handle ext
 
 [^proposal]: Given a proposal/jumping distribution $\mathcal{J}_t$, <br>
 $r=\frac{p(\theta^*|y)/\mathcal{J}_t(\theta^*|\theta^{t-1})} {p(\theta^{t-1}|y)/\mathcal{J}_t(\theta^{t-1}|\theta^*)}$
+
+[^bugsbook]: The BUGS book has many examples for a wide variety of applications.  The [Stan github page](https://github.com/stan-dev/example-models/wiki) has Stan examples for each of those BUGS examples and many more.
+
+[^hmc]: See this entry at David Mimno's blog for a [visualization of HMC](http://www.mimno.org/articles/hmc/), and Betancourt's [Conceptual Introduction to Hamiltonian Monte Carlo](https://arxiv.org/pdf/1701.02434.pdf).

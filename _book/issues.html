@@ -178,8 +178,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>This section highlights some things to think about, as well as questions that would naturally arise for the applied researcher who might now be ready to start in on their first Bayesian analysis. It provides merely a taste regarding some select issues, and at this point one should be consulting Bayesian analysis texts directly.</p>
 <div id="debugging" class="section level2">
 <h2>Debugging</h2>
-<p>An essential part of Bayesian analysis is debugging to see if your code and model are doing what it should be doing<a href="#fn45" class="footnoteRef" id="fnref45"><sup>45</sup></a>, and this especially holds for more complex models. For many models with typical numbers for posterior draws, Bayesian analysis might take several minutes on standard computers or laptops. With big data and/or very complex models, some might take hours or even <em>days</em>. In either case, it is a waste of time to let broken code/models run unnecessarily.</p>
-<p>The idea with debugging is that, once you think you have everything set up the way you like, run very short attempts to see if A, the code even compiles, and B, whether it runs appropriately. As such, you will only want to set your warm-up and iterations to some small number to begin with, e.g. maybe not even 100 iterations, and no more than two chains<a href="#fn46" class="footnoteRef" id="fnref46"><sup>46</sup></a>. Sometimes it will be obvious what a problem is, such as a typo resulting in the program of choice not being able to locate the parameter of interest. Other issues may be fairly subtle, for example, when it comes to prior specification.</p>
+<p>An essential part of Bayesian analysis is debugging to see if your code and model are doing what it should be doing<a href="#fn46" class="footnoteRef" id="fnref46"><sup>46</sup></a>, and this especially holds for more complex models. For many models with typical numbers for posterior draws, Bayesian analysis might take several minutes on standard computers or laptops. With big data and/or very complex models, some might take hours or even <em>days</em>. In either case, it is a waste of time to let broken code/models run unnecessarily.</p>
+<p>The idea with debugging is that, once you think you have everything set up the way you like, run very short attempts to see if A, the code even compiles, and B, whether it runs appropriately. As such, you will only want to set your warm-up and iterations to some small number to begin with, e.g. maybe not even 100 iterations, and no more than two chains<a href="#fn47" class="footnoteRef" id="fnref47"><sup>47</sup></a>. Sometimes it will be obvious what a problem is, such as a typo resulting in the program of choice not being able to locate the parameter of interest. Other issues may be fairly subtle, for example, when it comes to prior specification.</p>
 <p>Along with initial short runs, one should consider simpler models first, and perhaps using only a subset of the data. Especially for complex models, it helps to build the model up, debugging and checking for problems along the way. As a not too complicated example, consider a mixed model for logistic regression. One could even start with a standard linear model ignoring the binary nature of the target and random effect structure. Getting a sense of things from that and just making sure that inputs etc. are in place, one can supply the inverse logit link and change the sampling distribution to Bernoulli. Now you can think about adding the random effect, other explanatory variables of interest, and any other complexities that had not been included yet.</p>
 <p>As you identify issues, you fix any problems that arise and tinker with other settings. Once you are satisfied, <em>then</em> try for the big run. Even then, you might spot new issues with a longer chain, so you can rinse and repeat at that point. BUGS, JAGS, and Stan more or less have this capacity built in with model upgrade functions. For example, in Stan you can feed the previous setup of a model in to the main <span class="func">stan</span> function. Use one for your initial runs, then when you’re ready, supply the model object as input to the ‘fit’ argument, perhaps with adjustments to the Monte Carlo settings.</p>
 </div>
@@ -191,13 +191,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>We can begin with <span class="emph">noninformative priors</span>, which might also be referred to as <em>vague</em>, <em>flat</em>, <em>reference</em>, <em>objective</em>, or <em>diffuse</em> depending on the context. The idea is to use something that allows for Bayesian inference but puts all the premium on the data, and/or soi-disant <em>objectivity</em>, though the fact that there is still choice here should make clear that these are not entirely noninformative or objective. As we have alluded to elsewhere, if we put a prior uniform distribution on the regression coefficients (and e.g. the log of <span class="math inline">\(\sigma\)</span>), this would be a noninformative approach that would essentially be akin to maximum likelihood estimation. One might wonder at this point why we wouldn’t just use vague priors all the time and not worry about overly influencing the analysis by the choice of prior.</p>
 <p>As an example, let’s assume a uniform distribution <span class="math inline">\((-\infty,\infty)\)</span> for some parameter <span class="math inline">\(\theta\)</span>. Without bounds, this prior is <em>improper</em>, i.e. the probability distribution does not integrate to 1. While the posterior distribution may be proper, it may not be, and it is left the the researcher to determine this. One also has to choose a suitable range, something which may not be easy to ascertain. In addition, the distribution may not be uniform on some transformation of the parameter, say <span class="math inline">\(\theta^2\)</span>. A <em>Jeffreys’ prior</em> could be used to overcome this particular issue, but is more difficult for multiparameter settings.</p>
 <p>In general there are several issues with using a noninformative or reference prior. For many models there may be no clear choice of what to use. In any case, if the data are sufficient, the prior won’t matter as much, so establishing some reference to be used automatically isn’t exactly in keeping with Bayesian thinking. In addition, such choices can still have unintended effects on the results. Furthermore, if you had clear prior information, e.g. from previous research, one should use it.</p>
-<p>In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague. As an example, consider our earlier <a href="a-hands-on-example.html#prior-likelihood-posterior-distributions">binomial distribution example</a>. Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80% of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a <span class="math inline">\(\mathcal{B}(9,3)\)</span> would probably be a good way to proceed. One can examine the distribution to the right. <span class="marginnote"><span class="imgbigger"><img src="img/betaDistr9and3.svg" style="display:block; margin: 0 auto;" width=50%></span></span></p>
+<p>In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague. As an example, consider our earlier [binomial distribution example][prior-likelihood-posterior-distributions]. Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80% of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a <span class="math inline">\(\mathcal{B}(9,3)\)</span> would probably be a good way to proceed. One can examine such a distribution in the subsequent density plot.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">diff</span>(<span class="kw">pbeta</span>(<span class="kw">c</span>(.<span class="dv">6</span>, .<span class="dv">9</span>), <span class="dv">3</span>, <span class="dv">1</span>))
 <span class="kw">diff</span>(<span class="kw">pbeta</span>(<span class="kw">c</span>(.<span class="dv">6</span>, .<span class="dv">9</span>), <span class="dv">8</span>, <span class="dv">3</span>))
 <span class="kw">diff</span>(<span class="kw">pbeta</span>(<span class="kw">c</span>(.<span class="dv">6</span>, .<span class="dv">9</span>), <span class="dv">9</span>, <span class="dv">3</span>))</code></pre></div>
 <pre><code>[1] 0.513
 [1] 0.7625194
 [1] 0.7915213</code></pre>
+<p><img src="Bayesian-Basics_files/figure-html/chooseBetaPrior2-1.svg" width="500px" style="display: block; margin: auto;" /></p>
 <p>With our regression model we were dealing with standardized predictors, so even choosing a <span class="math inline">\(\mathcal{N}(0, 10)\)</span> might be overly vague, though it would be near flat from -1 to 1. The nice part about setting the prior mean on zero is that it has a regularizing effect, shrinking coefficients toward 0, that can help avoid overfitting with smaller samples.</p>
 <p>Thus weakly informative priors can be based on perfectly reasonable settings, and this probably makes more sense than claiming complete ignorance, not to mention they simply work better for parameter estimation relative to flat priors. As mentioned, just some casual thought in many settings will often reveal that one isn’t completely ignorant. Furthermore if we have clear prior information, in the form of prior research for example, we can then use <span class="emph">informative</span> priors based on those results. This again would be preferable to a completely noninformative approach.</p>
 </div>
@@ -218,7 +219,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="summary-1" class="section level3">
 <h3>Summary</h3>
-<p><span class="marginnote">The BUGS book has many examples for a wide variety of applications. The <a href="https://github.com/stan-dev/example-models/wiki">Stan github page</a> has Stan examples for each of those BUGS examples and many more.</span> It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors. One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot. While the choice might be considered subjective in some respects, it is not arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.</p>
+<p>It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors<a href="#fn48" class="footnoteRef" id="fnref48"><sup>48</sup></a>. One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot for simpler models. While the choice might be considered subjective in some respects, it is not arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.</p>
 </div>
 </div>
 <div id="sampling-procedure" class="section level2">
@@ -226,23 +227,23 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>There are <a href="http://m-clark.github.io/docs/ld_mcmc/">many ways</a> in which one might sample from the posterior. Bayesian analysis is highly flexible and can solve a great many statistical models in theory. In practice things can be more difficult. As more complex models are attempted, new approaches are undertaken to deal with the problems in estimation that inevitably arise. In an attempt to dissolve at least some of the mystery, a brief description follows.</p>
 <div id="metropolis" class="section level3">
 <h3>Metropolis</h3>
-<p>We have mentioned that BUGS and JAGS use <span class="emph">Gibbs sampling</span>, which is a special case of the <span class="emph">Metropolis-Hastings</span> (MH) algorithm<a href="#fn47" class="footnoteRef" id="fnref47"><sup>47</sup></a>, a very general approach encompassing a wide variety of techniques. The Metropolis algorithm can be briefly described in the following steps:</p>
+<p>We have mentioned that BUGS and JAGS use <span class="emph">Gibbs sampling</span>, which is a special case of the <span class="emph">Metropolis-Hastings</span> (MH) algorithm<a href="#fn49" class="footnoteRef" id="fnref49"><sup>49</sup></a>, a very general approach encompassing a wide variety of techniques. The Metropolis algorithm can be briefly described in the following steps:</p>
 <ol style="list-style-type: decimal">
 <li>Start with initial values for the parameters <span class="math inline">\(\theta^0\)</span></li>
 </ol>
-<p>For <span class="math inline">\(t=1,2...N_{sim}:\)</span></p>
+<p>For <span class="math inline">\(t=1,2...N_{sim}\)</span> :</p>
 <ol start="2" style="list-style-type: decimal">
 <li>Sample from some proposal distribution a potential candidate <span class="math inline">\(\theta^*\)</span>, given <span class="math inline">\(\theta^{t-1}\)</span></li>
 <li>Calculate the ratio <span class="math inline">\(r\)</span> of the posterior densities <span class="math inline">\(\frac{p(\theta^*|y)}{p(\theta^{t-1}|y)}\)</span></li>
 <li>Set <span class="math inline">\(\theta^t = \theta^*\)</span> with probability <span class="math inline">\(\min(r, 1)\)</span>, else <span class="math inline">\(\theta^t = \theta^{t-1}\)</span></li>
 </ol>
-<p>Conceptually, if the proposal increases the posterior density, <span class="math inline">\(\theta^t = \theta^*\)</span>. If it decreases the proposal density, set <span class="math inline">\(\theta^t = \theta^*\)</span> with probability <span class="math inline">\(r\)</span>, else it remains at <span class="math inline">\(\theta^{t-1}\)</span>. The MH algorithm generalizes the Metropolis to use asymmetric proposal distributions and uses an <span class="math inline">\(r\)</span> to correct for asymmetry<a href="#fn48" class="footnoteRef" id="fnref48"><sup>48</sup></a>.</p>
+<p>Conceptually, if the proposal increases the posterior density, <span class="math inline">\(\theta^t = \theta^*\)</span>. If it decreases the proposal density, set <span class="math inline">\(\theta^t = \theta^*\)</span> with probability <span class="math inline">\(r\)</span>, else it remains at <span class="math inline">\(\theta^{t-1}\)</span>. The MH algorithm generalizes the Metropolis to use asymmetric proposal distributions and uses an <span class="math inline">\(r\)</span> to correct for asymmetry<a href="#fn50" class="footnoteRef" id="fnref50"><sup>50</sup></a>.</p>
 <p>Let’s look at this in generic/pseudo R code for additional clarity (in practice we can take the difference in the log values for step 3):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nsim =<span class="st"> </span>numberSimulatedDraws
 theta0 =<span class="st"> </span>initValue
 theta =<span class="st"> </span><span class="kw">c</span>(theta0, <span class="kw">rep</span>(<span class="ot">NA</span>, nsim))
 
-for (t in <span class="dv">2</span>:nsim){
+for (t in <span class="dv">2</span>:nsim) {
   thetaStar =<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1</span>, theta[-<span class="dv">1</span>], sd)
   u =<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)
   r =<span class="st"> </span><span class="kw">exp</span>(logPosterior_thetaStar -<span class="st"> </span>logPosterior_theta0)
@@ -254,23 +255,19 @@ for (t in <span class="dv">2</span>:nsim){
 <h3>Gibbs</h3>
 <p>The Gibbs sampler takes an alternating approach for multiparameter problems, sampling one parameter given the values of the others, and thus reducing a potentially high dimensional problem to lower dimensional conditional densities. We can describe its steps generally as follows.</p>
 <p>Start with initial values for some ordering of the parameters <span class="math inline">\(\theta_1^0, \theta_2^0,..., \theta_p^0\)</span></p>
-<p>For <span class="math inline">\(t=1,2..., N_{sim}:\)</span></p>
-<p>At iteration <span class="math inline">\(t\)</span>, for <span class="math inline">\(p=1,2..., P:\)</span></p>
-<ul>
-<li><ol style="list-style-type: decimal">
+<p>For <span class="math inline">\(t=1,2..., N_{sim}\)</span> :</p>
+<p>At iteration <span class="math inline">\(t\)</span>, for <span class="math inline">\(p=1,2..., P\)</span> :</p>
+<ol style="list-style-type: decimal">
 <li><span class="math inline">\(\theta_1^t \sim p(\theta_1^t | \theta_2^{t-1}, \theta_3^{t-1}, ..., \theta_p^{t-1})\)</span></li>
-</ol></li>
-<li><ol start="2" style="list-style-type: decimal">
 <li>Generate <span class="math inline">\(\theta_2^t \sim p(\theta_2^t | \theta_1^{t}, \theta_3^{t-1}, ..., \theta_p^{t-1})\)</span></li>
-</ol></li>
-<li><p>     <span class="math inline">\(\vdots\)</span></p></li>
-<li><ol start="16" style="list-style-type: lower-alpha">
+</ol>
+<p><span class="math inline">\(\qquad\vdots\)</span></p>
+<ol start="16" style="list-style-type: lower-alpha">
 <li>Generate <span class="math inline">\(\theta_p^t \sim p(\theta_p^t | \theta_1^{t}, \theta_2^{t}, ..., \theta_{p-1}^{t})\)</span></li>
-</ol></li>
-</ul>
+</ol>
 <p>Again, some generic code may provide another way to understand it:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for (t in <span class="dv">1</span>:nsim){
-  for (p in <span class="dv">1</span>:P){
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">for (t in <span class="dv">1</span>:nsim) {
+  for (p in <span class="dv">1</span>:P) {
     thetaNew[p] =<span class="st"> </span><span class="kw">rDistribution</span>(<span class="dv">1</span>, theta[t,-p])
   }
   theta[t,] =<span class="st"> </span>thetaNew
@@ -285,7 +282,7 @@ for (t in <span class="dv">2</span>:nsim){
 <li>Calculate <span class="math inline">\(r = \frac{p(\theta^*|y)p(\phi^*)}{p(\theta^{t-1})p(\phi^{t-1})}\)</span></li>
 <li>Set <span class="math inline">\(\theta^t = \theta^*\)</span> with probability <span class="math inline">\(min(r, 1)\)</span>, else <span class="math inline">\(\theta^t = \theta^{t-1}\)</span></li>
 </ol>
-<p>The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow. An example using HMC on the regression model data can be found in the <a href="appendix.html#hamiltonian-monte-carlo-example">Hamiltonian Monte Carlo Example</a><span class="marginnote">See this entry at David Mimno’s blog for a <a href="http://www.mimno.org/articles/hmc/">visualization of HMC</a>, and Betancourt’s <a href="https://arxiv.org/pdf/1701.02434.pdf">Conceptual Introduction to Hamiltonian Monte Carlo</a>.</span></p>
+<p>The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow. An example using HMC on the regression model data can be found in the <a href="appendix.html#hamiltonian-monte-carlo-example">Hamiltonian Monte Carlo Example</a><a href="#fn51" class="footnoteRef" id="fnref51"><sup>51</sup></a>.</p>
 </div>
 <div id="other-variations-and-approximate-methods" class="section level3">
 <h3>Other Variations and Approximate Methods</h3>
@@ -307,11 +304,13 @@ for (t in <span class="dv">2</span>:nsim){
 </div>
 <div class="footnotes">
 <hr />
-<ol start="45">
-<li id="fn45"><p>It really should be a part of most analysis.<a href="issues.html#fnref45">↩</a></p></li>
-<li id="fn46"><p>With Stan I sometimes do a 1 iteration compile check first.<a href="issues.html#fnref46">↩</a></p></li>
-<li id="fn47"><p>Originally developed in physics in the 50s, it eventually made its way across to other fields.<a href="issues.html#fnref47">↩</a></p></li>
-<li id="fn48"><p>Given a proposal/jumping distribution <span class="math inline">\(\mathcal{J}_t\)</span>, <br> <span class="math inline">\(r=\frac{p(\theta^*|y)/\mathcal{J}_t(\theta^*|\theta^{t-1})} {p(\theta^{t-1}|y)/\mathcal{J}_t(\theta^{t-1}|\theta^*)}\)</span><a href="issues.html#fnref48">↩</a></p></li>
+<ol start="46">
+<li id="fn46"><p>It really should be a part of most analysis.<a href="issues.html#fnref46">↩</a></p></li>
+<li id="fn47"><p>With Stan I sometimes do a 1 iteration compile check first.<a href="issues.html#fnref47">↩</a></p></li>
+<li id="fn48"><p>The BUGS book has many examples for a wide variety of applications. The <a href="https://github.com/stan-dev/example-models/wiki">Stan github page</a> has Stan examples for each of those BUGS examples and many more.<a href="issues.html#fnref48">↩</a></p></li>
+<li id="fn49"><p>Originally developed in physics in the 50s, it eventually made its way across to other fields.<a href="issues.html#fnref49">↩</a></p></li>
+<li id="fn50"><p>Given a proposal/jumping distribution <span class="math inline">\(\mathcal{J}_t\)</span>, <br> <span class="math inline">\(r=\frac{p(\theta^*|y)/\mathcal{J}_t(\theta^*|\theta^{t-1})} {p(\theta^{t-1}|y)/\mathcal{J}_t(\theta^{t-1}|\theta^*)}\)</span><a href="issues.html#fnref50">↩</a></p></li>
+<li id="fn51"><p>See this entry at David Mimno’s blog for a <a href="http://www.mimno.org/articles/hmc/">visualization of HMC</a>, and Betancourt’s <a href="https://arxiv.org/pdf/1701.02434.pdf">Conceptual Introduction to Hamiltonian Monte Carlo</a>.<a href="issues.html#fnref51">↩</a></p></li>
 </ol>
 </div>
             </section>

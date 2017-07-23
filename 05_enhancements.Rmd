@@ -13,7 +13,7 @@ A typical part of linear regression output is $R^2$, the amount of variance acco
 <!-- You ran this and saved the image as data/mainModelDatawithRsq.RData -->
 
 
-```{r generatedQuantitiesRsq, eval=FALSE, echo=-c(1, 6:34, 46)}
+```{r generatedQuantitiesRsq, eval=F, echo=-c(1, 6:34, 46)}
 stanmodelcodeRsq = "
 .
 .
@@ -75,7 +75,7 @@ rss = rss[1]; totalss = totalss[1] # for alignment, remove matrix
 # var(fitted(modlm))/var(y)
 ```
 
-Now we can run the model with added $R^2$[^rstanarmR2].  Note that as before we do not just get a point estimate, but a whole distribution of simulated values for $R^2$.  First the results.
+Now we can run the model with added $R^2$&nbsp;[^rstanarmR2].  Note that as before we do not just get a point estimate, but a whole distribution of simulated values for $R^2$.  First the results.
 
 
 ```{r generatedQuantitiesRsqResults, echo=-1}
@@ -83,7 +83,7 @@ load('data/mainModelDatawithRsq.RData')
 print(fitRsq, digits=3, par=c('beta','sigma','R2'), prob=c(.025,.5,.975))
 ```
 
-The nice thing here is that our $R^2$ incorporates the additional uncertainty in estimating the model parameters, and thus acts like an *adjusted* $R^2$[^adjr2].  The following is the classical regression adjusted $R^2$.
+The nice thing here is that our $R^2$ incorporates the additional uncertainty in estimating the model parameters, and thus acts like an *adjusted* $R^2$&nbsp;[^adjr2].  The following is the classical regression adjusted $R^2$.
 
 
 ```{r generatedQuantitiesAdjRsq}
@@ -96,7 +96,7 @@ Furthermore, in the Bayesian context we get an interval estimate and everything 
 
 ## Robust Regression
 
-If we were concerned that extreme observations exist that our current model is not able to capture well, we could change the sampling distribution to one that had a little more probability in the tails.  This is very easy to do in this situation, as we just change likelihood portion of our code to employ say, a t-distribution. <span class="marginnote">Note that with the <span class="pack">brms</span> package all one would have to do is change the <span style="font-family:'Open Sans'">family</span> argument in the model function.</span>In Stan, the t-distribution has parameters mean and sigma as with the normal distribution, but we also have the added parameter for degrees of freedom.  Thus our code might look like the following:
+If we were concerned that extreme observations exist that our current model is not able to capture well, we could change the sampling distribution to one that had a little more probability in the tails.  This is very easy to do in this situation, as we just change likelihood portion of our code to employ say, a t-distribution[^rstant]. In Stan, the t-distribution has parameters mean and sigma as with the normal distribution, but we also have the added parameter for degrees of freedom.  Thus our code might look like the following:
 
 
 ```{r robustRegressionT}
@@ -170,4 +170,6 @@ And that's all there is to that[^stannotvec].  We just saw that we are not limit
 
 [^poislog]: You can also forgo the exponentiation and instead use the <span class="func">poisson_log</span> function in your sampling statement (slightly faster too).
 
-[^stannotvec]: Note that some link/inverse-link functions in Stan cannot be applied to vectors, only scalars.  As such you would have to loop over the values of $y$,<br> <span style="font-family:'Open Sans'">**for(n in 1:N) ...**</span>
+[^stannotvec]: Note that some link/inverse-link functions in Stan cannot be applied to vectors, only scalars.  As such you would have to loop over the values of $y$,<br> `for(n in 1:N) ...`
+
+[^rstant]: Note that with the <span class="pack">brms</span> package all one would have to do is change the `family` argument in the model function.
