@@ -14,7 +14,7 @@ $$\mathcal{L}(\theta) = \prod_{i=1}^N f(y_i|\theta)$$
 
 Thus the *likelihood* for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates.  Furthermore we can compare one set, $\mathcal{L}(\theta_A)$, to that of another, $\mathcal{L}(\theta_B)$, and whichever produces the greater likelihood would be the preferred set of estimates.  We can get a sense of this with the following visualization, based on a single parameter, Poisson distributed variable. The data is drawn from  a variable with mean $\theta=5$.  We note the calculated likelihood increases as we estimate values for $\theta$ closer to $5$. With more and more data, the final ML estimate will converge on the true value.
 
-```{r maxLikeillustration, cache=FALSE, eval=T, echo=FALSE, out.width='500px', message=T}
+```{r maxLikeillustration, cache=FALSE, echo=FALSE, out.width='500px', message=T}
 set.seed(1234)
 y = rpois(100000, lambda=5)
 mus = seq(3, 8, l=100)
@@ -99,7 +99,7 @@ We can see that the ML estimates are the same as the intercept only model estima
 
 In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a <span class="emph">likelihood surface</span> that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point[^tangent]. For simpler settings such as this, we can  visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum (the surface plot is interactive- feel free to adjust).  I also plot the the path of the optimizer from a top down view.  The large blue dot noted represents the minimum negative log likelihood. 
 
-```{r plotSurface, eval=T, echo=FALSE}
+```{r plotSurface, echo=FALSE}
 # RSTUDIO VIEWER WILL NOT CORRECTLY DISPLAY EVEN IF PLOT IS CORRECT
 # PLOTLY STILL BREAKS MATHJAX FOR TUFTE, CAN ONLY USE SCREENSHOT
 
@@ -151,7 +151,7 @@ plot_ly(x=~mu, y =~ sigma, z=~llsurf_trans,
 detach(package:plotly)
 ```
 
-```{r plotNormMLEpath, eval=T, echo=FALSE, out.width='500px'}
+```{r plotNormMLEpath, echo=FALSE, out.width='500px'}
 # plotdat = read.csv('data//mleNormEstimates.csv'); colnames(plotdat) = c('mu','sigma', 'll')
 plotdat$nll = -plotdat$ll
 
@@ -224,9 +224,9 @@ summary(modlm)
 
 As before, our estimates and final log likelihood value are about where they should be, and reflect the lm output, as the OLS estimates are the maximum likelihood estimates.  The visualization becomes more difficult beyond two parameters, but we can examine slices similar to the previous plot. 
 
-```{r mlmisc, eval=T, echo=FALSE}
+```{r mlmisc, echo=FALSE}
 detach(package:bbmle) # why are people still using MASS?!
-detach(package:MASS) # why are people still using MASS?!
+# detach(package:MASS) # why are people still using MASS?!
 plotdat = read.csv('data//mleEstimates.csv'); colnames(plotdat) = c('sigma', 'Intercept', 'β', 'll')
 # plotdat = read.csv('data//mleEstimates.csv'); colnames(plotdat) = c('sigma', 'Int', 'b1', 'll')
 plotdat$nll = -plotdat$ll
@@ -294,7 +294,7 @@ BUGS [@bugsbook] (*B*ayesian inference *U*sing *G*ibbs *S*ampling) is perhaps th
 
 ### R
 
-R has many modeling packages devoted to Bayesian analysis such that there is a [Task View](http://cran.r-project.org/web/views/Bayesian.html) specific to the topic.  Most of them are even specific to the implementation of a certain type of analysis[^rbayes].  So not only can you do everything within R and take advantage of the power of those languages, you can then use Bayesian specific R packages on the results.  For standard and even some complex models I would suggest using the <span class="pack">rstanarm</span> or <span class="pack">brms</span> packages as a way to stick to the usual R modeling style, unless you have a notably complicated model, at wich point you can use <span class="pack">rstan</span>.
+R has many modeling packages devoted to Bayesian analysis such that there is a [Task View](http://cran.r-project.org/web/views/Bayesian.html) specific to the topic.  Most of them are even specific to the implementation of a certain type of analysis[^rbayes].  So not only can you do everything within R and take advantage of the power of those languages, you can then use Bayesian specific R packages on the results.  For standard and even some complex models I would suggest using the <span class="pack">rstanarm</span> or <span class="pack">brms</span> packages as a way to stick to the usual R modeling style, unless you have a notably complicated model, at which point you can use <span class="pack">rstan</span>.
 
 
 ### General Statistical Packages
@@ -480,10 +480,16 @@ lmjags = coda.samples(lmjagsmod, c('beta', 'sigma.y'), n.iter=10000,
 
 Now we have a model identical to the others, and can summarize the posterior distribution in similar fashion.
 
-```{r jagsModelResults, echo=-1}
+```{r jagsModelResults, echo=-1, eval=FALSE}
 load('data/jagsModel.RData')
 summary(lmjags)
 coda::effectiveSize(lmjags)
+```
+
+```{r jagsModelResults_pretty, echo=F}
+load('data/jagsModel.RData')
+broom::tidyMCMC(lmjags, conf.int=T) %>% format(digits=2) %>% pander(justify='lrrrr')
+coda::effectiveSize(lmjags) %>% pander
 ```
 
 
@@ -511,10 +517,10 @@ Next depicted is a random walk Metropolis-Hastings algorithm using the the data 
 
 The primary functions that we need to specify regard the posterior distribution[^MHexample], an update step for beta coefficients, and an update step for the variance estimate.<br><br>
 
-```{r MHexample, eval=TRUE}
+```{r MHexample}
 # posterior function
 
-post = function(x, y, b, s2){
+post = function(x, y, b, s2) {
   # Args: X is the model matrix; y the target vector; b and s2 the parameters
   # to be esitmated
 
@@ -550,7 +556,7 @@ post = function(x, y, b, s2){
 
 # update step for regression coefficients
 
-updatereg = function(i, x, y, b, s2){
+updatereg = function(i, x, y, b, s2) {
   # Args are the same as above but with additional i iterator argument.
   b[i,] = MASS::mvrnorm(1, mu=b[i-1,], Sigma=bvarscale)  # proposal/jumping distribution
   
@@ -567,7 +573,7 @@ updatereg = function(i, x, y, b, s2){
 
 # update step for sigma2
 
-updates2 = function(i, x, y, b, s2){
+updates2 = function(i, x, y, b, s2) {
   s2candidate =  rnorm(1, s2[i-1], sd=sigmascale)
   if (s2candidate < 0) {
     accept = FALSE
@@ -586,10 +592,10 @@ updates2 = function(i, x, y, b, s2){
 
 Now we can set things up for the MCMC chain[^MHmcmc].  Aside from the typical MCMC setup and initializing the parameter matrices to hold the draws from the posterior, we also require scale parameters to use for the jumping/proposal distribution.
 
-```{r MHexampleSetup, eval=TRUE}
+```{r MHexampleSetup}
 # Setup, starting values etc. 
-nsim = 12000
-burnin = 2000
+nsim = 5000
+burnin = 1000
 thin = 10
 
 b = matrix(0, nsim, ncol(X))         # initialize beta update matrix
@@ -609,9 +615,9 @@ sigmascale = .9
 
 We can now run and summarize the model with tools from the <span class="pack">coda</span> package.
 
-```{r MHexampleRun, eval=TRUE}
+```{r MHexampleRun, eval=F}
 # Run
-for(i in 2:nsim){
+for (i in 2:nsim) {
   b[i,] = updatereg(i=i, y=y, x=X, b=b, s2=s2)
   s2[i] = updates2(i=i, y=y, x=X, b=b, s2=s2)
 }
@@ -632,10 +638,37 @@ summary(bfinal); summary(s2final)
 round(c(coef(modlm), summary(modlm)$sigma^2), 3)
 ```
 
+```{r MHexampleRun_pretty, echo=F}
+# Run
+for (i in 2:nsim) {
+  b[i,] = updatereg(i=i, y=y, x=X, b=b, s2=s2)
+  s2[i] = updates2(i=i, y=y, x=X, b=b, s2=s2)
+}
+
+# calculate acceptance rates
+baccrate = mean(diff(b[(burnin+1):nsim,]) != 0)
+s2accrate = mean(diff(s2[(burnin+1):nsim]) != 0)            
+baccrate
+s2accrate
+
+# get final chain
+library(coda)
+bfinal = as.mcmc(data.frame(beta=b[seq(burnin+1, nsim, by=thin),], sigmasq=s2[seq(burnin+1, nsim, by=thin)]))
+
+# get summaries; compare to lm and stan
+# broom::tidyMCMC(bfinal, conf.int=T) %>% format(digits=2) %>% pander(justify='lrrrr')
+rstan::monitor(array(cbind(b,s2),dim=c(5000,1,5), dimnames=list(NULL, NULL, colnames(bfinal))), 
+               warmup=burnin, digits_summary=5, probs=c(.025,.975), print=F) %>% 
+  format(digit=2) %>% 
+  pander(justify='lrrrrrrr')
+# round(c(coef(modlm), sigamsq=summary(modlm)$sigma^2), 3) %>% pander
+```
+
 Here is the previous Stan fit for comparison.
 
-```{r MHexampleCompare, eval=TRUE}
-print(fit, digits=3, prob=c(.025,.5,.975))
+```{r MHexampleCompare, echo=FALSE}
+# print(fit, digits=3, prob=c(.025,.5,.975))
+broom::tidy(fit, conf.int=T) %>%  format(digits=2) %>% pander(justify='lrrrr')
 ```
 
 
@@ -643,13 +676,13 @@ print(fit, digits=3, prob=c(.025,.5,.975))
 ## Hamiltonian Monte Carlo Example
 
 
-The following demonstrates Hamiltonian Monte Carlo, the technique that Stan uses, and which is a different estimation approach than Gibbs sampler in BUGS/JAGS.  If you are interested in the details enough to be reading this, I highly recommend Betancourt's [conceptual introduction to HMC](https://arxiv.org/pdf/1701.02434.pdf).  This example still assumes the data we used in this document, and is largely based on the code in the appendix of @gelman_bda.  
+The following demonstrates Hamiltonian Monte Carlo, the technique that Stan uses, and which is a different estimation approach than the Gibbs sampler in BUGS/JAGS.  If you are interested in the details enough to be reading this, I highly recommend Betancourt's [conceptual introduction to HMC](https://arxiv.org/pdf/1701.02434.pdf).  This example still assumes the data we used in this document, and is largely based on the code in the appendix of @gelman_bda.  
 
 First we start with the functions.
 
-```{r HMCexample, cache=TRUE}
+```{r HMCexample}
 # Log posterior function
-log_p_th = function(X, y, th){
+log_p_th = function(X, y, th) {
   # Args: X is the model matrix; y the target vector; th is the current 
   # parameter estimates.
   beta = th[-length(th)]            # reg coefs to be estimated
@@ -661,7 +694,7 @@ log_p_th = function(X, y, th){
   priorbvarinv = diag(1/100, 4) 
   prioralpha = priorbeta = .001
   
-  if(is.nan(sigma) | sigma<=0){     # scale parameter must be positive, so post
+  if (is.nan(sigma) | sigma<=0) {     # scale parameter must be positive, so post
     return(-Inf)                    # density is zero if it jumps below zero
   }
   # log posterior in this conjugate setting. Conceputally it's 
@@ -682,11 +715,11 @@ log_p_th = function(X, y, th){
 
 
 # numerical gradient function as given in BDA3 p. 602; same args as posterior
-gradient_th_numerical = function(X, y, th){
+gradient_th_numerical = function(X, y, th) {
   d = length(th)
   e = .0001
   diffs = numeric(5)
-  for(k in 1:d){
+  for (k in 1:d) {
     th_hi = th
     th_lo = th
     th_hi[k] = th[k] + e
@@ -698,7 +731,7 @@ gradient_th_numerical = function(X, y, th){
 
 
 # single HMC iteration function
-hmc_iteration = function(X, y, th, epsilon, L, M){
+hmc_iteration = function(X, y, th, epsilon, L, M) {
   # Args: epsilon is the stepsize; L is the number of leapfrog steps; epsilon
   # and L are drawn randomly at each iteration to explore other areas of the
   # posterior (starting with epsilon0 and L0); M is a diagonal mass matrix 
@@ -714,7 +747,7 @@ hmc_iteration = function(X, y, th, epsilon, L, M){
   log_p_old = log_p_th(X, y, th) - .5*sum(M_inv*phi^2)
   phi = phi + .5*epsilon*gradient_th_numerical(X, y, th)
   
-  for (l in 1:L){
+  for (l in 1:L) {
     th = th + epsilon*M_inv*phi
     phi = phi + ifelse(l==L, .5, 1) * epsilon*gradient_th_numerical(X, y, th)
   }
@@ -726,13 +759,18 @@ hmc_iteration = function(X, y, th, epsilon, L, M){
   r = exp(log_p_star - log_p_old)
   if (is.nan(r)) r = 0
   p_jump = min(r, 1)
-  th_new = if(runif(1) < p_jump) th else th_old
+  if (runif(1) < p_jump) {
+    th_new = th
+  }
+  else {
+    th_new = th_old
+  }
   return(list(th=th_new, p_jump=p_jump))  # returns estimates and acceptance rate
 }
 
 
 # main HMC function
-hmc_run = function(starts, iter, warmup, epsilon_0, L_0, M, X, y){
+hmc_run = function(starts, iter, warmup, epsilon_0, L_0, M, X, y) {
   # Args: starts are starting values; iter is total number of simulations for 
   # each chain (note chain is based on the dimension of starts); warmup
   # determines which of the initial iterations will be ignored for inference
@@ -744,9 +782,9 @@ hmc_run = function(starts, iter, warmup, epsilon_0, L_0, M, X, y){
                dimnames=list(NULL, NULL, colnames(starts)))
   p_jump = matrix(NA, iter, chains)
   
-  for(j in 1:chains){
+  for (j in 1:chains) {
     th = starts[j,]
-    for(t in 1:iter){
+    for (t in 1:iter) {
       epsilon = runif(1, 0, 2*epsilon_0)
       L = ceiling(2*L_0*runif(1))
       temp = hmc_iteration(X, y, th, epsilon, L, M)
@@ -756,7 +794,7 @@ hmc_run = function(starts, iter, warmup, epsilon_0, L_0, M, X, y){
     }
   }
   
-  rstan::monitor(sims, warmup, digits_summary=3)
+  # rstan::monitor(sims, warmup, digits_summary=3)
   acc = round(colMeans(p_jump[(warmup+1):iter,]), 3)  # acceptance rate
   message('Avg acceptance probability for each chain: ', 
           paste0(acc[1],', ',acc[2]), '\n') 
@@ -765,9 +803,9 @@ hmc_run = function(starts, iter, warmup, epsilon_0, L_0, M, X, y){
 ```
 
 
-With the primary functions in place, we set the starting values and choose other settings for for the HMC process. The coefficient starting values are based on random draws from a uniform distribution, while $\sigma$ is set to a value of one in each case.  As in the other examples we'll have 12000 total draws with warm-up set to 2000.  I don't have any thinning option but that could be added or simply done as part of the <span class="pack">coda</span> package preparation.
+With the primary functions in place, we set the starting values and choose other settings for for the HMC process. The coefficient starting values are based on random draws from a uniform distribution, while $\sigma$ is set to a value of one in each case.  As in the other examples we'll have 5000 total draws with warm-up set to 2500.  I don't have any thinning option here, but that could be added or simply done as part of the <span class="pack">coda</span> package preparation.
 
-```{r HMCexampleSetup, cache=TRUE, echo=c(1:5, 7:16)}
+```{r HMCexampleSetup, echo=c(1:5, 7:16)}
 # Starting values and mcmc settings
 parnames = c(paste0('beta[',1:4,']'), 'sigma')
 d = length(parnames)
@@ -776,8 +814,8 @@ chains = 2
 load('data/mainModelData.RData')
 thetastart = t(replicate(chains, c(runif(d-1, -1, 1), 1)))
 colnames(thetastart) = parnames
-nsim = 12000
-wu = 2000
+nsim = 1000
+wu = 500
 
 # fiddle with these to get a desirable acceptance rate of around .80. The
 # following work well with the document data.
@@ -788,9 +826,9 @@ mass_vector = 1/vars
 ```
 
 
-We are now ready to run the model.  On my machine and with the above settings, it took about two minutes. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.
+We are now ready to run the model.  On my machine and with the above settings, it took about 45 seconds. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.
 
-```{r HMCexampleRun, cache=TRUE, message=T, eval=T}
+```{r HMCexampleRun, message=T, eval=FALSE}
 # Run the model
 M1 = hmc_run(starts=thetastart, iter=nsim, warmup=wu, epsilon_0=stepsize, 
              L_0=nLeap, M=mass_vector, X=X, y=y)
@@ -799,8 +837,8 @@ M1 = hmc_run(starts=thetastart, iter=nsim, warmup=wu, epsilon_0=stepsize,
 # use coda if desired
 library(coda)
 
-theta = as.mcmc.list(list(as.mcmc(M1$sims[(wu+1):nsim,1,]), 
-                          as.mcmc(M1$sims[(wu+1):nsim,2,])))
+theta = as.mcmc.list(list(as.mcmc(M1$sims[(wu+1):nsim, 1,]), 
+                          as.mcmc(M1$sims[(wu+1):nsim, 2,])))
 summary(theta)
 finalest =  summary(theta)$statistics[,'Mean']
 b = finalest[1:4]
@@ -808,10 +846,35 @@ sig = finalest[5]
 log_p_th(X, y, finalest)
 ```
 
+```{r HMCexampleRun_pretty, message=T, echo=FALSE}
+# Run the model
+M1 = hmc_run(starts=thetastart, iter=nsim, warmup=wu, epsilon_0=stepsize, 
+             L_0=nLeap, M=mass_vector, X=X, y=y)
+# str(M1, 1)
+
+# use coda if desired
+# library(coda)
+# 
+theta = as.mcmc.list(list(as.mcmc(M1$sims[(wu+1):nsim,1,]),
+                          as.mcmc(M1$sims[(wu+1):nsim,2,])))
+# # summary(theta)
+finalest =  summary(theta)$statistics[,'Mean']
+# b = finalest[1:4]
+# sig = finalest[5]
+# broom::tidyMCMC(theta, conf.int=T) %>% format(digits=2) %>% pander(justify='lrrrr')
+rstan::monitor(M1$sims, 
+               warmup=500, digits_summary=5, probs=c(.025,.975),
+               print=F) %>% 
+  round(digit=3) %>%
+  format(digit=3) %>%
+  pander(justify='lrrrrrrr')
+glue::glue('log posterior = ', round(log_p_th(X, y, finalest),3))
+```
+
 Our estimates look pretty good, and inspection of the diagnostics would show good mixing and convergence as well. At this point we can compare it to the Stan output.  For the following, I modified the previous Stan code to use the same inverse gamma prior and tweaked the control options for a little bit more similarity, but that's not necessary.
 
 
-```{r HMCexampleStanCompare, cache=TRUE, eval=TRUE, echo=FALSE}
+```{r HMCexampleStanCompare, echo=FALSE}
 # Note: you ran and save image to get around all the output being spit out.
 stanmodelcodeIG = "
 data {                      // Data block
@@ -862,8 +925,10 @@ dat = list(N=N, K=ncol(X), y=y, X=X)
 #            warmup=wu, thin=1, chains = chains, verbose = FALSE,
 #            control=list(adap_engaged=F, stepsize=stepsize, adap_t0=nLeap, refresh=0))
 load('data/IGModelData.RData')
-print(fitIG, digits_summary=3, probs=c(.025,.5,.975))
+# print(fitIG, digits_summary=3, probs=c(.025,.5,.975))
+broom::tidy(fitIG, conf.int=T) %>% format(digits=3) %>% pander(justify='lrrrr')
 # finalest; log_p_th(X, y, finalest)
+glue::glue('log posterior = ', round(get_posterior_mean(fitIG, par='lp__')[,3],3))
 ```
 
 
@@ -872,11 +937,11 @@ print(fitIG, digits_summary=3, probs=c(.025,.5,.975))
 
 
 
-[^logs]: Math refresher on logs: <span style="font-family='Consolas'">log(A*B) = log(A)+log(B)</span>. So summing the log probabilities will result in the same values for $\theta$, but won't result in extremely small values that will break our computer.
+[^logs]: Math refresher on logs: `log(A*B) = log(A)+log(B)`. So summing the log probabilities will result in the same values for $\theta$, but won't result in extremely small values that will break our computer.
 
 [^notlazy]: Of course we could just use the sample estimates, but this is for demonstration.
 
-[^distributions]: Type <span style="font-family='Consolas'">?Distributions</span> at the console for some of the basic R distributions available.
+[^distributions]: Type `?Distributions` at the console for some of the basic R distributions available.
 
 [^reasy]: Much more straightforward than writing the likelihood function as above.
 

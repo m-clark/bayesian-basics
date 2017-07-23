@@ -147,7 +147,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#number-of-draws-thinning-warm-up"><i class="fa fa-check"></i>Number of draws, thinning, warm-up</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#model-complexity"><i class="fa fa-check"></i>Model Complexity</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="summary-2.html"><a href="summary-2.html"><i class="fa fa-check"></i>Summary</a></li>
+<li class="chapter" data-level="" data-path="final-thoughts.html"><a href="final-thoughts.html"><i class="fa fa-check"></i>Final Thoughts</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#linear-model"><i class="fa fa-check"></i>Linear Model</a></li>
@@ -159,8 +159,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#hamiltonian-monte-carlo-example"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a><ul>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts"><i class="fa fa-check"></i>Texts</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts-for-your-shelf"><i class="fa fa-check"></i>Texts for Your Shelf</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#other"><i class="fa fa-check"></i>Other</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 </ul>
 
@@ -302,27 +303,27 @@ stanmodelcode =<span class="st"> &quot;</span>
 <p>Now that we have an idea of what the code is doing, let’s put it to work. Bayesian estimation, like maximum likelihood, starts with initial guesses as starting points and then runs in an iterative fashion, producing simulated draws from the posterior distribution at each step, and then correcting those draws until finally getting to some target, or <span class="emph">stationary</span> distribution. This part is key and different from classical statistics. We are aiming for a <em>distribution</em>, not a <em>point estimate</em>.</p>
 <p>The simulation process is referred to as <span class="emph">Markov Chain Monte Carlo</span>, or MCMC for short. The specifics of this process are what sets many of the Bayesian programming languages/approaches apart, and something we will cover in more detail in a later section (see <a href="issues.html#sampling-procedure">Sampling Procedure</a>). In MCMC, all of the simulated draws from the posterior are based on and correlated with previous draws<a href="#fn23" class="footnoteRef" id="fnref23"><sup>23</sup></a>, as the process moves along the path toward a stationary distribution. Typically we will allow the process to <em>warm up</em>, or rather get a bit settled down from the initial starting point, which might be way off, and thus the subsequent estimates will also be way off for the first few iterations<a href="#fn24" class="footnoteRef" id="fnref24"><sup>24</sup></a>. Rest assured, assuming the model and data are otherwise acceptable, the process will get to where it needs to go. However, as a further check, we will run the whole thing multiple times, i.e. have more than one <span class="emph">chain</span>. As the chains will start from different places, if multiple chains get to the same place in the end, we can feel more confident about our results.</p>
 <p>While this process may sound like it might take a long time to complete, for the following you’ll note that it will likely take more time for Stan to compile its code to C++ than it will to run the model<a href="#fn25" class="footnoteRef" id="fnref25"><sup>25</sup></a>, and on my computer each chain only takes only a little more than a second. However, the Bayesian approach used to take a very long time even for a standard regression such as this, and that is perhaps the primary reason why Bayesian analysis only caught on in the last couple decades; we simply didn’t have the machines to do it efficiently. Even now though, for highly complex models and large data sets it can still take a long time to run, though typically not prohibitively so.</p>
-<p>In the following code, we note the object that contains the Stan model code, the data list, how many iterations we want (12000)<a href="#fn26" class="footnoteRef" id="fnref26"><sup>26</sup></a>, how long we want the process to run before we start to keep any estimates (<code>warmup=2000</code>), how many of the post-warmup draws of the posterior we want to keep (<code>thin=10</code> means every tenth draw), and the number of chains (<code>chains=3</code>). In the end we will have three chains of 1000<a href="#fn27" class="footnoteRef" id="fnref27"><sup>27</sup></a> draws from the posterior distribution of the parameters. Stan spits out a lot of output to the R console even with <code>verbose = FALSE</code>, and I omit it here, but you will see some initial info about the compiling process, updates as each chain gets through 10% of iterations specified in the <code>iter</code> argument, and finally an estimate of the elapsed time. You may also see <em>informational messages</em> which, unless they are highly repetitive, should not be taken as an error.</p>
+<p>In the following code, we note the object that contains the Stan model code, the data list, how many iterations we want (5000)<a href="#fn26" class="footnoteRef" id="fnref26"><sup>26</sup></a>, how long we want the process to run before we start to keep any estimates (<code>warmup=2500</code>), how many of the post-warmup draws of the posterior we want to keep (<code>thin=10</code> means every tenth draw), and the number of chains (<code>chains=4</code>). In the end we will have three chains of 1000<a href="#fn27" class="footnoteRef" id="fnref27"><sup>27</sup></a> draws from the posterior distribution of the parameters. Stan spits out a lot of output to the R console even with <code>verbose = FALSE</code>, and I omit it here, but you will see some initial info about the compiling process, updates as each chain gets through 10% of iterations specified in the <code>iter</code> argument, and finally an estimate of the elapsed time. You may also see <em>informational messages</em> which, unless they are highly repetitive, should not be taken as an error.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rstan)
 
 ### Run the model and examine results ###
-fit =<span class="st"> </span><span class="kw">stan</span>(<span class="dt">model_code=</span>stanmodelcode, <span class="dt">data=</span>dat, <span class="dt">iter=</span><span class="dv">12000</span>, 
-           <span class="dt">warmup=</span><span class="dv">2000</span>, <span class="dt">thin=</span><span class="dv">10</span>, <span class="dt">chains=</span><span class="dv">3</span>)</code></pre></div>
+fit =<span class="st"> </span><span class="kw">stan</span>(<span class="dt">model_code=</span>stanmodelcode, <span class="dt">data=</span>dat, <span class="dt">iter=</span><span class="dv">5000</span>, 
+           <span class="dt">warmup=</span><span class="dv">2500</span>, <span class="dt">thin=</span><span class="dv">10</span>, <span class="dt">chains=</span><span class="dv">4</span>)</code></pre></div>
 <p>With the model run, we can now examine the results. In the following, we specify the digit precision to display, which parameters we want (not necessary here), and which quantiles of the posterior draws we want, which in this case are the median and those that would produce a 95% interval estimate.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary</span>
 <span class="kw">print</span>(fit, <span class="dt">pars=</span><span class="kw">c</span>(<span class="st">&#39;beta&#39;</span>, <span class="st">&#39;sigma&#39;</span>), <span class="dt">digits=</span><span class="dv">3</span>, <span class="dt">prob=</span><span class="kw">c</span>(.<span class="dv">025</span>,.<span class="dv">5</span>,.<span class="dv">975</span>))</code></pre></div>
-<pre><code>Inference for Stan model: 2c7fc0327865079c07fd921e7cbb2b0a.
-3 chains, each with iter=12000; warmup=2000; thin=10; 
-post-warmup draws per chain=1000, total post-warmup draws=3000.
+<pre><code>Inference for Stan model: 1fdadccd70a05d7f255fab2aa6168198.
+4 chains, each with iter=5000; warmup=2500; thin=10; 
+post-warmup draws per chain=250, total post-warmup draws=1000.
 
           mean se_mean    sd   2.5%    50%  97.5% n_eff  Rhat
-beta[1]  4.895   0.002 0.130  4.637  4.896  5.142  2951 1.000
-beta[2]  0.083   0.002 0.133 -0.183  0.084  0.341  3000 1.001
-beta[3] -1.467   0.002 0.127 -1.711 -1.469 -1.215  3000 1.000
-beta[4]  0.822   0.002 0.122  0.582  0.824  1.060  2862 1.000
-sigma    2.030   0.002 0.094  1.859  2.026  2.224  2886 1.000
+beta[1]  4.896   0.004 0.136  4.638  4.892  5.159  1000 0.998
+beta[2]  0.089   0.004 0.131 -0.161  0.086  0.360  1000 1.001
+beta[3] -1.471   0.004 0.127 -1.707 -1.472 -1.218   954 0.999
+beta[4]  0.817   0.004 0.122  0.569  0.820  1.055   990 1.002
+sigma    2.029   0.003 0.093  1.854  2.027  2.220   974 0.999
 
-Samples were drawn using NUTS(diag_e) at Sat May 07 12:00:28 2016.
+Samples were drawn using NUTS(diag_e) at Sun Jul 23 15:37:39 2017.
 For each parameter, n_eff is a crude measure of effective sample size,
 and Rhat is the potential scale reduction factor on split chains (at 
 convergence, Rhat=1).</code></pre>
@@ -431,7 +432,7 @@ betas.mcmc =<span class="st"> </span><span class="kw">as.mcmc</span>(betas)
 <li id="fn24"><p>How far one wants to go down the rabbit hole regarding MCMC is up to the reader. A great many applied researchers do classical statistical analysis without putting much thought into the actual maximum likelihood estimation process, and I suppose one could do so here as well.<a href="regression-models.html#fnref24">↩</a></p></li>
 <li id="fn25"><p>Not usually the case except for simple models with smaller data.<a href="regression-models.html#fnref25">↩</a></p></li>
 <li id="fn26"><p>This is way overkill for a simple model like this. One probably would be fine with 500 warmup and 500 iterations for a standard regression.<a href="regression-models.html#fnref26">↩</a></p></li>
-<li id="fn27"><p><span class="math inline">\(\frac{12000-2000}{10} = 1000\)</span><a href="regression-models.html#fnref27">↩</a></p></li>
+<li id="fn27"><p><span class="math inline">\(\frac{5000-2500}{10} \cdot 4 = 1000\)</span><a href="regression-models.html#fnref27">↩</a></p></li>
 <li id="fn28"><p>A standard confidence implies that if we’d done the study exactly the same over and over, and calculated a confidence interval each time, 95% of them would capture the true value. The one you have is just one from that process.<a href="regression-models.html#fnref28">↩</a></p></li>
 <li id="fn29"><p>In Stan code this can be done by not explicitly specifying a prior.<a href="regression-models.html#fnref29">↩</a></p></li>
 <li id="fn30"><p>Like all model diagnostics, we aren’t dealing with an exact science.<a href="regression-models.html#fnref30">↩</a></p></li>
@@ -473,7 +474,7 @@ gitbook.start({
 "size": 2
 },
 "edit": null,
-"download": null,
+"download": "bayesian_basics.epub",
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

@@ -136,7 +136,7 @@ So we start with a prior centered on a value of $\theta=.5$, add data whose ML e
 We can perhaps understand this further via the following visualizations. In each of these the prior is represented by the blue density, the likelihood by the red, and the posterior by purple.  This first is based on a different prior than just used in our example, and instead employs the beta distribution noted among the possibilities in the [code above][Prior].  While the beta distribution is highly flexible, with shape parameters $\mathcal{A}$ and $\mathcal{B}$ set to 10 and 10 we get a symmetric distribution centered on $\theta = .5$.  This would actually be a somewhat stronger prior than we might normally want to use, but serves to illustrate a point.  The mean of the beta is $\frac{\mathcal{A}}{\mathcal{A}+\mathcal{B}}$, and thus has a nice interpretation as a prior based on data with sample size equal to $\mathcal{A}+\mathcal{B}$.  The posterior distribution that results would have a mean somewhere between the maximum likelihood value and that of the prior. With the stronger prior, the posterior is pulled closer to it.
 
 
-```{r prior2post_1, echo=F, eval=T}
+```{r prior2post_1, echo=F}
 set.seed(1234)
 nGoal = 6       # number of scores
 nMiss = 4           # number not
@@ -278,7 +278,7 @@ We can implement the simulation process with the data and model at hand, given a
 
 <img src="img/histofyrepBinom.svg" style="display:block; margin: 0 auto;" width=50%></span>
 
-```{r binomPostPred, cache=TRUE, message=FALSE, warning=FALSE, eval=FALSE, echo=FALSE}
+```{r binomPostPred, eval=FALSE, echo=FALSE}
 ## Do keep <img> so you don't have to run rstanarm
 library(rstanarm)
 shotres = stan_glm(shotsNum~1, family='binomial', iter=2250, warmup=1000, thin=10, prior=student_t())

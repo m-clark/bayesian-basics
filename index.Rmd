@@ -13,14 +13,7 @@ output:
       highlight: pygments
       # split_by: section
       toc_depth: 2
-      # toc_float: yes
       number_sections: no
-      # toc:
-      #   collapse: part
-      #   scroll_highlight: yes
-      #   number: no
-      #   before: null
-      #   after: null
       # toolbar:
       #   position: fixed
       config:
@@ -30,12 +23,12 @@ output:
           before: null
           after: null
         edit : null
-        download: null
         search: yes
         # fontsettings:
         #   theme: white
         #   family: sans
         #   size: 2
+        download: ["bayesian_basics.epub"]
         sharing:
           facebook: yes
           twitter: yes
@@ -51,7 +44,7 @@ output:
     #   split_by: rmd
     #   config:
     bookdown::pdf_book: no
-    bookdown::epub_book: no # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else
+    bookdown::epub_book: yes # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else
 
 always_allow_html: yes
 documentclass: book
@@ -80,13 +73,13 @@ knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.
 knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib')
 ```
 
-```{r echo=FALSE, cache=FALSE}
+```{r load_packages, echo=FALSE, cache=FALSE}
 library(tufte); library(tidyverse); library(lazerhawk); library(pander)
 ```
 
 
 #  
 
-```{r fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html')}
+```{r logo, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html')}
 knitr::include_graphics('img/nineteeneightyR.png', dpi = NA)
 ```

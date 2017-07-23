@@ -32,7 +32,7 @@
   
   
 <link rel="prev" href="model-enhancements.html">
-<link rel="next" href="summary-2.html">
+<link rel="next" href="final-thoughts.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -147,7 +147,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#number-of-draws-thinning-warm-up"><i class="fa fa-check"></i>Number of draws, thinning, warm-up</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#model-complexity"><i class="fa fa-check"></i>Model Complexity</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="summary-2.html"><a href="summary-2.html"><i class="fa fa-check"></i>Summary</a></li>
+<li class="chapter" data-level="" data-path="final-thoughts.html"><a href="final-thoughts.html"><i class="fa fa-check"></i>Final Thoughts</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#linear-model"><i class="fa fa-check"></i>Linear Model</a></li>
@@ -159,8 +159,9 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#hamiltonian-monte-carlo-example"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a><ul>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts"><i class="fa fa-check"></i>Texts</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts-for-your-shelf"><i class="fa fa-check"></i>Texts for Your Shelf</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#other"><i class="fa fa-check"></i>Other</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 </ul>
 
@@ -300,7 +301,7 @@ for (t in <span class="dv">2</span>:nsim) {
 <p>Whatever program we use, the typical inputs that will need to be set regard the number of simulated draws from the posterior, the number of warm-up draws, and the amount of thinning. Only the draws that remain after warm-up and thinning will be used for inference. However, there certainly is no default that would work from one situation to the next.</p>
 <p>Recall that we are looking for convergence to a distribution, and this isn’t determined by the number of draws alone. The fact is that one only needs a few draws for accurate inference. Even something as low as <span class="math inline">\(n_{\textrm{eff}}\)</span> of 10 for each chain would actually be fine assuming everything else seemed in order, though typically we want more than that so that our values don’t bounce around from one model run to the next. To feel confident about convergence, i.e. get <span class="math inline">\(\hat R\)</span> of around 1, plots looking right, etc., we will usually want in the thousands for the number of total draws. We might need quite a few more for increasing model complexity.</p>
 <p>A conservative approach to the number of warm-up draws is half the number of runs, but this is fairly arbitrary. Thinning isn’t specifically necessary for inference if approximate convergence is achieved, but is useful with increasing model complexity to reduce autocorrelation among the estimates.</p>
-<p>For myself, I typically run models such that the results are based on roughly <span class="math inline">\(n_{\textrm{eff}} = 1000\)</span> estimates per chain, simply because 1000 is a nice round number and is enough to make graphical display nice. For a regression model as we have been running, that could be setting the number of simulations at 12000, the warm-up at 2000, and thinning at 10. Other models might make due with 100000, 50000, 50 respectively. You may just need to feel things out for yourself.</p>
+<p>For myself, I typically run models such that the results are based on roughly <span class="math inline">\(n_{\textrm{eff}} = 1000\)</span> estimates, simply because 1000 is a nice round number and is enough to make graphical display a bit smoother. For a regression model as we have been running, the setting we used produced 1000 final estimates across 4 chains. Other models might make due with 100000, 50000, 50 respectively. You may just need to feel things out for yourself, but for simpler models you won’t need much.</p>
 </div>
 <div id="model-complexity" class="section level2">
 <h2>Model Complexity</h2>
@@ -325,7 +326,7 @@ for (t in <span class="dv">2</span>:nsim) {
         </div>
       </div>
 <a href="model-enhancements.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="summary-2.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="final-thoughts.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -354,7 +355,7 @@ gitbook.start({
 "size": 2
 },
 "edit": null,
-"download": null,
+"download": "bayesian_basics.epub",
 "toc": {
 "collapse": "section",
 "scroll_highlight": true

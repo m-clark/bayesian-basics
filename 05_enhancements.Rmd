@@ -65,7 +65,7 @@ generated quantities {
 Using the results from the model using <span class="func">lm</span>, we do the same calculations for `rss` and `totalss`, and note the result is identical to what you'd see in the summary of the model.
 
 
-```{r generatedQuantitiesvsR, eval=TRUE, cache=TRUE, echo=-c(1,6,7)}
+```{r generatedQuantitiesvsR, echo=-c(1,6,7)}
 load('data/mainModels.RData')
 rss = crossprod(resid(modlm))
 totalss = crossprod(y-mean(y))

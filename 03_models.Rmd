@@ -134,19 +134,19 @@ The simulation process is referred to as <span class="emph">Markov Chain Monte C
 
 While this process may sound like it might take a long time to complete, for the following you'll note that it will likely take more time for Stan to compile its code to C++ than it will to run the model[^speed], and on my computer each chain only takes only a little more than a second.  However, the Bayesian approach used to take a very long time even for a standard regression such as this, and that is perhaps the primary reason why Bayesian analysis only caught on in the last couple decades; we simply didn't have the machines to do it efficiently.  Even now though, for highly complex models and large data sets it can still take a long time to run, though typically not prohibitively so.
 
-In the following code, we note the object that contains the Stan model code, the data list, how many iterations we want (12000)[^toomanyiter], how long we want the process to run before we start to keep any estimates (`warmup=2000`), how many of the post-warmup draws of the posterior we want to keep (`thin=10` means every tenth draw), and the number of chains (`chains=3`).  In the end we will have three chains of 1000[^finaliter] draws from the posterior distribution of the parameters.  Stan spits out a lot of output to the R console even with `verbose = FALSE`, and I omit it here, but you will see some initial info about the compiling process, updates as each chain gets through 10% of iterations specified in the `iter` argument, and finally an estimate of the elapsed time.  You may also see *informational messages* which, unless they are highly repetitive, should not be taken as an error.
+In the following code, we note the object that contains the Stan model code, the data list, how many iterations we want (5000)[^toomanyiter], how long we want the process to run before we start to keep any estimates (`warmup=2500`), how many of the post-warmup draws of the posterior we want to keep (`thin=10` means every tenth draw), and the number of chains (`chains=4`).  In the end we will have three chains of 1000[^finaliter] draws from the posterior distribution of the parameters.  Stan spits out a lot of output to the R console even with `verbose = FALSE`, and I omit it here, but you will see some initial info about the compiling process, updates as each chain gets through 10% of iterations specified in the `iter` argument, and finally an estimate of the elapsed time.  You may also see *informational messages* which, unless they are highly repetitive, should not be taken as an error.
 
 
 ```{r rstanRunModel, eval=F}
 library(rstan)
 
 ### Run the model and examine results ###
-fit = stan(model_code=stanmodelcode, data=dat, iter=12000, 
-           warmup=2000, thin=10, chains=3)
+fit = stan(model_code=stanmodelcode, data=dat, iter=5000, 
+           warmup=2500, thin=10, chains=4)
 ```
 
-```{r, echo=F, eval=F}
-save(fit, modlm, X, y, file='miscObjects/mainModels.RData')# for use in standalone chaps
+```{r rstanModelsave, echo=F, eval=F}
+save(fit, modlm, X, y, file='data/mainModels.RData')# for use in standalone chaps
 ```
 
 
@@ -262,4 +262,4 @@ So there you have it.  Aside from the initial setup with making a data list and 
 
 [^moremcmc]: How far one wants to go down the rabbit hole regarding MCMC is up to the reader.  A great many applied researchers do classical statistical analysis without putting much thought into the actual maximum likelihood estimation process, and I suppose one could do so here as well.
 
-[^finaliter]: $\frac{12000-2000}{10} = 1000$
+[^finaliter]: $\frac{5000-2500}{10} \cdot 4 = 1000$

@@ -177,7 +177,7 @@ Recall that we are looking for convergence to a distribution, and this isn't det
 
 A conservative approach to the number of warm-up draws is half the number of runs, but this is fairly arbitrary. Thinning isn't specifically necessary for inference if approximate convergence is achieved, but is useful with increasing model complexity to reduce autocorrelation among the estimates.  
 
-For myself, I typically run models such that the results are based on roughly $n_{\textrm{eff}} = 1000$ estimates per chain, simply because 1000 is a nice round number and is enough to make graphical display nice.  For a regression model as we have been running, that could be setting the number of simulations at 12000, the warm-up at 2000, and thinning at 10.  Other models might make due with 100000, 50000, 50 respectively.  You may just need to feel things out for yourself.
+For myself, I typically run models such that the results are based on roughly $n_{\textrm{eff}} = 1000$ estimates, simply because 1000 is a nice round number and is enough to make graphical display a bit smoother.  For a regression model as we have been running, the setting we used produced 1000 final estimates across 4 chains.  Other models might make due with 100000, 50000, 50 respectively.  You may just need to feel things out for yourself, but for simpler models you won't need much.
 
 
 ## Model Complexity

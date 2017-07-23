@@ -1,25 +1,15 @@
-<!-- `r if (knitr:::is_html_output()) '# References {-}'` -->
+`r if (knitr:::is_html_output()) '# References {-}'`
 
-# References
+## Texts for Your Shelf
 
-## Texts
 
-Unless otherwise noted, these can be a bit more intermediate or advanced depending on how statistical/data analysis is taught within one's discipline. I've noted the more introductory or applied texts.
+The following are three texts I recommend in my consulting to folks interested in doing Bayesian data analyis. They can be seen as introduction, moderate, and advanced respectively
+
+Kruschke, J. (2014) *Doing Bayesian Data Analysis*. Very intro book, but might be good for those not too confident in statistics generally speaking. And who doesn't like puppies? Second edition has Stan examples.
+
+McElreath, R. (2015). *Statistical Rethinking*.  A good modeling book in general, by one who has contributed a lot to helping others learn Stan.  Comes with its own R package too.
 
 Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). *Bayesian Data Analysis*.
-
-Gill, J. (2015). *Bayesian methods : a social and behavioral sciences approach*.
-
-Jackman, S. (2009). *Bayesian analysis for the social sciences*.
-
-Kruschke, J. (2014) *Doing Bayesian Data Analysis*. Very intro book, but might be good for those not too confident in statistics generally speaking. And who doesn't like puppies? Second edition has Stan examples. (intro)
-
-Lunn, D., Jackson, C., Best, N., Thomas, A., and Spiegelhalter, D. (2012). *The BUGS Book: A Practical Introduction to Bayesian Analysis*. Very applied with easily digestible examples.
-
-Lynch, S. M. (2007). *Introduction to applied Bayesian statistics and estimation for social scientists*.
-
-McElreath, R. (2015). *Statistical Rethinking*.  A good modeling book in general, by one who has contributed a lot to helping others learn Stan.  Comes with its own R package too. (intro to moderate)
-
 
 
 ## Other
@@ -29,10 +19,17 @@ Statisticat, LLC. [*Bayesian Inference*](https://cran.r-project.org/web/packages
 
 ### Stan Specific
 
-[Main website](http://mc-stan.org/ )
+[Main website](http://mc-stan.org/)
 
-[Stan Users Group](https://groups.google.com/d/forum/stan-users )
+[Stan Users Group](http://discourse.mc-stan.org/)
 
-[The Stan Group](http://stan.fit/ )
+[Stan Best Practices](https://github.com/stan-dev/stan/wiki/Stan-Best-Practices)
+
+[Example Models](https://github.com/stan-dev/example-models/wiki)
+
+[The Stan Group](http://stan.fit/)
 
 More resources [here](http://mc-stan.org/documentation/)
+
+
+## Works Cited/Used
