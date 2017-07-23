@@ -511,7 +511,7 @@ Next depicted is a random walk Metropolis-Hastings algorithm using the the data 
 
 The primary functions that we need to specify regard the posterior distribution[^MHexample], an update step for beta coefficients, and an update step for the variance estimate.<br><br>
 
-```{r MHexample, cache=TRUE, eval=TRUE}
+```{r MHexample, eval=TRUE}
 # posterior function
 
 post = function(x, y, b, s2){
@@ -527,9 +527,10 @@ post = function(x, y, b, s2){
   priorbvarinv = diag(1/100, 4) 
   prioralpha = priorbeta = .001
   
-  if(is.nan(sigma) | sigma<=0){     # scale parameter must be positive
+  if (is.nan(sigma) | sigma<=0) {     # scale parameter must be positive
     return(-Inf)
   }
+  
   # Note that you will not find the exact same presentation across texts and 
   # other media for the log posterior in this conjugate setting.  In the end
   # they are conceputally still (log) prior + (log) likelihood (See commented 'else')
@@ -560,7 +561,7 @@ updatereg = function(i, x, y, b, s2){
   # Acceptance phase
   unidraw = runif(1)
   accept = unidraw < min(exp(postdiff), 1)  # accept if so
-  if(accept) b[i,]
+  if (accept) b[i,]
   else b[i-1,]
 }
 
@@ -568,7 +569,7 @@ updatereg = function(i, x, y, b, s2){
 
 updates2 = function(i, x, y, b, s2){
   s2candidate =  rnorm(1, s2[i-1], sd=sigmascale)
-  if(s2candidate < 0) {
+  if (s2candidate < 0) {
     accept = FALSE
   } 
   else {
@@ -585,7 +586,7 @@ updates2 = function(i, x, y, b, s2){
 
 Now we can set things up for the MCMC chain[^MHmcmc].  Aside from the typical MCMC setup and initializing the parameter matrices to hold the draws from the posterior, we also require scale parameters to use for the jumping/proposal distribution.
 
-```{r MHexampleSetup, cache=TRUE, eval=TRUE}
+```{r MHexampleSetup, eval=TRUE}
 # Setup, starting values etc. 
 nsim = 12000
 burnin = 2000
@@ -608,7 +609,7 @@ sigmascale = .9
 
 We can now run and summarize the model with tools from the <span class="pack">coda</span> package.
 
-```{r MHexampleRun, cache=TRUE, eval=TRUE}
+```{r MHexampleRun, eval=TRUE}
 # Run
 for(i in 2:nsim){
   b[i,] = updatereg(i=i, y=y, x=X, b=b, s2=s2)
@@ -633,7 +634,7 @@ round(c(coef(modlm), summary(modlm)$sigma^2), 3)
 
 Here is the previous Stan fit for comparison.
 
-```{r MHexampleCompare, cache=TRUE, eval=TRUE}
+```{r MHexampleCompare, eval=TRUE}
 print(fit, digits=3, prob=c(.025,.5,.975))
 ```
 

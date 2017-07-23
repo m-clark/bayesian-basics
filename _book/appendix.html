@@ -633,9 +633,10 @@ post =<span class="st"> </span>function(x, y, b, s2){
   priorbvarinv =<span class="st"> </span><span class="kw">diag</span>(<span class="dv">1</span>/<span class="dv">100</span>, <span class="dv">4</span>) 
   prioralpha =<span class="st"> </span>priorbeta =<span class="st"> </span>.<span class="dv">001</span>
   
-  if(<span class="kw">is.nan</span>(sigma) |<span class="st"> </span>sigma&lt;=<span class="dv">0</span>){     <span class="co"># scale parameter must be positive</span>
+  if (<span class="kw">is.nan</span>(sigma) |<span class="st"> </span>sigma&lt;=<span class="dv">0</span>) {     <span class="co"># scale parameter must be positive</span>
     <span class="kw">return</span>(-<span class="ot">Inf</span>)
   }
+  
   <span class="co"># Note that you will not find the exact same presentation across texts and </span>
   <span class="co"># other media for the log posterior in this conjugate setting.  In the end</span>
   <span class="co"># they are conceputally still (log) prior + (log) likelihood (See commented &#39;else&#39;)</span>
@@ -666,7 +667,7 @@ updatereg =<span class="st"> </span>function(i, x, y, b, s2){
   <span class="co"># Acceptance phase</span>
   unidraw =<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)
   accept =<span class="st"> </span>unidraw &lt;<span class="st"> </span><span class="kw">min</span>(<span class="kw">exp</span>(postdiff), <span class="dv">1</span>)  <span class="co"># accept if so</span>
-  if(accept) b[i,]
+  if (accept) b[i,]
   else b[i<span class="dv">-1</span>,]
 }
 
@@ -674,7 +675,7 @@ updatereg =<span class="st"> </span>function(i, x, y, b, s2){
 
 updates2 =<span class="st"> </span>function(i, x, y, b, s2){
   s2candidate =<span class="st">  </span><span class="kw">rnorm</span>(<span class="dv">1</span>, s2[i<span class="dv">-1</span>], <span class="dt">sd=</span>sigmascale)
-  if(s2candidate &lt;<span class="st"> </span><span class="dv">0</span>) {
+  if (s2candidate &lt;<span class="st"> </span><span class="dv">0</span>) {
     accept =<span class="st"> </span><span class="ot">FALSE</span>
   } 
   else {
