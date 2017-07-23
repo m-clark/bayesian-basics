@@ -6,13 +6,13 @@ author:  |
   <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> </div>
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
-output: 
+output:
     bookdown::gitbook:
       # template: null
       css: [css/book.css, css/standard_html.css]
       highlight: pygments
       # split_by: section
-      toc_depth: 2
+      toc_depth: 3
       number_sections: no
       # toolbar:
       #   position: fixed
@@ -20,15 +20,9 @@ output:
         toc:
           collapse: section
           scroll_highlight: yes
-          before: null
-          after: null
         edit : null
+        download : null
         search: yes
-        # fontsettings:
-        #   theme: white
-        #   family: sans
-        #   size: 2
-        download: ["bayesian_basics.epub"]
         sharing:
           facebook: yes
           twitter: yes
@@ -36,6 +30,7 @@ output:
           weibo: no
           instapper: no
           vk: no
+          epub: yes
           all: ['facebook', 'google', 'twitter', 'weibo', 'instapaper']
     # bookdown::tufte_html_book: 
     #   toc: yes
@@ -43,9 +38,9 @@ output:
     #   css: [toc.css, ../css/tufte_bookdown/mytufte.css]
     #   split_by: rmd
     #   config:
+    bookdown::epub_book:  # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else (for tufte)
+      stylesheet: [css/book.css, css/standard_html.css]
     bookdown::pdf_book: no
-    bookdown::epub_book: yes # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else
-
 always_allow_html: yes
 documentclass: book
 bibliography: ['packages.bib', 'BayesBasics.bib']
@@ -54,14 +49,14 @@ link-citations: yes
 github-repo: m-clark/docs
 description: "An introduction to Bayesian data analysis."
 cover-image: img/nineteeneightyR.png
-url: 'https\://m-clark.github.io/Workshops/text_analysis/'  # evidently the \: is required or you'll get text in the title/toc area
+url: 'https\://m-clark.github.io/Docs/bayesian_book/'  # evidently the \: is required or you'll get text in the title/toc area
 
 
 
 # this is for pdf but also to paste into references; tufte style refs at point of citation in margin
-nocite: | 
-  @kruschke_doing_2010, @gelman_arm, @mcgrayne_theory_2012, @gelmanPardoe2006,
-  @gelmanHwangVehtari, @gelmanVehtariWAIC, @mcelreath2016
+# nocite: | 
+#   @kruschke_doing_2010, @gelman_arm, @mcgrayne_theory_2012, @gelmanPardoe2006,
+#   @gelmanHwangVehtari, @gelmanVehtariWAIC, @mcelreath2016
 ---
 
 ```{r setup, include=FALSE}
@@ -1144,7 +1139,7 @@ Next, I show density plots for a random sample of 20 of the replicated data sets
 
 
 
-```{r posteriorPredictiveIndividualy, echo=FALSE, out.width='500px'}
+```{r posteriorPredictiveIndividually, echo=FALSE, out.width='500px'}
 yRepSample = yRep[,sample(1:nsims, 20)]
 # gdat = melt(yRepSample); colnames(gdat) = c('n', 'nsim', 'yRep')
 gdat = data.frame(yRepSample) %>% 
@@ -1219,8 +1214,8 @@ gdat = data.frame(realizedResids) %>%
   mutate(N=1:n()) %>% 
   ungroup()
 gdat$fit = gather(data.frame(fits))[,'value']
-gdat$minres = rep(apply(realizedResids, 1, min), 3000)
-gdat$maxres = rep(apply(realizedResids, 1, max), 3000)
+gdat$minres = rep(apply(realizedResids, 1, min), 1000)
+gdat$maxres = rep(apply(realizedResids, 1, max), 1000)
 
 # plot 6.11a
 ggplot(aes(x=fit, y=residual), data=gdat[1:250,]) +
