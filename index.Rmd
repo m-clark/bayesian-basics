@@ -80,8 +80,8 @@ knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.
 knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib')
 ```
 
-```{r echo=FALSE}
-library(tufte); library(tidyverse); library(ggplot2); library(lazerhawk); library(pander)
+```{r echo=FALSE, cache=FALSE}
+library(tufte); library(tidyverse); library(lazerhawk); library(pander)
 ```
 
 

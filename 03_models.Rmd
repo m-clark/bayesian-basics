@@ -1,4 +1,3 @@
-
 # Regression Models
 
 Now armed with a conceptual understanding of the Bayesian approach, we will actually investigate a regression model using it.  To keep things simple, we start with a standard linear model for regression.  Later, we will show how easy it can be to add changes to the sampling distribution or priors for alternative modeling techniques. But before getting too far, you should peruse the [Modeling Languages][Modeling Languages] section of the appendix to get a sense of some of the programming approaches available.  We will be using the programming language Stan via R and the associated R package <span class="pack">rstan</span>.  If you prefer to keep things conceptual rather than worry about the code, you can read through the following data description and then skip to [running the model][Running the Model][^easystan].

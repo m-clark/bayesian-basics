@@ -1,7 +1,7 @@
 --- 
 title: <span style="font-size:250%; font-style:italic; font-family:'Alex Brush' ">Bayesian Basics</span>
 author:  |
-  <div class="title"><span style="font-size:150%; font-variant:small-caps; font-style:normal;  font-family:'Open Sans'">Michael Clark</span><br><br>
+  <div class="title"><span style="font-size:150%; font-variant:small-caps; font-style:normal;  font-family:'Roboto'">Michael Clark</span><br><br>
   <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br>
   <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> </div>
 date: "`r Sys.Date()`"
@@ -80,7 +80,7 @@ knitr::opts_chunk$set(echo = TRUE, message=F, warning=F, error=F, comment=NA, R.
 knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib')
 ```
 
-```{r echo=FALSE}
+```{r echo=FALSE, cache=FALSE}
 library(tufte); library(tidyverse); library(ggplot2); library(lazerhawk); library(pander)
 ```
 
@@ -466,41 +466,10 @@ However there is yet another distribution of interest to us- the <span class="em
 
 We can implement the simulation process with the data and model at hand, given a sample of values of $\theta$ drawn from the posterior. I provide the results of such a process with the following graph. Each bar graph of frequencies represents a replication of the 10 shots taken, i.e. $y^{\textrm{Rep}}$, given an estimate of $\theta$ from the posterior distribution (16 total).  These are plausible sets of 10 makes and misses, given $\theta$.
 
-<img src="img/histofyrepBinom.svg" style="display:block; margin: 0 auto; width=20%"></span>
+<img src="img/histofyrepBinom.svg" style="display:block; margin: 0 auto;" width=50%></span>
 
 ```{r binomPostPred, cache=TRUE, message=FALSE, warning=FALSE, eval=FALSE, echo=FALSE}
-# using bernoulli for 1 trial at a time; see Gelman p.32 
-# NO LONGER NECESSARY, use rstan_arm
-# datalist = list(y=shotsNum, N=length(shotsNum))
-# modelcode <- "
-# data{
-#   int N;
-#   int y[N];
-# }
-# 
-# parameters{
-#   real<lower=0, upper=1> theta;
-# }
-# 
-# model{
-#   theta ~ beta(5,5);
-#   y ~ bernoulli(theta);
-# }
-# 
-# generated quantities{
-#   vector[N] yRep;
-#   for (i in 1:N){
-#     yRep[i] <- bernoulli_rng(theta);
-#   }
-# }
-# "
-# library(rstan)
-# shotres = stan(model_code=modelcode, data=datalist, iter=12000, warmup=2000, thin=10, chains=2)
-# shotres
-# traceplot(shotres, 'theta')
-# yrep = extract(shotres, 'yRep')$yRep
-# dim(yrep)
-
+## Do keep <img> so you don't have to run rstanarm
 library(rstanarm)
 shotres = stan_glm(shotsNum~1, family='binomial', iter=2250, warmup=1000, thin=10, prior=student_t())
 yrep = data.frame(posterior_predict(shotres)); colnames(yrep) = paste0('Player_', 1:10)
@@ -653,7 +622,6 @@ ggsave('figure/priorlikepost3.png', width=8, height=8, bg = "transparent") # png
 [^betadist]: $\beta(1,1)$ is a uniform distribution.
 
 <!--chapter:end:02_example.Rmd-->
-
 
 # Regression Models
 
@@ -1244,16 +1212,13 @@ ggplot(aes(x=yRep), data=gdat) +
 
 We can also examine residual plots of $y - E(y|X,\theta)$ as with standard analysis, shown as the final two figures for this section.  The first shows such *realized* residuals, so-called as they are based on a posterior draw of $\theta$ rather than point estimation of the parameters, versus the expected values from the model.  The next plot shows the average residual against the average fitted value.  No discernible patterns are present, so we may conclude that the model is adequate in this regard[^dupeplot].
 
-<img src="img/posteriorPredictiveResidualRaw.svg" style="display:block; margin: 0 auto;" width=50%>
-<img src="img/posteriorPredictiveResidualAvg.svg" style="display:block; margin: 0 auto;" width=50%>
 
-
-```{r posteriorPredictiveResiduals, eval=T, echo=FALSE}
+```{r posteriorPredictiveResiduals, eval=T, echo=FALSE, out.width='500px'}
 # marginal distribution check for each y as in BDA 6.5
 # library(ggplot2); library(reshape2)
 fits = sapply(1:nsims, function(s) X%*%betas[s,])
 realizedResids = sapply(1:nsims, function(s) rnorm(250, fits[,s], sigmas[s]) - fits[,s])
-gdat = melt(realizedResids); colnames(gdat) = c('n', 'nsim', 'residual')
+# gdat = melt(realizedResids); colnames(gdat) = c('n', 'nsim', 'residual')
 gdat = data.frame(realizedResids) %>% 
   rename_all(stringr::str_replace, pattern='X', replacement='Sim ') %>% 
   gather(key=nsim, value=residual) %>% 
@@ -1340,7 +1305,7 @@ A typical part of linear regression output is $R^2$, the amount of variance acco
 <!-- You ran this and saved the image as data/mainModelDatawithRsq.RData -->
 
 
-```{r generatedQuantitiesRsq, eval=FALSE, echo=-c(1, 6:34, 46)}
+```{r generatedQuantitiesRsq, eval=F, echo=-c(1, 6:34, 46)}
 stanmodelcodeRsq = "
 .
 .
@@ -1402,7 +1367,7 @@ rss = rss[1]; totalss = totalss[1] # for alignment, remove matrix
 # var(fitted(modlm))/var(y)
 ```
 
-Now we can run the model with added $R^2$[^rstanarmR2].  Note that as before we do not just get a point estimate, but a whole distribution of simulated values for $R^2$.  First the results.
+Now we can run the model with added $R^2$&nbsp;[^rstanarmR2].  Note that as before we do not just get a point estimate, but a whole distribution of simulated values for $R^2$.  First the results.
 
 
 ```{r generatedQuantitiesRsqResults, echo=-1}
@@ -1410,7 +1375,7 @@ load('data/mainModelDatawithRsq.RData')
 print(fitRsq, digits=3, par=c('beta','sigma','R2'), prob=c(.025,.5,.975))
 ```
 
-The nice thing here is that our $R^2$ incorporates the additional uncertainty in estimating the model parameters, and thus acts like an *adjusted* $R^2$[^adjr2].  The following is the classical regression adjusted $R^2$.
+The nice thing here is that our $R^2$ incorporates the additional uncertainty in estimating the model parameters, and thus acts like an *adjusted* $R^2$&nbsp;[^adjr2].  The following is the classical regression adjusted $R^2$.
 
 
 ```{r generatedQuantitiesAdjRsq}
@@ -1423,7 +1388,7 @@ Furthermore, in the Bayesian context we get an interval estimate and everything 
 
 ## Robust Regression
 
-If we were concerned that extreme observations exist that our current model is not able to capture well, we could change the sampling distribution to one that had a little more probability in the tails.  This is very easy to do in this situation, as we just change likelihood portion of our code to employ say, a t-distribution. <span class="marginnote">Note that with the <span class="pack">brms</span> package all one would have to do is change the <span style="font-family:'Open Sans'">family</span> argument in the model function.</span>In Stan, the t-distribution has parameters mean and sigma as with the normal distribution, but we also have the added parameter for degrees of freedom.  Thus our code might look like the following:
+If we were concerned that extreme observations exist that our current model is not able to capture well, we could change the sampling distribution to one that had a little more probability in the tails.  This is very easy to do in this situation, as we just change likelihood portion of our code to employ say, a t-distribution[^rstant]. In Stan, the t-distribution has parameters mean and sigma as with the normal distribution, but we also have the added parameter for degrees of freedom.  Thus our code might look like the following:
 
 
 ```{r robustRegressionT}
@@ -1497,7 +1462,9 @@ And that's all there is to that[^stannotvec].  We just saw that we are not limit
 
 [^poislog]: You can also forgo the exponentiation and instead use the <span class="func">poisson_log</span> function in your sampling statement (slightly faster too).
 
-[^stannotvec]: Note that some link/inverse-link functions in Stan cannot be applied to vectors, only scalars.  As such you would have to loop over the values of $y$,<br> <span style="font-family:'Open Sans'">**for(n in 1:N) ...**</span>
+[^stannotvec]: Note that some link/inverse-link functions in Stan cannot be applied to vectors, only scalars.  As such you would have to loop over the values of $y$,<br> `for(n in 1:N) ...`
+
+[^rstant]: Note that with the <span class="pack">brms</span> package all one would have to do is change the `family` argument in the model function.
 
 <!--chapter:end:05_enhancements.Rmd-->
 
@@ -1529,24 +1496,25 @@ As an example, let's assume a uniform distribution $(-\infty,\infty)$ for some p
 
 In general there are several issues with using a noninformative or reference prior.  For many models there may be no clear choice of what to use.  In any case, if the data are sufficient, the prior won't matter as much, so establishing some reference to be used automatically isn't exactly in keeping with Bayesian thinking. In addition, such choices can still have unintended effects on the results.  Furthermore, if you had clear prior information, e.g. from previous research, one should use it. 
 
-In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague.  As an example, consider our earlier [binomial distribution example](#prior-likelihood-posterior-distributions).  Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80%  of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a $\mathcal{B}(9,3)$ would probably be a good way to proceed.  One can examine the distribution to the right. <span class="marginnote"><span class="imgbigger"><img src="img/betaDistr9and3.svg" style="display:block; margin: 0 auto;" width=50%></span></span>
+In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague.  As an example, consider our earlier [binomial distribution example][prior-likelihood-posterior-distributions].  Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80%  of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a $\mathcal{B}(9,3)$ would probably be a good way to proceed.  One can examine such a distribution in the subsequent density plot. 
 
-```{r chooseBetaPrior, results='hold', echo=c(1:3), fig.keep='none'}
+
+```{r chooseBetaPrior, results='hold', echo=c(1:3)}
 diff(pbeta(c(.6, .9), 3, 1))
 diff(pbeta(c(.6, .9), 8, 3))
 diff(pbeta(c(.6, .9), 9, 3))
+```
 
-# pdf('img/betaDistr2and6.pdf', paper='USr')
-hist(rbeta(10000, 2, 6), border='gray50', col='#ff5500', xlab=expression(theta), breaks='FD')
-# dev.off()
-library(ggplot2)
+```{r chooseBetaPrior2, echo=F, out.width='500px'}
+
 ggplot(aes(x=x), data=data.frame(x=rbeta(10000, 9, 3))) + 
-  geom_histogram(fill=scales::alpha('#ff5500', .95), color='gray50') + 
+  geom_line(stat='density', color=palettes$orange$complementary) + 
+  geom_density(fill=scales::alpha('#ff5500', .75), color='transparent') + 
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
         axis.title.y=element_text(color='gray25'),
         plot.background = element_rect(fill = "transparent",colour = NA))
-ggsave('img/betaDistr9and3.svg', bg='transparent')
+# ggsave('img/betaDistr9and3.svg', bg='transparent')
 ```
 
 With our regression model we were dealing with standardized predictors, so even choosing a $\mathcal{N}(0, 10)$ might be overly vague, though it would be near flat from -1 to 1.  The nice part about setting the prior mean on zero is that it has a regularizing effect, shrinking coefficients toward 0, that can help avoid overfitting with smaller samples.
@@ -1577,8 +1545,8 @@ As a reminder, we pointed out in the [sensitivity analysis][Sensitivity Analysis
 
 ### Summary
 
-<span class="marginnote">The BUGS book has many examples for a wide variety of applications.  The [Stan github page](https://github.com/stan-dev/example-models/wiki) has Stan examples for each of those BUGS examples and many more.</span>
-It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors.  One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot.  While the choice might be considered subjective in some respects, it is not arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.
+
+It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors[^bugsbook].  One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot for simpler models.  While the choice might be considered subjective in some respects, it is not arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.
 
 
 
@@ -1593,7 +1561,7 @@ We have mentioned that BUGS and JAGS use <span class="emph">Gibbs sampling</span
 1. Start with initial values for the parameters $\theta^0$
 
 
-For $t=1,2...N_{sim}:$
+For $t=1,2...N_{sim}$ :
 
 
 2. Sample from some proposal distribution a potential candidate $\theta^*$, given $\theta^{t-1}$
@@ -1610,7 +1578,7 @@ nsim = numberSimulatedDraws
 theta0 = initValue
 theta = c(theta0, rep(NA, nsim))
 
-for (t in 2:nsim){
+for (t in 2:nsim) {
   thetaStar = rnorm(1, theta[-1], sd)
   u = runif(1)
   r = exp(logPosterior_thetaStar - logPosterior_theta0)
@@ -1627,23 +1595,23 @@ The Gibbs sampler takes an alternating approach for multiparameter problems, sam
 
 Start with initial values for some ordering of the parameters $\theta_1^0, \theta_2^0,..., \theta_p^0$
 
-For $t=1,2..., N_{sim}:$
+For $t=1,2..., N_{sim}$ :
 
-At iteration $t$, for $p=1,2..., P:$
+At iteration $t$, for $p=1,2..., P$ :
 
 
-- 1. $\theta_1^t \sim p(\theta_1^t | \theta_2^{t-1}, \theta_3^{t-1}, ..., \theta_p^{t-1})$
-- 2.  Generate $\theta_2^t \sim p(\theta_2^t | \theta_1^{t}, \theta_3^{t-1}, ..., \theta_p^{t-1})$
+1. $\theta_1^t \sim p(\theta_1^t | \theta_2^{t-1}, \theta_3^{t-1}, ..., \theta_p^{t-1})$
+2.  Generate $\theta_2^t \sim p(\theta_2^t | \theta_1^{t}, \theta_3^{t-1}, ..., \theta_p^{t-1})$
 
-- &nbsp;&nbsp;&nbsp;&nbsp; $\vdots$
+$\qquad\vdots$
 
-- p. Generate $\theta_p^t \sim p(\theta_p^t | \theta_1^{t}, \theta_2^{t}, ..., \theta_{p-1}^{t})$
+p. Generate $\theta_p^t \sim p(\theta_p^t | \theta_1^{t}, \theta_2^{t}, ..., \theta_{p-1}^{t})$
 
 Again, some generic code may provide another way to understand it:
 
 ```{r Gibbsgeneric, eval=FALSE}
-for (t in 1:nsim){
-  for (p in 1:P){
+for (t in 1:nsim) {
+  for (p in 1:P) {
     thetaNew[p] = rDistribution(1, theta[t,-p])
   }
   theta[t,] = thetaNew
@@ -1662,8 +1630,7 @@ Stan uses <span class="emph">Hamiltonian Monte Carlo</span>, another variant of 
 4. Set $\theta^t = \theta^*$ with probability $min(r, 1)$, else  $\theta^t = \theta^{t-1}$
 
 
-
-The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow.  An example using HMC on the regression model data can be found in the [Hamiltonian Monte Carlo Example][Hamiltonian Monte Carlo Example]<span class="marginnote">See this entry at David Mimno's blog for a [visualization of HMC](http://www.mimno.org/articles/hmc/), and Betancourt's [Conceptual Introduction to Hamiltonian Monte Carlo](https://arxiv.org/pdf/1701.02434.pdf).</span>
+The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow.  An example using HMC on the regression model data can be found in the [Hamiltonian Monte Carlo Example][Hamiltonian Monte Carlo Example][^hmc].
 
 
 ### Other Variations and Approximate Methods
@@ -1697,6 +1664,10 @@ One of the great things about the Bayesian approach is its ability to handle ext
 [^proposal]: Given a proposal/jumping distribution $\mathcal{J}_t$, <br>
 $r=\frac{p(\theta^*|y)/\mathcal{J}_t(\theta^*|\theta^{t-1})} {p(\theta^{t-1}|y)/\mathcal{J}_t(\theta^{t-1}|\theta^*)}$
 
+[^bugsbook]: The BUGS book has many examples for a wide variety of applications.  The [Stan github page](https://github.com/stan-dev/example-models/wiki) has Stan examples for each of those BUGS examples and many more.
+
+[^hmc]: See this entry at David Mimno's blog for a [visualization of HMC](http://www.mimno.org/articles/hmc/), and Betancourt's [Conceptual Introduction to Hamiltonian Monte Carlo](https://arxiv.org/pdf/1701.02434.pdf).
+
 <!--chapter:end:06_issues.Rmd-->
 
 # Summary
@@ -1721,32 +1692,27 @@ You certainly don't have to abandon classical and other methods either.  Scienti
 
 <br>
 
-<p style="text-align:center">Best of luck with your research!</p>
+<p style="text-align:center; font-family:'Alex Brush'; font-size:200%">Best of luck with your research! $\qquad\sim \mathbb{M}$</p> 
 
 <!--chapter:end:1000_Conclusion.Rmd-->
 
 # Appendix
 
-NOTE EVAL AND CACHE FALSE UNTIL WE GET TO THIS SECTION. 
-
-```{r temporary, include=FALSE}
-knitr::opts_chunk$set(eval=T)
-```
 
 ## Maximum Likelihood Review
 
 This is a very brief refresher on <span class="emph">maximum likelihood estimation</span> using a standard regression approach as an example, and more or less assumes one hasn't tried to roll their own such function in a programming environment before.  Given the likelihood's role in Bayesian estimation and statistics in general, and the ties between specific Bayesian results and maximum likelihood estimates one typically comes across, one should be conceptually comfortable with some basic likelihood estimation.
 
 In the standard model setting we attempt to find parameters $\theta$ that will maximize the probability of the data we actually observe.  We'll start with an observed random target vector $y$ with $i...N$ independent and identically distributed observations and some data-generating process underlying it $f(\cdot|\theta)$.  We are interested in estimating the model parameter(s), $\theta$, that would make the data most likely to have occurred.  The probability density function for $y$ given some particular estimate for the parameters can be noted as $f(y_i|\theta)$.  The joint probability distribution of the (independent) observations given those parameters, $f(y_i|\theta)$, is the product of the individual densities, and is our *likelihood function*.  We can write it out generally as:
-<span class='marginnote'><span class="imgbigger"><img src="img/maxLikeNormalCompareLLforDifferentMeans.svg" style="display:block; margin: 0 auto; width:90%"></span>
 
 
 $$\mathcal{L}(\theta) = \prod_{i=1}^N f(y_i|\theta)$$
 
+<!-- <img src="img/maxLikeNormalCompareLLforDifferentMeans.svg" style="display:block; margin: 0 auto; width:50%"> -->
 
-Thus the *likelihood* for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates.  Furthermore we can compare one set, $\mathcal{L}(\theta_A)$, to that of another, $\mathcal{L}(\theta_B)$, and whichever produces the greater likelihood would be the preferred set of estimates.  We can get a sense of this with the graph to the right, based on a single parameter, Poisson distributed variable. The data is drawn from  a variable with mean $\theta=5$.  We note the calculated likelihood increases as we estimate values for $\theta$ closer to $5$.
+Thus the *likelihood* for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates.  Furthermore we can compare one set, $\mathcal{L}(\theta_A)$, to that of another, $\mathcal{L}(\theta_B)$, and whichever produces the greater likelihood would be the preferred set of estimates.  We can get a sense of this with the following visualization, based on a single parameter, Poisson distributed variable. The data is drawn from  a variable with mean $\theta=5$.  We note the calculated likelihood increases as we estimate values for $\theta$ closer to $5$.
 
-```{r maxLikeillustration, cache=FALSE, eval=FALSE, echo=FALSE}
+```{r maxLikeillustration, cache=FALSE, eval=T, echo=FALSE}
 set.seed(1234)
 y = rpois(100000, lambda=5)
 mus = seq(3, 8, l=100)
@@ -1762,8 +1728,6 @@ mus[L==max(L)]
 # L = sapply(mus, function(mu) sum(dbinom(y, size=100, p=mu, log=T)))
 # mus[L==max(L)]
 
-
-library(ggplot2)
 ggplot(data.frame(mus, L)) + 
   geom_vline(aes(xintercept=5), alpha=.5, lty=2) +
   geom_hline(aes(yintercept=max(L)), alpha=.5, lty=2) +
@@ -1775,7 +1739,8 @@ ggplot(data.frame(mus, L)) +
         axis.text.x=element_text(color='gray10', size=14),
         axis.title.x=element_text(color='gray10', size=24),
         plot.background = element_rect(fill = "transparent",colour = NA))
-ggsave('img/maxLikeNormalCompareLLforDifferentMeans.svg', bg='transparent')
+plotly::ggplotly()
+# ggsave('img/maxLikeNormalCompareLLforDifferentMeans.svg', bg='transparent')
 ```
 
 

@@ -1,30 +1,25 @@
 # Appendix
 
-NOTE EVAL AND CACHE FALSE UNTIL WE GET TO THIS SECTION. 
-
-```{r temporary, include=FALSE}
-knitr::opts_chunk$set(eval=T)
-```
 
 ## Maximum Likelihood Review
 
 This is a very brief refresher on <span class="emph">maximum likelihood estimation</span> using a standard regression approach as an example, and more or less assumes one hasn't tried to roll their own such function in a programming environment before.  Given the likelihood's role in Bayesian estimation and statistics in general, and the ties between specific Bayesian results and maximum likelihood estimates one typically comes across, one should be conceptually comfortable with some basic likelihood estimation.
 
 In the standard model setting we attempt to find parameters $\theta$ that will maximize the probability of the data we actually observe.  We'll start with an observed random target vector $y$ with $i...N$ independent and identically distributed observations and some data-generating process underlying it $f(\cdot|\theta)$.  We are interested in estimating the model parameter(s), $\theta$, that would make the data most likely to have occurred.  The probability density function for $y$ given some particular estimate for the parameters can be noted as $f(y_i|\theta)$.  The joint probability distribution of the (independent) observations given those parameters, $f(y_i|\theta)$, is the product of the individual densities, and is our *likelihood function*.  We can write it out generally as:
-<span class='marginnote'><span class="imgbigger"><img src="img/maxLikeNormalCompareLLforDifferentMeans.svg" style="display:block; margin: 0 auto; width:90%"></span>
 
 
 $$\mathcal{L}(\theta) = \prod_{i=1}^N f(y_i|\theta)$$
 
+<!-- <img src="img/maxLikeNormalCompareLLforDifferentMeans.svg" style="display:block; margin: 0 auto; width:50%"> -->
 
-Thus the *likelihood* for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates.  Furthermore we can compare one set, $\mathcal{L}(\theta_A)$, to that of another, $\mathcal{L}(\theta_B)$, and whichever produces the greater likelihood would be the preferred set of estimates.  We can get a sense of this with the graph to the right, based on a single parameter, Poisson distributed variable. The data is drawn from  a variable with mean $\theta=5$.  We note the calculated likelihood increases as we estimate values for $\theta$ closer to $5$.
+Thus the *likelihood* for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates.  Furthermore we can compare one set, $\mathcal{L}(\theta_A)$, to that of another, $\mathcal{L}(\theta_B)$, and whichever produces the greater likelihood would be the preferred set of estimates.  We can get a sense of this with the following visualization, based on a single parameter, Poisson distributed variable. The data is drawn from  a variable with mean $\theta=5$.  We note the calculated likelihood increases as we estimate values for $\theta$ closer to $5$. With more and more data, the final ML estimate will converge on the true value.
 
-```{r maxLikeillustration, cache=FALSE, eval=FALSE, echo=FALSE}
+```{r maxLikeillustration, cache=FALSE, eval=T, echo=FALSE, out.width='500px', message=T}
 set.seed(1234)
 y = rpois(100000, lambda=5)
 mus = seq(3, 8, l=100)
 L = sapply(mus, function(mu) sum(dpois(y, lambda=mu, log=T)))
-mus[L==max(L)]
+message(glue::glue('Final estimate = ', round(mus[L==max(L)], 2)))
 
 # y = rnorm(100000, mean=50, 10)
 # mus = seq(40,60, l=100)
@@ -35,8 +30,6 @@ mus[L==max(L)]
 # L = sapply(mus, function(mu) sum(dbinom(y, size=100, p=mu, log=T)))
 # mus[L==max(L)]
 
-
-library(ggplot2)
 ggplot(data.frame(mus, L)) + 
   geom_vline(aes(xintercept=5), alpha=.5, lty=2) +
   geom_hline(aes(yintercept=max(L)), alpha=.5, lty=2) +
@@ -48,7 +41,7 @@ ggplot(data.frame(mus, L)) +
         axis.text.x=element_text(color='gray10', size=14),
         axis.title.x=element_text(color='gray10', size=24),
         plot.background = element_rect(fill = "transparent",colour = NA))
-ggsave('img/maxLikeNormalCompareLLforDifferentMeans.svg', bg='transparent')
+# ggsave('img/maxLikeNormalCompareLLforDifferentMeans.svg', bg='transparent')
 ```
 
 
@@ -71,7 +64,7 @@ $$\ln\mathcal{L}(\theta) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\
 
 In the following we will demonstrate the maximum likelihood approach to estimation for a simple setting incorporating a normal distribution where we estimate the mean and variance/sd for a set of values $y$[^notlazy].  First the data is created, and then we create the function that will compute the log likelihood.  Using the built in R distributions[^distributions] makes it fairly straightforward to create our own likelihood function and feed it into an optimization function to find the best parameters.  We will set things up to work with the <span class="pack">bbmle</span> package, which has some nice summary functionality and other features.  However, one should take a glance at <span class="func">optim</span> and the other underlying functions that do the work.
 
-```{r bblmDemo1, cache=T}
+```{r bblmDemo1}
 # for replication
 set.seed(1234)
 
@@ -80,22 +73,22 @@ y = rnorm(1000, mean=5, sd=2)
 startvals = c(0, 1)
 
 # the log likelihood function
-LL = function(mu=startvals[1], sigma=startvals[2]){
+LL = function(mu=startvals[1], sigma=startvals[2], verbose=TRUE) {
   ll = -sum(dnorm(y, mean=mu, sd=sigma, log=T))
-  message(paste(mu, sigma, ll))
+  if (verbose) message(paste(mu, sigma, ll))
   ll
 }
 ```
 
-The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them $\mu$ and $\sigma$, which will be set to `r startvals[1]` and `r startvals[2]` respectively.  Only the first line (ll = -sum...) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point[^reasy].  Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood.  Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values.  I do not show that here but you'll see it in your console.
+The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them $\mu$ and $\sigma$, which will be set to `r startvals[1]` and `r startvals[2]` respectively.  Only the first line (ll = -sum...) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point[^reasy].  Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood.  Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values.  I do not show that here but you'll see it in your console if `verbose=TRUE`.
 
-We are now ready to obtain maximum likelihood estimates for the parameters.  For the <span class="func">mle2</span> function we will need the function we've created, plus other inputs related to that function or the underlying optimizing function used (by default <span class="func">optim</span>).  In this case we will use an optimization procedure that will allow us to set a lower bound for $\sigma$.  This isn't strictly necessary, but otherwise you would get get warnings and possibly lack of convergence if negative estimates for $\sigma$ were allowed[^logsigma]
+We are now ready to obtain maximum likelihood estimates for the parameters.  For the <span class="func">mle2</span> function we will need the function we've created, plus other inputs related to that function or the underlying optimizing function used (by default <span class="func">optim</span>).  In this case we will use an optimization procedure that will allow us to set a lower bound for $\sigma$.  This isn't strictly necessary, but otherwise you would get get warnings and possibly lack of convergence if negative estimates for $\sigma$ were allowed[^logsigma].
 
 ```{r bblmDemo1B}
 library(bbmle)
 # using optim, and L-BFGS-B so as to contrain sigma to be positive by setting
 # the lower bound at zero
-mlnorm =  mle2(LL, method="L-BFGS-B", lower=c(sigma=0)) 
+mlnorm =  mle2(LL, start=list(mu=2, sigma=1), method="L-BFGS-B", lower=c(sigma=0)) 
 mlnorm
 
 # compare to an intercept only regression model
@@ -106,12 +99,9 @@ We can see that the ML estimates are the same as the intercept only model estima
 
 In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a <span class="emph">likelihood surface</span> that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point[^tangent]. For simpler settings such as this, we can  visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum.  I also plot the the path of the optimizer from a top down view.  The large blue dot noted represents the minimum negative log likelihood. 
 
-<span class='marginnote'><span class="imgbigger"><img src="img/mlnorm.svg" style="display:block; margin: 0 auto;"> <br> A bit of jitter was added to the points to better see what's going on.</span>
-
-<span class="imgbigger"><img src="img/mlnormLikelihoodSurface.png" style="display:block; margin: 0 auto;">
-
-```{r plotSurface, eval=F, echo=FALSE}
-# PLOTLY STILL BREAKS MATHJAX, CAN ONLY USE SCREENSHOT
+```{r plotSurface, eval=T, echo=FALSE}
+# RSTUDIO VIEWER WILL NOT CORRECTLY DISPLAY EVEN IF PLOT IS CORRECT
+# PLOTLY STILL BREAKS MATHJAX FOR TUFTE, CAN ONLY USE SCREENSHOT
 
 mu = seq(4, 6, length=50); sigma=seq(1.5, 3, length=50)
 llsurf = matrix(NA, length(mu), length(sigma))
@@ -130,105 +120,68 @@ pointdat = subset(plotdat, mu <=6 & mu >=4 & sigma<= 3 & sigma >=1.5)
 
 
 library(plotly)
-plot_ly(showscale=F, name='estimate') %>% 
-  add_surface(x=~as.numeric(rownames(llsurf)), y =~ as.numeric(colnames(llsurf)), 
-              z=~t(llsurf), colors = colorRamp(c("red", 'orange', "yellow", 'white'), interpolate='spline')) %>% 
-  add_markers(x=~mu, y=~sigma, z=~ll, marker=list(color='gray', size=4), data=pointdat, showlegend=F) %>% 
-  add_markers(x=coef(mlnorm)[1], y=coef(mlnorm)[2],  z=mlnorm@min, marker=list(color='navy', size=10), showlegend=F) %>% 
-  # config(displayModeBar = F) %>% 
-  layout(scene = list(xaxis = list(title = 'mu', 
-                                   titlefont=list(size=12),
-                                   tickfont=list(size=10), 
-                                   dtick=.25),
-                      yaxis = list(title = 'sigma', 
-                                   titlefont=list(size=12),
-                                   tickfont=list(size=10),
-                                   dtick=.25),
-                      zaxis = list(title = 'Neg. Log Lik ', 
-                                   titlefont=list(size=8),
-                                   tickfont=list(size=10),
-                                   position=.1)),
-         paper_bgcolor='rgba(0,0,0,0)',
-         plot_bgcolor='rgba(0,0,0,0)')
+
+llsurf_trans = t(llsurf)
+
+plot_ly(x=~mu, y =~ sigma, z=~llsurf_trans, 
+        colors = viridis::plasma(500), 
+        type='surface', showscale = FALSE, width=750) %>% 
+  add_trace(x=~mu, y=~sigma, z=~ll, mode='markers', marker=list(color=palettes$orange, size=3), type = "scatter3d", 
+            data=pointdat, name=NULL, showlegend=F) %>%
+  add_trace(x=coef(mlnorm)[1], y=coef(mlnorm)[2],  z=mlnorm@min, 
+            marker=list(color=palettes$orange$complementary, size=10), type = "scatter3d", showlegend=F) %>%
+  config(displayModeBar = F) %>%
+  theme_plotly() %>% 
+  layout(scene = list(
+    xaxis = list(title = 'mu',
+                 titlefont=list(size=12),
+                 tickfont=list(size=10),
+                 dtick=.25),
+    yaxis = list(title = 'sigma',
+                 titlefont=list(size=12),
+                 tickfont=list(size=10),
+                 dtick=.25),
+    zaxis = list(title = 'Neg. Log Lik ',
+                 titlefont=list(size=8),
+                 tickfont=list(size=10),
+                 position=.1)),
+    paper_bgcolor='rgba(0,0,0,0)',
+    plot_bgcolor='rgba(0,0,0,0)')
 
 detach(package:plotly)
 ```
 
-
-```{r old3d, echo=FALSE, eval=FALSE}
-# Old 3d plot stuff below
-# llsurf
-# # contour(llsurf)
-# png('img/mlnormLikelihoodSurface.png', bg='transparent')
-# svg('img/mlnormLikelihoodSurface.svg', bg='transparent')
-# library(plot3D)
-# # note that on col key, placement of legend (dist) will not match doc result so you'll have to play with it.
-# persp3D(x=mu, y=sigma, llsurf, zlim=c(2000, 2454),
-#         xlab='mu', ylab='sigma', zlab='neg ll', cex.lab=.75, cex.axis=.5, col.axis='gray75', 
-#         col=heat.colors(prod(dim(llsurf))), shade=.1, box=T, alpha=.75, col.panel='transparent',
-#         contour=list(col=heat.colors(prod(dim(llsurf))), nlevels=20, axes=F), addbox=F,
-#         phi=30, 
-#         ticktype='detailed', nticks=5, bty='u', tck=1, 
-#         colkey=list(col.box='white', cex.axis=.7, col.ticks=NA,  length=.75, width=.75)) -> res    ####### see this !
-# points(trans3d(pointdat[,1], pointdat[,2], pointdat[,3], pmat=res), pch=19, cex=.8, col=scales::alpha('gray',.5))
-# points(trans3d(coef(mlnorm)[1], coef(mlnorm)[2], mlnorm@min, pmat=res), pch=19, col=scales::alpha('navy',.85), cex=2)
-# dev.off()
-
-
-### alternate via surface
-# pdf('img/mlnormLikelihoodSurface2.pdf')
-# M = mesh(mu, sigma)
-# llsurf = matrix(NA, length(mu), length(sigma))  
-# for (i in 1:length(mu)){
-#   for (j in 1:length(sigma)){
-#     llsurf[i,j] = -sum(dnorm(y, mean=mu[i], sd=sigma[j], log=T))
-#   }
-# }
-# below = 100
-# # par(mar=c(5, 4, 4, 2) + 0.1)
-# surf3D(x=M$x, y=M$y, z=llsurf, colvar=llsurf, 
-#        xlab='mu', ylab='sigma', zlab='neg ll', cex.lab=.75, cex.axis=.7, tck=1,
-#        col=heat.colors(prod(dim(llsurf))), shade=.1, box=T, 
-#        r=5, phi=10, 
-#        ticktype='detailed', nticks=5, col.axis='gray25', alpha=.5,
-#        colkey=list(col.box='white', cex.axis=.7, col.ticks=NA,  length=.75, width=.75), contour=T) 
-# contour3D(mu, sigma, z=min(llsurf)-below, colvar=llsurf, col=heat.colors(prod(dim(llsurf))), add=T,
-#           colkey=F, nlevels=20, dDepth=5, addbox=F) -> contourres
-# points(trans3d(pointdat[,1], pointdat[,2], min(llsurf)-below, pmat=contourres), pch=19, cex=.8, col=scales::alpha('gray',.5))
-# # lines(trans3d(pointdat[,1], pointdat[,2], min(llsurf)-100, pmat=contourres), pch=19, cex=.8, col=scales::alpha('gray',.5))
-# points(trans3d(coef(mlnorm)[1], coef(mlnorm)[2], min(llsurf)-below, pmat=contourres), pch=19, col=scales::alpha('navy',.85), cex=2)
-# points(trans3d(coef(mlnorm)[1], coef(mlnorm)[2], min(llsurf), pmat=contourres), pch=19, col=scales::alpha('navy',.85), cex=2)
-# dev.off()
-```
-
-
-Please note that there are many other considerations in optimization completely ignored here, but for our purposes and the audience for which this is intended, we do not want to lose sight of the forest for the trees. We now move next to a slightly more complicated regression example.
-
-
-
-
-```{r plotNormMLEpath, cache=F, message=FALSE, warning=FALSE, eval=FALSE, echo=FALSE}
-plotdat = read.csv('data//mleNormEstimates.csv'); colnames(plotdat) = c('mu','sigma', 'll')
+```{r plotNormMLEpath, eval=T, echo=FALSE, out.width='500px'}
+# plotdat = read.csv('data//mleNormEstimates.csv'); colnames(plotdat) = c('mu','sigma', 'll')
 plotdat$nll = -plotdat$ll
 
 # car::scatter3d(ll~mu + sigma, data=plotdat, fill=F, grid=F, residuals=F, point.col='#FF5500')
 
-library(ggplot2); library(reshape2)
+# library(ggplot2); library(reshape2)
 ggplot(aes(x=mu, y=sigma), data=plotdat) + 
-  geom_point(aes(), size=4, alpha=.15, show.legend=F, position = position_jitter(w = 0.2, h = 0.2)) +
+  geom_point(aes(), color='#ff5500', size=4, alpha=.25, show.legend=F, position = position_jitter(w = 0.2, h = 0.2)) +
   scale_size_continuous(range=c(.1,5)) +
-  geom_point(aes(), col='navy', data=data.frame(t(coef(mlnorm))), size=10, alpha=1) + 
+  geom_point(aes(), col=palettes$orange$complementary, data=data.frame(t(coef(mlnorm))), size=10, alpha=.9) + 
   # geom_path(aes(), col='navy', alpha=.5) +
   labs(x=expression(mu), y=expression(sigma))+
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.ticks.y=element_blank(),
         axis.text.y=element_blank(),
         axis.text.x=element_text(color='gray10', size=14),
         axis.title.x=element_text(color='gray10', size=24),
         axis.title.y=element_text(color='gray10', size=24),
         plot.background = element_rect(fill = "transparent",colour = NA))
-ggsave('img/mlnorm.svg', bg='transparent')
+# ggsave('img/mlnorm.svg', bg='transparent')
 ```
+
+
+<br> <p class="" style='font-size:.75em; text-align:center'>A bit of jitter was added to the points to better see what's going on.</p>
+
+Please note that there are many other considerations in optimization completely ignored here, but for our purposes and the audience for which this is intended, we do not want to lose sight of the forest for the trees. We now move next to a slightly more complicated regression example.
+
+
+
+
 
 ## Linear Model
 
