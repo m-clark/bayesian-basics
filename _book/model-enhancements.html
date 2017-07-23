@@ -203,7 +203,7 @@ rss =<span class="st"> </span>rss[<span class="dv">1</span>]; totalss =<span cla
 <span class="dv">1</span>-rss/totalss; <span class="kw">summary</span>(modlm)$r.squared</code></pre></div>
 <pre><code>[1] 0.4524289</code></pre>
 <pre><code>[1] 0.4524289</code></pre>
-<p>Now we can run the model with added <span class="math inline">\(R^2\)</span><a href="#fn35" class="footnoteRef" id="fnref35"><sup>35</sup></a>. Note that as before we do not just get a point estimate, but a whole distribution of simulated values for <span class="math inline">\(R^2\)</span>. First the results.</p>
+<p>Now we can run the model with added <span class="math inline">\(R^2\)</span><a href="#fn40" class="footnoteRef" id="fnref40"><sup>40</sup></a>. Note that as before we do not just get a point estimate, but a whole distribution of simulated values for <span class="math inline">\(R^2\)</span>. First the results.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(fitRsq, <span class="dt">digits=</span><span class="dv">3</span>, <span class="dt">par=</span><span class="kw">c</span>(<span class="st">&#39;beta&#39;</span>,<span class="st">&#39;sigma&#39;</span>,<span class="st">&#39;R2&#39;</span>), <span class="dt">prob=</span><span class="kw">c</span>(.<span class="dv">025</span>,.<span class="dv">5</span>,.<span class="dv">975</span>))</code></pre></div>
 <pre><code>Inference for Stan model: stanmodelcodeRsq.
 3 chains, each with iter=12000; warmup=2000; thin=10; 
@@ -221,7 +221,7 @@ Samples were drawn using NUTS(diag_e) at Sat May 24 13:10:08 2014.
 For each parameter, n_eff is a crude measure of effective sample size,
 and Rhat is the potential scale reduction factor on split chains (at 
 convergence, Rhat=1).</code></pre>
-<p>The nice thing here is that our <span class="math inline">\(R^2\)</span> incorporates the additional uncertainty in estimating the model parameters, and thus acts like an <em>adjusted</em> <span class="math inline">\(R^2\)</span><a href="#fn36" class="footnoteRef" id="fnref36"><sup>36</sup></a>. The following is the classical regression adjusted <span class="math inline">\(R^2\)</span>.</p>
+<p>The nice thing here is that our <span class="math inline">\(R^2\)</span> incorporates the additional uncertainty in estimating the model parameters, and thus acts like an <em>adjusted</em> <span class="math inline">\(R^2\)</span><a href="#fn41" class="footnoteRef" id="fnref41"><sup>41</sup></a>. The following is the classical regression adjusted <span class="math inline">\(R^2\)</span>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(modlm)$adj</code></pre></div>
 <pre><code>[1] 0.4457512</code></pre>
 <p>Furthermore, in the Bayesian context we get an interval estimate and everything else we typically get as with other quantities of interest, and the same would be true for anything else we want to calculate (e.g. predictions). In addition, it would be trivial to calculate something like the actual adjusted <span class="math inline">\(R^2\)</span>, the probability that the value is greater than .5, and other things of that nature.</p>
@@ -247,7 +247,7 @@ convergence, Rhat=1).</code></pre>
 <span class="st">  y ~ student_t(10, mu, sigma)         // t with df=10</span>
 <span class="st">}</span>
 <span class="st">&quot;</span></code></pre></div>
-<p>In this case we set the degrees of freedom at 10<a href="#fn37" class="footnoteRef" id="fnref37"><sup>37</sup></a>, but how would you know in advance what to set it as? It might be better to place a prior (with lower bound of one) for that value and estimate it as part of the modeling process. One should note that there are many distributions available in Stan (e.g. others might be useful for skewed data, truncated etc.), and more will be added in the future.</p>
+<p>In this case we set the degrees of freedom at 10<a href="#fn42" class="footnoteRef" id="fnref42"><sup>42</sup></a>, but how would you know in advance what to set it as? It might be better to place a prior (with lower bound of one) for that value and estimate it as part of the modeling process. One should note that there are many distributions available in Stan (e.g. others might be useful for skewed data, truncated etc.), and more will be added in the future.</p>
 </div>
 <div id="generalized-linear-model" class="section level2">
 <h2>Generalized Linear Model</h2>
@@ -255,7 +255,7 @@ convergence, Rhat=1).</code></pre>
 <p>Let’s consider a count model using the Poisson distribution. We can specify the model as follows:</p>
 <p><span class="math display">\[y \sim Pois(\lambda)\]</span></p>
 <p><span class="math display">\[g(\lambda) = X\beta\]</span></p>
-<p>where <span class="math inline">\(g(.)\)</span> is the link function, the canonical link function for Poisson being the natural logarithm. In Stan this can be expressed via the inverse link function, where we exponentiate the linear predictor<a href="#fn38" class="footnoteRef" id="fnref38"><sup>38</sup></a>. Aside from that we simply specify <span class="math inline">\(y\)</span> as distributed Poisson in the same way we used the normal and t-distribution in earlier efforts.</p>
+<p>where <span class="math inline">\(g(.)\)</span> is the link function, the canonical link function for Poisson being the natural logarithm. In Stan this can be expressed via the inverse link function, where we exponentiate the linear predictor<a href="#fn43" class="footnoteRef" id="fnref43"><sup>43</sup></a>. Aside from that we simply specify <span class="math inline">\(y\)</span> as distributed Poisson in the same way we used the normal and t-distribution in earlier efforts.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stanmodelcodePoisson =<span class="st"> &quot;</span>
 <span class="st">.</span>
 <span class="st">.</span>
@@ -275,18 +275,18 @@ convergence, Rhat=1).</code></pre>
 <span class="st">  y ~ poisson(lambda)</span>
 <span class="st">}</span>
 <span class="st">&quot;</span></code></pre></div>
-<p>And that’s all there is to that<a href="#fn39" class="footnoteRef" id="fnref39"><sup>39</sup></a>. We just saw that we are not limited to the exponential family distributions of glm(s), though that covers a lot of ground, and so at this point you have a lot of the tools covered in standard applied statistics course, and a few beyond.</p>
+<p>And that’s all there is to that<a href="#fn44" class="footnoteRef" id="fnref44"><sup>44</sup></a>. We just saw that we are not limited to the exponential family distributions of glm(s), though that covers a lot of ground, and so at this point you have a lot of the tools covered in standard applied statistics course, and a few beyond.</p>
 
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="35">
-<li id="fn35"><p>With the <span class="pack">rstanarm</span> package, R<sup>2</sup> is automatically calculated and provided with the <span class="func">stan_lm</span> function.<a href="model-enhancements.html#fnref35">↩</a></p></li>
-<li id="fn36"><p>See <a href="http://www.stat.columbia.edu/~gelman/research/published/rsquared.pdf">Gelman &amp; Pardoe (2006)</a>, Bayesian Measures of Explained Variance.<a href="model-enhancements.html#fnref36">↩</a></p></li>
-<li id="fn37"><p>Alternatively, we could add a value ‘df’ to the data list and data block.<a href="model-enhancements.html#fnref37">↩</a></p></li>
-<li id="fn38"><p>You can also forgo the exponentiation and instead use the <span class="func">poisson_log</span> function in your sampling statement (slightly faster too).<a href="model-enhancements.html#fnref38">↩</a></p></li>
-<li id="fn39"><p>Note that some link/inverse-link functions in Stan cannot be applied to vectors, only scalars. As such you would have to loop over the values of <span class="math inline">\(y\)</span>,<br> <span style="font-family:&#39;Open Sans&#39;"><strong>for(n in 1:N) …</strong></span><a href="model-enhancements.html#fnref39">↩</a></p></li>
+<ol start="40">
+<li id="fn40"><p>With the <span class="pack">rstanarm</span> package, R<sup>2</sup> is automatically calculated and provided with the <span class="func">stan_lm</span> function.<a href="model-enhancements.html#fnref40">↩</a></p></li>
+<li id="fn41"><p>See <a href="http://www.stat.columbia.edu/~gelman/research/published/rsquared.pdf">Gelman &amp; Pardoe (2006)</a>, Bayesian Measures of Explained Variance.<a href="model-enhancements.html#fnref41">↩</a></p></li>
+<li id="fn42"><p>Alternatively, we could add a value ‘df’ to the data list and data block.<a href="model-enhancements.html#fnref42">↩</a></p></li>
+<li id="fn43"><p>You can also forgo the exponentiation and instead use the <span class="func">poisson_log</span> function in your sampling statement (slightly faster too).<a href="model-enhancements.html#fnref43">↩</a></p></li>
+<li id="fn44"><p>Note that some link/inverse-link functions in Stan cannot be applied to vectors, only scalars. As such you would have to loop over the values of <span class="math inline">\(y\)</span>,<br> <span style="font-family:&#39;Open Sans&#39;"><strong>for(n in 1:N) …</strong></span><a href="model-enhancements.html#fnref44">↩</a></p></li>
 </ol>
 </div>
             </section>

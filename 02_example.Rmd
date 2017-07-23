@@ -151,7 +151,6 @@ pThetaGivenData = pDataGivenTheta*pTheta  / pData
 probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaGivenData)
 
 # use ggplot or plotly depending on what works
-library(ggplot2)
 g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
   # annotate('text',x=.2, y=3e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color=alpha(palettes$Rblue$Rblue, .75), parse=T) + # doesn't work with ggplot (use~); but does with plotly
@@ -160,6 +159,7 @@ g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   annotate('text', x=.8, y=4e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
   geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
   annotate('text', x=.4, y=8e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
+  ylim(c(0, .001)) +
   ylab('Density') +
   xlab(substitute('theta')) +
   lazerhawk::theme_trueMinimal() +
@@ -204,6 +204,7 @@ g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   annotate('text', x=.8, y=5e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
   geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
   annotate('text', x=.4, y=5e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
+  ylim(c(0, .001)) +
   ylab('Density') +
   xlab(expression('theta')) +
   lazerhawk::theme_trueMinimal() +
@@ -248,6 +249,7 @@ g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   annotate('text', x=.8, y=1e-3, label=paste('Likelihood with N =', N), color=palettes$stan_red$stan_red) +
   geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
   annotate('text', x=.45, y=1e-3, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
+  ylim(c(0, .0014)) +
   ylab('Density') +
   xlab('theta') +
   lazerhawk::theme_trueMinimal() +

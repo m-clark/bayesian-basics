@@ -9,21 +9,26 @@ site: bookdown::bookdown_site
 output: 
     bookdown::gitbook:
       # template: null
-      css: css/standard_html.css
+      css: [css/book.css, css/standard_html.css]
       highlight: pygments
       # split_by: section
-      # toc_depth: 2
+      toc_depth: 2
       # toc_float: yes
-      # config:
-      toc:
-        number_sections: no
-        collapse: part
-        scroll_highlight: yes
-        number: no
-        before: null
-        after: null
+      number_sections: no
+      # toc:
+      #   collapse: part
+      #   scroll_highlight: yes
+      #   number: no
+      #   before: null
+      #   after: null
       # toolbar:
       #   position: fixed
+      config:
+        toc:
+          collapse: section
+          scroll_highlight: yes
+          before: null
+          after: null
         edit : null
         download: null
         search: yes
@@ -76,7 +81,7 @@ knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib
 ```
 
 ```{r echo=FALSE}
-library(tufte); library(tidyverse)
+library(tufte); library(tidyverse); library(ggplot2); library(lazerhawk); library(pander)
 ```
 
 
@@ -89,8 +94,6 @@ knitr::include_graphics('img/nineteeneightyR.png', dpi = NA)
 <!--chapter:end:index.Rmd-->
 
 # Preface
-
-<span class="marginnote">Initial draft posted 2014 Summer.  Recent updates (2016-7) include major overhaul from pdf to web-based presentation (twice!). The last pdf version I made is [here](http://m-clark.github.io/docs/IntroBayes.pdf) if anyone wants it, however, it will no longer be updated.  
 
 The following serves as a practical and applied introduction to Bayesian estimation methods for the uninitiated. The goal is to provide just enough information in a brief format to allow one to feel comfortable exploring Bayesian data analysis for themselves, assuming they have the requisite context to begin with. The idea is to cover a similar amount of material as one would in part of a standard statistics sequence in various applied disciplines where statistics is being introduced in general.  
 
@@ -116,7 +119,7 @@ Color coding:
 
 ## Note
 
-This document focuses more on concepts and teaching the Bayesian approach to modeling, while using Stan more as a practical vehicle. However, I do want to say something about the development of Stan and the document itself.  Since this document was first put together in 2014, Stan and associated packages have undergone vast and continued development, and tools for publishing documents with R have as well. Packages such as <span class="pack">rstanarm</span> and <span class="pack">brms</span> didn't exist then, but now make even some fairly complicated models easy to pull off with just a line or two of standard R code, and without ever having to use the Stan language directly.  Further, newer visualization tools such as <span class="pack">bayesplot</span> and <span class="pack">shinystan</span> make model exploration even easier than before.  While the document now more reflects these developments, it still leans on conducting analysis more explicitly so that things are not so much of a black box. However, it's worth noting that the example regression model within and associated diagnostics and visuals would now only take a few lines of code, and fully within R. In short, the combination of R and Stan make Bayesian analysis easier than ever before. Once armed with the basic concepts one should feel able to dive as easily as they would with any other R modeling tool.
+This document focuses more on concepts and teaching the Bayesian approach to modeling, while using Stan more as a practical vehicle. However, I do want to say something about the development of Stan and the document itself.  Since this document was first put together in Summer of 2014, Stan and associated packages have undergone vast and continued development, and tools for publishing documents with R have as well. Packages such as <span class="pack">rstanarm</span> and <span class="pack">brms</span> didn't exist then, but now make even some fairly complicated models easy to pull off with just a line or two of standard R code, and without ever having to use the Stan language directly.  Further, newer visualization tools such as <span class="pack">bayesplot</span> and <span class="pack">shinystan</span> make model exploration even easier than before.  While the document now more reflects these developments, it still leans on conducting analysis more explicitly so that things are not so much of a black box. However, it's worth noting that the example regression model within and associated diagnostics and visuals would now only take a few lines of code, and fully within R. In short, the combination of R and Stan make Bayesian analysis easier than ever before. Once armed with the basic concepts one should feel able to dive as easily as they would with any other R modeling tool.
 
 <!--chapter:end:00_preface.Rmd-->
 
@@ -143,16 +146,14 @@ Bayes theorem is illustrated in terms of probability as follows:
 
 $$p(\mathcal{A}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A})p(\mathcal{A})}{p(\mathcal{B})}$$
   
-<span class="marginnote">The denominator reflects the sum of the numerator for *all* values $\mathcal{A}$ might take on. For example:
-$$p(\mathcal{A_i}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i})}{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i}) + \dots + p(\mathcal{B}|\mathcal{A_n})p(\mathcal{A_n})}$$</span>
-In short, we are attempting to ascertain the conditional probability of $\mathcal{A}$ given $\mathcal{B}$ based on the conditional probability of $\mathcal{B}$ given $\mathcal{A}$ and the respective probabilities of $\mathcal{A}$ and $\mathcal{B}$.  This is perhaps not altogether enlightening in and of itself, so we will frame it in other ways, and for the upcoming depictions we will ignore the denominator.
+
+In short, we are attempting to ascertain the conditional probability of $\mathcal{A}$ given $\mathcal{B}$ based on the conditional probability of $\mathcal{B}$ given $\mathcal{A}$ and the respective probabilities of $\mathcal{A}$ and $\mathcal{B}$.  This is perhaps not altogether enlightening in and of itself, so we will frame it in other ways, and for the upcoming depictions we will ignore the denominator[^denominator].
 
 
-<span class="marginnote">The $\propto$ means 'proportional to'.</span>
 $$p(hypothesis|data) \propto p(data|hypothesis)p(hypothesis)$$ 
   
 
-In the above formulation, we are trying to obtain the probability of an hypothesis given the evidence at hand (data) and our initial (prior) beliefs regarding that hypothesis.  Here we are already able to see at least one key difference between Bayesian and classical statistics. The Bayesian approach provides a probability of the hypothesis given the data, which is something generally highly desirable from a scientific perspective.
+In the above formulation[^propto], we are trying to obtain the probability of an hypothesis given the evidence at hand (data) and our initial (prior) beliefs regarding that hypothesis.  Here we are already able to see at least one key difference between Bayesian and classical statistics. The Bayesian approach provides a probability of the hypothesis given the data, which is something generally highly desirable from a scientific perspective.
 
 Here is yet another way to consider this:
 
@@ -160,7 +161,7 @@ Here is yet another way to consider this:
 $$posterior \propto likelihood * prior$$
 
 
-For this depiction let us consider a standard regression coefficient $b$<span class='marginnote'>If we think of y as our outcome and $\Theta$ as our *set* of coefficients that include all the regression coefficents $b$ and $\sigma^2$ variance, i.e. all parameters we need to estimate for the model: $$p(\mathcal{\Theta}|\mathcal{y}) = \frac{p(\mathcal{y}|\mathcal{\Theta})p(\mathcal{\Theta})}{p(\mathcal{y})}$$</span>. Here we have a prior belief about $b$ expressed as a probability distribution.  As a preliminary example we will assume perhaps that the distribution is normal, and is centered on some value $\mu_b$ and with some variance $\sigma_b^2$.  The likelihood here is the exact same one used in classical statistics- if $y$ is our variable of interest, then the likelihood is $p(y|b)$ as in the standard regression approach using maximum likelihood estimation.  What we end up with in the Bayesian context however is not a specific value of $b$ that would make the data most likely, but a probability distribution for $b$ that serves as a weighted combination of the likelihood and prior.  Given that <span class="emph">posterior distribution</span> for $b$, we can then get the mean, median, 95% <span class="emph">credible interval</span>[^credible] and technically a host of other statistics that might be of interest to us.
+For this depiction let us consider a standard regression coefficient $b$[^parameters]. Here we have a prior belief about $b$ expressed as a probability distribution.  As a preliminary example we will assume perhaps that the distribution is normal, and is centered on some value $\mu_b$ and with some variance $\sigma_b^2$.  The likelihood here is the exact same one used in classical statistics- if $y$ is our variable of interest, then the likelihood is $p(y|b)$ as in the standard regression approach using maximum likelihood estimation.  What we end up with in the Bayesian context however is not a specific value of $b$ that would make the data most likely, but a probability distribution for $b$ that serves as a weighted combination of the likelihood and prior.  Given that <span class="emph">posterior distribution</span> for $b$, we can then get the mean, median, 95% <span class="emph">credible interval</span>[^credible] and technically a host of other statistics that might be of interest to us.
 
 To summarize conceptually, we have some belief about the state of the world, expressed as a mathematical model (such as the linear model used in regression).  The Bayesian approach provides an updated belief as a weighted combination of prior beliefs regarding that state and the currently available evidence, with the possibility of the current evidence overwhelming prior beliefs, or prior beliefs remaining largely intact in the face of scant evidence.
 
@@ -170,11 +171,18 @@ $$\text{updated belief} = \text{current evidence} * \text{prior belief or eviden
 
 We will make these concepts more concrete in the next section.
 
-[^evenolder]: Bayes theorem possibly [predates](https://en.wikipedia.org/wiki/Nicholas_Saunderson) Bayes by some accounts.
+[^evenolder]: Bayes theorem possibly [predates](https://en.wikipedia.org/wiki/Nicholas_Saunderson) Bayes himself by some accounts.
 
 [^old]: Jeffreys, Metropolis etc.
 
 [^justify]: Though some might suggest that the typical practice of hypothesis testing that comes with standard methods would need *more*.
+
+[^denominator]: The denominator reflects the sum of the numerator for *all* values $\mathcal{A}$ might take on. For example:
+$$p(\mathcal{A_i}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i})}{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i}) + \dots + p(\mathcal{B}|\mathcal{A_n})p(\mathcal{A_n})}$$
+
+[^propto]: The $\propto$ means 'proportional to'.
+
+[^parameters]: If we think of y as our outcome and $\Theta$ as our *set* of coefficients that include all the regression coefficients $b$ and $\sigma^2$ variance, i.e. all parameters we need to estimate for the model: $$p(\mathcal{\Theta}|\mathcal{y}) = \frac{p(\mathcal{y}|\mathcal{\Theta})p(\mathcal{\Theta})}{p(\mathcal{y})}$$
 
 [^credible]: More on this later.
 
@@ -186,7 +194,7 @@ We will make these concepts more concrete in the next section.
 
 The following is an attempt to provide a small example to show the connection between prior distribution, likelihood and posterior distribution.  Let's say we want to estimate the probability that a soccer/football player[^football] will score a penalty kick in a shootout.  We will employ the binomial distribution to model this.
 
-Our goal is to estimate a parameter $\theta$, the probability that the random knucklehead from your favorite football team will score the penalty in a overtime shootout.  Let's say that for this match takes 10 shots per team before the game is decided.
+Our goal is to estimate a parameter $\theta$, the probability that the random knucklehead from your favorite football team will score the penalty in a overtime shootout.  Let's say that for this match takes 10 shots per team before the game is decided[^rooney].
 
 In R, we can represent the following data for your team as follows, as well as setup some other things for later.
 
@@ -200,11 +208,11 @@ N = length(shots)                      # sample size
 nGoal = sum(shots=='goal')             # number of shots made
 nMiss = sum(shots=='miss')             # number of those miss
 ```
-<span class="marginnote">The fifth shot would have won the game but was taken by Wayne Rooney.</span>
+
 
 Recall the binomial distribution where we specify the number of trials for a particular observation and the probability of an event. Let's look at the distribution for a couple values for $\theta$ equal to .5 and .85 and $N=10$ observations.  We will repeat this 1000 times.
 
-```{r binomdist, fig.show='hide', echo=-1, results='hold'}
+```{r binomdist, fig.show='hide', echo=-1}
 set.seed(1234)
 x1 = rbinom(1000, size=10, p=.5)
 x2 = rbinom(1000, size=10, p=.85)
@@ -213,7 +221,7 @@ mean(x1); hist(x1)
 mean(x2); hist(x2)
 ```
 
-The histograms not shown, but we can see the means are roughly around $N*p$ as we expect with the binomial. 
+The histograms are not shown, but we can see the means are roughly around $N*p$ as we expect with the binomial. 
 
 
 ## Prior
@@ -224,7 +232,7 @@ For our current situation, we don't know $\theta$ and are trying to estimate it.
 theta = seq(from=1/(N+1), to=N/(N+1), length=10)
 ```
 
-For the Bayesian approach we must choose a <span class="emph">prior distribution</span> representing our initial beliefs about the estimates we might potentially consider.  I provide three possibilities and note that any one of them would work just fine for this situation. We'll go with a triangular distribution, which will put most of the weight toward values around $.5$. While we will talk more about this later, I will go ahead and mention that this is where some specifically have taken issue with Bayesian estimation in the past, because this part of the process is too *subjective* for their tastes.  Setting aside the fact that subjectivity is an inherent part of the scientific process, and that ignoring prior information (if explicitly available from prior research) would be blatantly unscientific, the main point to make here is that this choice *is not an arbitrary one*.  There are many distributions we might work with, but some will be better for us than others.  Again, we'll revisit this topic later. While we will only work with one prior, I provide others you can play with. <span class="marginnote">Choose the prior that makes most sense to you.  If I were thinking logically, I might choose a prior that reflects that all advantage is to a person that spends their entire life kicking a ball, and if they can simply kick to the upper right or left of the goal, even with only moderate pace, they could point it out like Babe Ruth and simple physics (i.e. that the goalie can never reach the ball) would mean they score 95% of the time under perfect conditions. We might revise it downward to account for unspecified things, e.g. how tired they are, weather etc. A prior based on a beta distribution $\texttt{beta(9,1)}$, with a mean of .90, would perhaps be about right.  Of course the *data* would eventually suggest something much lower.</span>
+For the Bayesian approach we must choose a <span class="emph">prior distribution</span> representing our initial beliefs about the estimates we might potentially consider.  I provide three possibilities and note that any one of them would work just fine for this situation. We'll go with a triangular distribution, which will put most of the weight toward values around $.5$. While we will talk more about this later, I will go ahead and mention that this is where some specifically have taken issue with Bayesian estimation in the past, because this part of the process is too *subjective* for their tastes.  Setting aside the fact that subjectivity is an inherent part of the scientific process, and that ignoring prior information (if explicitly available from prior research) would be blatantly unscientific, the main point to make here is that this choice *is not an arbitrary one*.  There are many distributions we might work with, but some will be better for us than others.  Again, we'll revisit this topic later. While we will only work with one prior, I provide others you can play with[^chooseprior]. 
 
 ```{r binomGoalPrior}
 ### prior distribution
@@ -259,7 +267,7 @@ Specifically, the likelihood function for the binomial can be expressed as:
 $$p(y|\theta) = {N \choose k}\, \theta^k\,  (1-\theta)^{N-k}$$
 
 
-where $N$ is the total number of possible times in which the event  of interest could occur, and $k$ number of times the event of interest occurs. Our maximum likelihood estimate in this simple setting would simply be the proportion of events witnessed out of the total number of samples[^binomll]. We'll use the formula presented above.  Technically, the first term is not required, but it serves to normalize the likelihood as we did with the prior.  
+where $N$ is the total number of possible times in which the event  of interest could occur, and $k$ number of times the event of interest occurs. Our maximum likelihood estimate in this simple setting would simply be the proportion of events witnessed out of the total number of samples[^binomll]. We'll use the formula presented above.  Technically, the first term is not required, but it serves to normalize the likelihood as we did with the prior[^addcovariates].  
 
 ```{r binomGoallikelihood, echo=2}
 # use the formula
@@ -279,7 +287,6 @@ pDataGivenTheta = choose(N, nGoal) * theta^nGoal * (1-theta)^nMiss
 # pDataGivenTheta3 = pDataGivenTheta/sum(pDataGivenTheta) #normalize as with the prior
 ```
 
-<span class="marginnote">Note that if we had covariates as in a regression model, we would have different estimates of theta for each observation, and thus would calculate each observation's likelihood and then take their product or sum their log values, see the [Maximum Likelihhood Review][Maximum Likelihood Review] for further details). Even here, if you turn this into binary logistic regression with 10 outcomes of goal scored vs. not, the 'intercept only' model would be identical to our results here.</span>
 
 ## Posterior
 
@@ -306,7 +313,7 @@ DT::datatable(format(round(out, 3), nsmall = 3), width='50%',
 
 Starting with the *prior* column, we can see that with the triangular distribution, we've given most of our prior probability to the middle values with probability tapering off somewhat slowly towards either extreme.  The likelihood suggests the data is most likely for $\theta$ values .55-.64, though we know the specific maximum likelihood estimate for $\theta$ is the proportion for the sample, or .6.  Our posterior will fall somewhere between the prior and likelihood estimates, and we can see it has shifted the bulk of the probability slightly away from most likely values suggested by the prior distribution towards a $\theta$ value suggested by the data of .6.
 
-Let's go ahead and see what the mean is: <span class="marginnote">The expected value for a continuous parameter is $\operatorname{E}[X] = \int_{-\infty}^\infty xp(x)\mathrm{d}x$, and for a discrete parameter $\operatorname{E}[X] = \sum_{i=1}^\infty x_i\, p_i$, i.e. a weighted sum of the possible values times their respective probability of occurrence.</span>
+Let's go ahead and see what the mean[^expectedvalue] is: 
 
 
 ```{r binomPosteriorMean}
@@ -336,13 +343,13 @@ probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaG
 # use ggplot or plotly depending on what works
 library(ggplot2)
 g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  # annotate('text',x=.2, y=3e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color=alpha('blue', .75), parse=T) + # doesn't work with ggplot (use~); but does with plotly
-  annotate('text',x=.2, y=3e-4, label='Prior~with~beta(10, 10)', color=alpha('blue', .75), parse=T) + # doesn't work with ggplot (use~); but does with plotly
+  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
+  # annotate('text',x=.2, y=3e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color=alpha(palettes$Rblue$Rblue, .75), parse=T) + # doesn't work with ggplot (use~); but does with plotly
+  annotate('text',x=.2, y=3e-4, label='Prior~with~beta(10, 10)', color=alpha(palettes$Rblue$Rblue, .75), parse=T) + # doesn't work with ggplot (use~); but does with plotly
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  annotate('text', x=.8, y=4e-4, label='Likelihood', color='darkred') +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  annotate('text', x=.4, y=8e-4, label='Posterior', color='purple') +
+  annotate('text', x=.8, y=4e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
+  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
+  annotate('text', x=.4, y=8e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
   xlab(substitute('theta')) +
   lazerhawk::theme_trueMinimal() +
@@ -353,8 +360,8 @@ g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
         plot.background = element_rect(fill = "transparent",colour = NA),
         panel.background=element_rect(fill = "transparent",colour = NA))
 g
-
-# PLOTLY CURRENTLY BREAKS MATHJAX, FANTASTIC!
+# plotly::ggplotly(width='50%')
+# PLOTLY CURRENTLY BREAKS MATHJAX FOR TUFTE, FANTASTIC!
 # library(plotly)
 # ggplotly(tooltip='none') %>%
 #   config(displayModeBar=F) %>%
@@ -362,7 +369,7 @@ g
 ```
 
 
-The second utilizes a more diffuse prior of $\beta(2,2)$. <span class="marginnote">$\beta(1,1)$ is a uniform distribution.</span>  The result of using the vague prior is that the likelihood gets more weight with regard to the posterior.  In fact, if we used a uniform distribution, *we would essentially be doing the equivalent of maximum likelihood estimation*.  In that sense, many of the commonly used methods that implement maximum likelihood can be seen as a special case of a Bayesian approach.
+The second utilizes a more diffuse prior of $\beta(2,2)$[^betadist].  The result of using the vague prior is that the likelihood gets more weight with regard to the posterior.  In fact, if we used a uniform distribution, *we would essentially be doing the equivalent of maximum likelihood estimation*.  In that sense, many of the commonly used methods that implement maximum likelihood can be seen as a special case of a Bayesian approach.
 
 ```{r prior2post_2, echo=FALSE}
 ### more vague prior
@@ -380,13 +387,13 @@ probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaG
 
 
 g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  # annotate('text',x=.25, y=3e-4, label='Prior&nbsp;with&nbsp;beta(2, 2)', color='blue', parse=T) +
-  annotate('text',x=.25, y=3e-4, label='Prior~with~beta(2, 2)', color='blue', parse=T) +
+  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
+  # annotate('text',x=.25, y=3e-4, label='Prior&nbsp;with&nbsp;beta(2, 2)', color=palettes$Rblue$Rblue, parse=T) +
+  annotate('text',x=.25, y=3e-4, label='Prior~with~beta(2, 2)', color=palettes$Rblue$Rblue, parse=T) +
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  annotate('text', x=.8, y=5e-4, label='Likelihood', color='darkred') +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  annotate('text', x=.4, y=5e-4, label='Posterior', color='purple') +
+  annotate('text', x=.8, y=5e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
+  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
+  annotate('text', x=.4, y=5e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
   xlab(expression('theta')) +
   lazerhawk::theme_trueMinimal() +
@@ -424,13 +431,13 @@ probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaG
 
 
 g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  # annotate('text',x=.25, y=6e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color='blue', parse=T) +
-  annotate('text',x=.25, y=6e-4, label='Prior~with~beta(10, 10)', color='blue', parse=T) +
+  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
+  # annotate('text',x=.25, y=6e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color=palettes$Rblue$Rblue, parse=T) +
+  annotate('text',x=.25, y=6e-4, label='Prior~with~beta(10, 10)', color=palettes$Rblue$Rblue, parse=T) +
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  annotate('text', x=.8, y=1e-3, label=paste('Likelihood with N =', N), color='darkred') +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  annotate('text', x=.45, y=1e-3, label='Posterior', color='purple') +
+  annotate('text', x=.8, y=1e-3, label=paste('Likelihood with N =', N), color=palettes$stan_red$stan_red) +
+  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
+  annotate('text', x=.45, y=1e-3, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
   xlab('theta') +
   lazerhawk::theme_trueMinimal() +
@@ -492,6 +499,7 @@ We can implement the simulation process with the data and model at hand, given a
 # yrep = extract(shotres, 'yRep')$yRep
 # dim(yrep)
 
+library(rstanarm)
 shotres = stan_glm(shotsNum~1, family='binomial', iter=2250, warmup=1000, thin=10, prior=student_t())
 yrep = data.frame(posterior_predict(shotres)); colnames(yrep) = paste0('Player_', 1:10)
 
@@ -499,7 +507,7 @@ sampleIndex = sample(1:500, 16)
 yrepLong = tidyr::gather(data.frame(Sim=1:500, yrep)[sampleIndex, ], key=Player, value=Goal, -Sim) %>% 
   arrange(Sim)
 
-library(ggplot2)
+
 ggplot(aes(x=factor(Goal, labels=c('Misses', 'Makes'))), data=yrepLong) +
   geom_bar(fill='#ff5500', color=NA, alpha=.5, width=.5) +
   facet_wrap(~Sim, ncol=4) +
@@ -522,7 +530,7 @@ With an understanding of the key elements of Bayesian inference in hand, we can 
 
 <!-- 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% Prior likeilihood posterior triplots for posterity
+% Prior likelihood posterior triplots for posterity
  -->
 ```{r binomDriveDistplot, eval=FALSE, echo=FALSE}
 set.seed(1234)
@@ -540,14 +548,13 @@ pThetaGivenData = pDataGivenTheta*pTheta  / pData
 
 probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaGivenData)
 
-library(ggplot2)
 ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  annotate('text',x=.2, y=3e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color='blue', parse=T) + # doesn't work with ggplot (use~); but does with plotly
+  geom_polygon(aes(y=prior), fill=palettes$stan_red$tetradic[2], alpha=.25) +
+  annotate('text',x=.2, y=3e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color=palettes$Rblue$Rblue, parse=T) + # doesn't work with ggplot (use~); but does with plotly
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  geom_text(x=.8, y=4e-4, label='Likelihood', color='darkred') +
+  geom_text(x=.8, y=4e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
   geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  geom_text(x=.4, y=8e-4, label='Posterior', color='purple') +
+  geom_text(x=.4, y=8e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
 #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
 #   labs(title = expression("Prior~with~ beta(10, 10)"))
@@ -556,7 +563,7 @@ ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
         axis.text.y=element_text(color='white'),
         plot.background = element_rect(fill = "transparent",colour = NA))
 # ggsave('figure/priorlikepost1.svg', width=3, height=3)
-ggsave('figure/priorlikepost1.png', width=8, height=8, bg = "transparent") # png for faster loading
+ggsave('img/priorlikepost1_test.png', width=8, height=8, bg = "transparent") # png for faster loading
 
 ### more vague prior
 set.seed(1234)
@@ -573,12 +580,12 @@ probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaG
 
 
 ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  annotate('text',x=.3, y=3e-4, label='Prior~with~beta(2, 2)', color='blue', parse=T) +
+  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
+  annotate('text',x=.3, y=3e-4, label='Prior~with~beta(2, 2)', color=palettes$Rblue$Rblue, parse=T) +
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  geom_text(x=.8, y=5e-4, label='Likelihood', color='darkred') +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  geom_text(x=.4, y=5e-4, label='Posterior', color='purple') +
+  geom_text(x=.8, y=5e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
+  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
+  geom_text(x=.4, y=5e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
 #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
 #   labs(title = 'A more vague prior') +
@@ -608,12 +615,12 @@ probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaG
 
 
 ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill='blue', alpha=.25) +
-  annotate('text',x=.3, y=6e-4, label='Prior~with~beta(10, 10)', color='blue', parse=T) +
+  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
+  annotate('text',x=.3, y=6e-4, label='Prior~with~beta(10, 10)', color=palettes$Rblue$Rblue, parse=T) +
   geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  geom_text(x=.8, y=1e-3, label=paste('Likelihood with N =', N), color='darkred') +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  geom_text(x=.45, y=1e-3, label='Posterior', color='purple') +
+  geom_text(x=.8, y=1e-3, label=paste('Likelihood with N =', N), color=palettes$stan_red$stan_red) +
+  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
+  geom_text(x=.45, y=1e-3, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
   ylab('Density') +
 #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
 #   labs(title = expression("Prior~with~ beta(10, 10)"))
@@ -629,19 +636,26 @@ ggsave('figure/priorlikepost3.png', width=8, height=8, bg = "transparent") # png
 
 [^football]: Don't even start, it's always been both 'football' and 'soccer'.
 
+[^rooney]: The fifth shot would have won the game but was taken by Wayne Rooney.
+
 [^binomll]: See for yourself in the [binmoial likelihood][Binomial Likelihood Example] section in the appendix.
 
+[^postpred]: Mathematically represented as: $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$ <br><br> We can get a sense of the structure of this process via the following table, taken from Gelman: <br><br> <img src="img/gelmanTable.png" style="display:block; margin: 0 auto;" width='50%'>
 
+[^chooseprior]: Choose the prior that makes most sense to you.  If I were thinking logically, I might choose a prior that reflects that all advantage is to a person that spends their entire life kicking a ball, and if they can simply kick to the upper right or left of the goal, even with only moderate pace, they could point it out like Babe Ruth and simple physics (i.e. that the goalie can never reach the ball) would mean they score 95% of the time under perfect conditions. We might revise it downward to account for unspecified things, e.g. how tired they are, weather etc. A prior based on a beta distribution $\texttt{beta(9,1)}$, with a mean of .90, would perhaps be about right.  Of course the *data* would eventually suggest something much lower.
 
-[^postpred]: Mathematically represented as: $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$ <br><br> We can get a sense of the structure of this process via the following table, taken from Gelman: <br><br> <img src="img/gelmanTable.png" style="display:block; margin: 0 auto;">
+[^addcovariates]: Note that if we had covariates as in a regression model, we would have different estimates of theta for each observation, and thus would calculate each observation's likelihood and then take their product or sum their log values, see the [Maximum Likelihhood Review][Maximum Likelihood Review] for further details). Even here, if you turn this into binary logistic regression with 10 outcomes of goal scored vs. not, the 'intercept only' model would be identical to our results here.
 
+[^expectedvalue]: The expected value for a continuous parameter is $\operatorname{E}[X] = \int_{-\infty}^\infty xp(x)\mathrm{d}x$, and for a discrete parameter $\operatorname{E}[X] = \sum_{i=1}^\infty x_i\, p_i$, i.e. a weighted sum of the possible values times their respective probability of occurrence.
+
+[^betadist]: $\beta(1,1)$ is a uniform distribution.
 
 <!--chapter:end:02_example.Rmd-->
 
 
 # Regression Models
 
-Now armed with a conceptual understanding of the Bayesian approach, we will actually investigate a regression model using it.  To keep things simple, we start with a standard linear model for regression.  Later, we will show how easy it can be to add changes to the sampling distribution or priors for alternative modeling techniques. But before getting too far, you should peruse the [Modeling Languages][Modeling Languages] section of the appendix to get a sense of some of the programming approaches available.  We will be using the programming language Stan via R and the associated R package <span class="pack">rstan</span>.  If you prefer to keep things conceptual rather than worry about the code, you can read through the following data description and then skip to [running the model][Running the Model].<span class="marginnote">For just a standard regression model I would ultimately suggest using <span class="pack">rstanarm</span> or <span class="pack">brms</span>, because they would allow you to keep to the usual R approach for modeling, allowing you to more or less jump right in. However, writing Stan code makes it more clear what is being done, so we'll keep to it for our purposes here. When I first started writing this document, <span class="pack">brms</span> didn't exist, <span class="pack">rstanarm</span> was still in its infancy, there was no interactive <span class="pack">shinystan</span> etc. I may end up moving the Stan code to the appendix and just using <span class="pack">rstanarm</span> in the future, but I think it's worth knowing what's actually going on specifically behind the scenes, so will stick to the <span class="pack">rstan</span> approach for now.</span>
+Now armed with a conceptual understanding of the Bayesian approach, we will actually investigate a regression model using it.  To keep things simple, we start with a standard linear model for regression.  Later, we will show how easy it can be to add changes to the sampling distribution or priors for alternative modeling techniques. But before getting too far, you should peruse the [Modeling Languages][Modeling Languages] section of the appendix to get a sense of some of the programming approaches available.  We will be using the programming language Stan via R and the associated R package <span class="pack">rstan</span>.  If you prefer to keep things conceptual rather than worry about the code, you can read through the following data description and then skip to [running the model][Running the Model][^easystan].
 
 
 ## Example: Linear Regression Model
@@ -675,7 +689,7 @@ X = cbind(Intercept=1, covariates)
 coefs = c(5, .2, -1.5, .9)
 mu = X %*% coefs
 sigma = 2
-y <- rnorm(N, mu, sigma)
+y = rnorm(N, mu, sigma)
 
 # same as
 # y = 5 + .2*X1 - 1.5*X2 + .9*X3 + rnorm(N, mean=0, sd=2)
@@ -722,7 +736,7 @@ parameters {                // Parameters block
 
 model {                     // Model block
   vector[N] mu;
-  mu <- X * beta;           // Creation of linear predictor
+  mu = X * beta;            // Creation of linear predictor
   
   // priors
   beta ~ normal(0, 10);
@@ -770,12 +784,12 @@ Finally, we get to the <span class="emph">generated quantities</span>, which is 
 
 Now that we have an idea of what the code is doing, let's put it to work.  Bayesian estimation, like maximum likelihood, starts with initial guesses as starting points and then runs in an iterative fashion, producing simulated draws from the posterior distribution at each step, and then correcting those draws until finally getting to some target, or <span class="emph">stationary</span> distribution. This part is key and different from classical statistics.  We are aiming for a *distribution*, not a *point estimate*.
 
-The simulation process is referred to as <span class="emph">Markov Chain Monte Carlo</span>, or MCMC for short.  The specifics of this process are what sets many of the Bayesian programming languages/approaches apart, and something we will cover in more detail in a later section (see [Sampling Procedure][Sampling Procedure]).  In MCMC, all of the simulated draws from the posterior are based on and correlated with previous draws[^mcmccor], as the process moves along the path toward a stationary distribution.  Typically we will allow the process to *warm up*, or rather get a bit settled down from the initial starting point, which might be way off, and thus the subsequent estimates will also be way off for the first few iterations. <span class="marginnote">How far one wants to go down the rabbit hole regarding MCMC is up to the reader.  A great many applied researchers do classical statistical analysis without putting much thought into the actual maximum likelihood estimation process, and I suppose one could do so here as well.</span> Rest assured, assuming the model and data are otherwise acceptable, the process will get to where it needs to go.  However, as a further check, we will run the whole thing multiple times, i.e. have more than one <span class="emph">chain</span>.  As the chains will start from different places, if multiple chains get to the same place in the end, we can feel more confident about our results.
+The simulation process is referred to as <span class="emph">Markov Chain Monte Carlo</span>, or MCMC for short.  The specifics of this process are what sets many of the Bayesian programming languages/approaches apart, and something we will cover in more detail in a later section (see [Sampling Procedure][Sampling Procedure]).  In MCMC, all of the simulated draws from the posterior are based on and correlated with previous draws[^mcmccor], as the process moves along the path toward a stationary distribution.  Typically we will allow the process to *warm up*, or rather get a bit settled down from the initial starting point, which might be way off, and thus the subsequent estimates will also be way off for the first few iterations[^moremcmc]. Rest assured, assuming the model and data are otherwise acceptable, the process will get to where it needs to go.  However, as a further check, we will run the whole thing multiple times, i.e. have more than one <span class="emph">chain</span>.  As the chains will start from different places, if multiple chains get to the same place in the end, we can feel more confident about our results.
 
 
 While this process may sound like it might take a long time to complete, for the following you'll note that it will likely take more time for Stan to compile its code to C++ than it will to run the model[^speed], and on my computer each chain only takes only a little more than a second.  However, the Bayesian approach used to take a very long time even for a standard regression such as this, and that is perhaps the primary reason why Bayesian analysis only caught on in the last couple decades; we simply didn't have the machines to do it efficiently.  Even now though, for highly complex models and large data sets it can still take a long time to run, though typically not prohibitively so.
 
-In the following code, we note the object that contains the Stan model code, the data list, how many iterations we want (12000)[^toomanyiter], how long we want the process to run before we start to keep any estimates (`warmup=2000`), how many of the post-warmup draws of the posterior we want to keep (`thin=10` means every tenth draw), and the number of chains (`chains=3`).  In the end we will have three chains of 1000<span class="marginnote">$\frac{12000-2000}{10} = 1000$</span> draws from the posterior distribution of the parameters.  Stan spits out a lot of output to the R console even with `verbose = FALSE`, and I omit it here, but you will see some initial info about the compiling process, updates as each chain gets through 10% of iterations specified in the `iter` argument, and finally an estimate of the elapsed time.  You may also see *informational messages* which, unless they are highly repetitive, should not be taken as an error.
+In the following code, we note the object that contains the Stan model code, the data list, how many iterations we want (12000)[^toomanyiter], how long we want the process to run before we start to keep any estimates (`warmup=2000`), how many of the post-warmup draws of the posterior we want to keep (`thin=10` means every tenth draw), and the number of chains (`chains=3`).  In the end we will have three chains of 1000[^finaliter] draws from the posterior distribution of the parameters.  Stan spits out a lot of output to the R console even with `verbose = FALSE`, and I omit it here, but you will see some initial info about the compiling process, updates as each chain gets through 10% of iterations specified in the `iter` argument, and finally an estimate of the elapsed time.  You may also see *informational messages* which, unless they are highly repetitive, should not be taken as an error.
 
 
 ```{r rstanRunModel, eval=F}
@@ -803,8 +817,12 @@ So far so good.  The mean estimates reflect the mean of posterior draws for the 
 
 Comparing the results to those from R's <span class="func">lm</span> function, we can see we obtain similar estimates, as they are identical to two decimal places. In fact, had we used uniform priors[^justlikelm], we would doing essentially the same model as what is being conducted with standard maximum likelihood estimation.  Here, we have a decent amount of data for a model that isn't complex, so we would expect the likelihood to notably outweigh the prior, as we demonstrated previously with our binomial example.
 
-```{r rstanCompareStanlm}
+```{r rstanCompareStanlm, eval=FALSE}
 summary(modlm)
+```
+
+```{r rstanCompareStanlm_pretty, echo=FALSE}
+pander(summary(modlm), justify='crrrr')
 ```
 
 But how would we know if our model was working out okay otherwise?  There are several standard diagnostics, and we will talk about them in more detail in the next section, but let's take a look at some presently.  In the summary, `se_mean` is the <span class="emph">Monte Carlo error</span>, and is an estimate of the uncertainty contributed by only having a finite number of posterior draws. `n_eff` is <span class="emph">effective sample size</span> given all chains, and essentially accounts for autocorrelation in the chain, i.e. the correlation of the estimates as we go from one draw to the next. It actually doesn't have to be very large, but if it was small relative to the total number of draws desired that might be cause for concern.  `Rhat` is a measure of how well chains mix, and goes to 1 as chains are allowed to run for an infinite number of draws.  In this case, `n_eff` and `Rhat` suggest we have good convergence, but we can also examine this visually with a traceplot.
@@ -895,6 +913,12 @@ So there you have it.  Aside from the initial setup with making a data list and 
 
 [^otherpacks]: As noted previously, other R packages would allow for regression models to be specified just like you would with the <span class="func">lm</span> and <span class="func">glm</span> functions.  See the <span class="pack">rstanarm</span> (from the developers of Stan) and <span class="pack">brms</span> packages especially.
 
+[^easystan]: For just a standard regression model I would ultimately suggest using <span class="pack">rstanarm</span> or <span class="pack">brms</span>, because they would allow you to keep to the usual R approach for modeling, allowing you to more or less jump right in. However, writing Stan code makes it more clear what is being done, so we'll keep to it for our purposes here. When I first started writing this document, <span class="pack">brms</span> didn't exist, <span class="pack">rstanarm</span> was still in its infancy, there was no interactive <span class="pack">shinystan</span> etc. I may end up moving the Stan code to the appendix and just using <span class="pack">rstanarm</span> in the future, but I think it's worth knowing what's actually going on specifically behind the scenes, so will stick to the <span class="pack">rstan</span> approach for now.
+
+[^moremcmc]: How far one wants to go down the rabbit hole regarding MCMC is up to the reader.  A great many applied researchers do classical statistical analysis without putting much thought into the actual maximum likelihood estimation process, and I suppose one could do so here as well.
+
+[^finaliter]: $\frac{12000-2000}{10} = 1000$
+
 <!--chapter:end:03_models.Rmd-->
 
 # Model Exploration
@@ -960,9 +984,9 @@ ggsave('img/badchains.svg', width=11, height=8.5, bg='transparent')
 
 To go along with visual inspection, we can examine various statistics that might help our determination of convergence or lack thereof.  Gelman and Rubin's <span class="emph">potential scale reduction factor</span>, $\hat{R}$, provides an estimate of convergence based on the variance of an estimated parameter $\theta$ between chains, and the variance within a chain. It is interpreted as the factor by which the variance in the estimate might be reduced with longer chains.  We are looking for a value near 1 (and at the very least less than 1.1), and it will get there as $N_{sim} \rightarrow \infty$.  In the regression model things are looking good in this respect.
 
-```{r showRhat}
-rh = rstan::summary(fit, pars=c('beta', 'sigma'))$summary[,c('mean', 'Rhat')]
-rh %>% round(3)
+```{r showRhat, echo=FALSE}
+# rh = rstan::summary(fit, pars=c('beta', 'sigma'))$summary[,c('mean', 'Rhat')]
+broom::tidy(fit, rhat=T)[,c(1:2,4)] %>% round(3)
 ```
 
 
