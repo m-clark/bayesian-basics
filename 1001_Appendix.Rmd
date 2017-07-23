@@ -62,7 +62,7 @@ $$\ln\mathcal{L}(\theta) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\
 
 ### Example
 
-In the following we will demonstrate the maximum likelihood approach to estimation for a simple setting incorporating a normal distribution where we estimate the mean and variance/sd for a set of values $y$[^notlazy].  First the data is created, and then we create the function that will compute the log likelihood.  Using the built in R distributions[^distributions] makes it fairly straightforward to create our own likelihood function and feed it into an optimization function to find the best parameters.  We will set things up to work with the <span class="pack">bbmle</span> package, which has some nice summary functionality and other features.  However, one should take a glance at <span class="func">optim</span> and the other underlying functions that do the work.
+In the following we will demonstrate the maximum likelihood approach to estimation for a simple setting incorporating a normal distribution, where we estimate the mean and variance/sd for a set of values $y$[^notlazy].  First the data is created, and then we create the function that will compute the log likelihood.  Using the built in R distributions[^distributions] makes it fairly straightforward to create our own likelihood function and feed it into an optimization function to find the best parameters.  We will set things up to work with the <span class="pack">bbmle</span> package, which has some nice summary functionality and other features.  However, one should take a glance at <span class="func">optim</span> and the other underlying functions that do the work.
 
 ```{r bblmDemo1}
 # for replication
@@ -97,7 +97,7 @@ summary(lm(y~1))
 
 We can see that the ML estimates are the same as the intercept only model estimates[^MLvOLS], which given the sample size are close to the true values.
 
-In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a <span class="emph">likelihood surface</span> that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point[^tangent]. For simpler settings such as this, we can  visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum.  I also plot the the path of the optimizer from a top down view.  The large blue dot noted represents the minimum negative log likelihood. 
+In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a <span class="emph">likelihood surface</span> that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point[^tangent]. For simpler settings such as this, we can  visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum (the surface plot is interactive- feel free to adjust).  I also plot the the path of the optimizer from a top down view.  The large blue dot noted represents the minimum negative log likelihood. 
 
 ```{r plotSurface, eval=T, echo=FALSE}
 # RSTUDIO VIEWER WILL NOT CORRECTLY DISPLAY EVEN IF PLOT IS CORRECT
@@ -190,7 +190,7 @@ In the standard regression context, our expected value for the target variable c
 $$\ln\mathcal{L}(\beta, \sigma^2) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\frac{(y-X\beta)^2}{2\sigma^2})]$$
 
 
-```{r bblmeReg, cache=TRUE}
+```{r bblmeReg}
 # for replication
 set.seed(1234)
 
@@ -222,41 +222,38 @@ summary(modlm)
 -2*logLik(modlm)
 ```
 
-<span class='marginnote'><span class="imgbigger"><img src="img/mlreg.svg" style="display:block; margin: 0 auto;"></span>
-
 As before, our estimates and final log likelihood value are about where they should be, and reflect the lm output, as the OLS estimates are the maximum likelihood estimates.  The visualization becomes more difficult beyond two parameters, but we can examine slices similar to the previous plot. 
 
-To move to generalized linear models, very little changes of the process outside of the distribution assumed and that we are typically modeling a function of the target variable (e.g. $\log(y)=X\beta; \mu = e^{X\beta}$).
-
-```{r mlmisc, eval=FALSE, echo=FALSE}
-plotdat = read.csv('data//mleEstimates.csv'); colnames(plotdat) = c('sigma', 'Intercept', 'beta_x', 'll')
+```{r mlmisc, eval=T, echo=FALSE}
+detach(package:bbmle) # why are people still using MASS?!
+detach(package:MASS) # why are people still using MASS?!
+plotdat = read.csv('data//mleEstimates.csv'); colnames(plotdat) = c('sigma', 'Intercept', 'β', 'll')
 # plotdat = read.csv('data//mleEstimates.csv'); colnames(plotdat) = c('sigma', 'Int', 'b1', 'll')
 plotdat$nll = -plotdat$ll
-# scatter3d(ll~sigma+b1, data=plotdat, fill=F, grid=F, fit='additive')
 
 
-gdat= melt(plotdat, id=c('sigma', 'll', 'nll'))
-ggplot(aes(x=sigma, y=value), data=gdat) + 
-  geom_point(aes(size=nll), alpha=.15, show.legend=F, position = position_jitter(w = 0.2, h = 0.2)) +
-  facet_wrap(~variable) +
-#   geom_point(aes(y=b1, color=ll, size=-ll), alpha=.5) +
+# gdat= melt(plotdat, id=c('sigma', 'll', 'nll'))
+plotdat %>% 
+  select(-ll) %>% 
+  gather(key=variable, value=value, -sigma, -nll) %>% 
+  ggplot() + 
+  geom_point(aes(x=sigma, y=value, size=nll), color=palettes$orange$orange, 
+             alpha=.15, show.legend=F, position = position_jitter(w = 0.2, h = 0.2)) +
+  facet_wrap(~variable) +  #, scales='free_y'
   scale_size_continuous(range=c(.5,5)) +
-#   scale_color_continuous(limits=c(2310,5000)) +
-#   geom_tile(aes(fill=ll)) +
-#   scale_fill_gradient(low='red1', high='white', limits=c(2314, 2360), na.value='white') +
-#   geom_point(aes(x=coef(mlopt)['Int'], y=coef(mlopt)['b1']), color='darkred', size=3) +
-#   geom_point(aes(x=coef(mlopt)['sigma'], y=coef(mlopt)['b1']), color='darkred', size=3) +
-#   geom_point(aes(x=coef(mlopt)['sigma'], y=coef(mlopt)['Int']), color='darkred', size=3) +
   labs(x=expression(sigma))+
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.ticks.y=element_blank(),
         axis.text.y=element_blank(),
         axis.text.x=element_text(color='gray10', size=14),
         axis.title.x=element_text(color='gray10', size=24),
         plot.background = element_rect(fill = "transparent",colour = NA))
   
-ggsave('img/mlreg.svg', bg='transparent')
+# ggsave('img/mlreg.svg', bg='transparent')
 ```
+
+To move to generalized linear models, very little changes of the process outside of the distribution assumed and that we are typically modeling a function of the target variable (e.g. $\log(y)=X\beta; \mu = e^{X\beta}$).
+
 
 
 ## Binomial Likelihood Example
@@ -884,7 +881,7 @@ print(fitIG, digits_summary=3, probs=c(.025,.5,.975))
 
 [^logsigma]: An alternative approach would be to work with the log of $\sigma$ which can take on negative values, and then convert it back to the original scale.
 
-[^MLvOLS]: Actually there is a difference between the sigma estimates in that OLS estimates are based on a variance estimate divided by $N-1$ while the MLE estimate has a divisor of $N$.
+[^MLvOLS]: Actually there is a difference between the sigma estimates in that OLS estimates are based on a variance estimate divided by $N-p$ while the MLE estimate has a divisor of $N$.
 
 [^tangent]: Which is equivalent to finding the point where the slope of the tangent line to some function, i.e. the derivative, to the surface is zero. The derivative, or gradient in the case of multiple parameters, of the likelihood function with respect to the parameters is known as the <span class="emph">score function</span>.
 
