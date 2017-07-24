@@ -16,12 +16,13 @@ output:
       number_sections: no
       # toolbar:
       #   position: fixed
+       # address for before img should be relative to where image is on actual website; may be blank for local viewing
       config:
         toc:
           collapse: section
           scroll_highlight: yes
           before: |
-            <li><a href="./"><img src="../img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li>
+            <li><a href="./"><img src="../../img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
           after: |
             <li><a href="https://m-clark.github.io" target="blank"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#b2001d; font-family:'Open Sans'">Michael Clark</span></a></li>
           edit:

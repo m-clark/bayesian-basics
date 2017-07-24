@@ -10,7 +10,7 @@ In the following we will have some initial data set up and also run the model us
 
 ## Setup
 
-First we need to create the data we'll use here and for most of the other examples in this document.
+First we need to create the data we'll use here and for most of the other examples in this document. I use simulated data so that there is no ambiguity about what to expect.
 
 ```{r rstanDataSetup, echo=-c(1:4)}
 ##########################
@@ -44,10 +44,10 @@ modlm = lm(y~., data=data.frame(X[,-1]))
 # summary(modlm)
 ```
 
-Just to make sure we're on the same page, at this point we have three covariates, and a $y$ that is a normally distributed, linear function of them with standard deviation equal to `r sigma`.  The population values for the coefficients including the intercept are `r paste0(coefs[1:3], ', ', collapse='')` and `r coefs[4]`, though with the noise added, the actual estimated values for the sample are slightly different.  Now we are ready to set up an R list object of the data for input into Stan, as well as the corresponding Stan code to model this data.  I will show all the Stan code, which is implemented in R via a single character string, and then provide some detail on each corresponding model block.  However, the goal here isn't to focus on tools as it is to focus on concepts.
+Just to make sure we're on the same page, at this point we have three covariates, and a $y$ that is a normally distributed, linear function of them, and with standard deviation equal to `r sigma`.  The population values for the coefficients including the intercept are `r paste0(coefs[1:3], ', ', collapse='')` and `r coefs[4]`, though with the noise added, the actual estimated values for the sample are slightly different.  Now we are ready to set up an R list object of the data for input into Stan, as well as the corresponding Stan code to model this data.  I will show all the Stan code, which is implemented in R via a single character string, and then provide some detail on each corresponding model block.  However, the goal here isn't to focus on tools as it is to focus on concepts.
 <span class="margin_note">Related code for this same model in BUGS and JAGS is provided in the appendix [here][Bugs Example]. I don't think there is an easy way to learn these programming languages except by diving in and using them yourself with models and data you understand.</span>
 
-The data list for Stan should include any matrix, vector, or value that might be used in the Stan code.  For example, along with the data one can include things like sample size, group indicators (e.g. for mixed models) and so forth.  Here we can get by with just the N, the number of columns in the model matrix, the target variable and the model matrix itself.
+The data list for Stan should include any matrix, vector, or value that might be used in the Stan code.  For example, along with the data one can include things like sample size, group indicators (e.g. for mixed models) and so forth.  Here we can get by with just the sample size (N), the number of columns in the model matrix (K), the target variable (y) and the model matrix itself (X).
 
 ```{r rstanDataList}
 # Create the data list object for Stan input
@@ -56,7 +56,7 @@ dat = list(N=N, K=ncol(X), y=y, X=X)
 
 Next comes the Stan code.  In <span class="pack">R2OpenBugs</span> or <span class="pack">rjags</span> one would call a separate text file with the code, and one can do the same with <span class="pack">rstan</span>[^stringvsfile], but for our purposes, we'll display it within the R code. The first thing to note then is the model code.  Next, Stan has programming blocks that have to be called in order. I will have all of the blocks in the code to note their order and discuss each in turn, even though we won't use them all.  Anything following a // or #, or between /\* \*/, are comments pertaining to the code.  Assignments in Stan are `=`[^assignment], while distributions are specified with a $\sim$, e.g. `y ~ normal(0, 1)` means y is normally distributed with mean 0 and standard deviation of 1.
 
-The primary goal here again is to get to the results and beyond, but one should examine the [Stan manual](http://mc-stan.org/documentation/) for details about the code.  In addition, to install <span class="pack">rstan</span> one will need to do so via CRAN or Github ([quickstart guide](https://github.com/Stan-dev/rstan/wiki/RStan-Getting-Started)).  It does not require a separate installation of Stan itself, but it does take a couple steps and does require a C++ compiler[^compiler]. Once you have <span class="pack">rstan</span> installed it is called like any other R package as will see shortly.
+The primary goal here is to get to the results and beyond, but one should examine the [Stan manual](http://mc-stan.org/documentation/) for details about the code.  In addition, to install <span class="pack">rstan</span> one will need to do so via CRAN or Github ([quickstart guide](https://github.com/Stan-dev/rstan/wiki/RStan-Getting-Started)).  It does not require a separate installation of Stan itself, but it does take a couple steps and does require a C++ compiler[^compiler]. Once you have <span class="pack">rstan</span> installed it is called like any other R package as will see shortly.
 
 
 ```{r rstanStanSetup}
