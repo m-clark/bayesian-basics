@@ -163,7 +163,7 @@ For model comparison of out of sample predictive performance, there are informat
 
 ### Posterior Predictive Checking: Statistical
 
-For an overall assessment of model fit, we can examine how well the model can reproduce the data at hand given the $\theta$ draws from the posterior.  We discussed earlier the <span class="emph">posterior predictive distribution</span> for a future observation $\tilde{y}$, $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$, and here we'll dive in to using it explicitly. There are two sources of uncertainty in our regression model, the variance in y not explained by the model ($\sigma^2$), and posterior uncertainty in the parameters due to having a finite sample size.  As $N\rightarrow\infty$, the latter goes to zero, and so we can simulate draws of $\tilde{y} \sim N(\tilde{X}\beta, \sigma^2I)$[^conjugate]. If $\tilde{X}$ is the model data as in the following, then we will refer to $y^{\textrm{Rep}}$ instead of $\tilde{y}$.
+For an overall assessment of model fit, we can examine how well the model can reproduce the data at hand given the $\theta$ draws from the posterior.  We discussed earlier the <span class="emph">posterior predictive distribution</span> for a future observation $\tilde{y}$[^ppcheck2], and here we'll dive in to using it explicitly. There are two sources of uncertainty in our regression model, the variance in $y$ not explained by the model ($\sigma^2$), and posterior uncertainty in the parameters due to having a finite sample size.  As $N\rightarrow\infty$, the latter goes to zero, and so we can simulate draws of $\tilde{y} \sim N(\tilde{X}\beta, \sigma^2I)$[^conjugate]. If $\tilde{X}$ is the model data as in the following, then we will refer to $y^{\textrm{Rep}}$ instead of $\tilde{y}$.
 
 For our model this entails extracting the simulated values from the model object, and taking a random draw from the normal distribution based on the $\beta$ and $\sigma$ that are drawn to produce our <span class="emph">replicated data</span>, $y^{\textrm{Rep}}$ (see @gelman_bda, Appendix C).  In what follows, I write out the process explicitly, but <span class="pack">bayesplot</span>, <span class="pack">rstanarm</span>, and <span class="pack">brms</span> make this straightforward, possibly with a single line of code, the latter packages using <span class="pack">bayesplot</span>. In addition, it's often simpler to create the $y^{\textrm{Rep}}$ as part of your generated quantities section of the model code if modeling with Stan explicitly.
 
@@ -229,7 +229,7 @@ ggplot(aes(x=value), data=q10_rep) +
 # ggsave('img/histofyrepQ10.svg', bg='transparent')
 ```
 
-<span style="font-size:.75em">See <span class="func">ppc_stat</span> in <span class="pack">bayesplot</span>.</span>
+<p style="font-size:.75em; text-align:center">See <span class="func">ppc_stat</span> in <span class="pack">bayesplot</span>.</p>
 
 In general, we can devise a test statistic, $T_{\textrm{Rep}}$, and associated p-value to check *any* particular result of interest based on the simulated data.  The p-value in this context is simply the percentage of times the statistic of interest is equal to or more extreme than the statistic, $T_y$, calculated for the original data.  Thus p-values near 0 or 1 are indicative of areas where the model is falling short in some fashion. Sometimes $T_y$ may be based on the $\theta$ parameters being estimated, and thus you'd have a $T_y$ for every posterior draw. In such a case one might examine the scatterplot of $T_{\textrm{Rep}}$ vs. $T_y$, or examine a density plot of the difference between the two.  In short, this is an area where one can get creative, and the <span class="pack">bayesplot</span> package can help with make this fairly easy.  However, it must be stressed that we are not trying to accept or reject a model hypothesis as in the frequentist setting- we're not going to throw a model out because of an extreme p-value in our posterior predictive check.  We are merely trying to understand the model's shortcomings as best we can, and make appropriate adjustments if applicable.  It is often the case that the model will still be good enough for practical purposes.
 
@@ -251,10 +251,10 @@ ggplot(aes(x=y, y=avgfits), data=data.frame(y=y, avgfits=avgfits)) +
         plot.background = element_rect(fill = "transparent",colour = NA))
 # ggsave('img/posteriorPredictiveFittedvsObserved.svg', bg='transparent')
 ```
-<span style="font-size:.75em">See <span class="func">ppc_scatter_avg</span> in <span class="pack">bayesplot</span>.</span>
+<p style="font-size:.75em; text-align:center">See <span class="func">ppc_scatter_avg</span> in <span class="pack">bayesplot</span>.</p>
 
 
-Next, I show density plots for a random sample of 20 of the replicated data sets along with that of the original data (shaded).  In general it looks like we're doing pretty well here. The subsequent figure displays the density plot for individual predictions for a single value of $y$ from our data.  While it looks like some predictions were low for that value, in general the model captures this particular observation of the data decently.
+Next, I show density plots for a random sample of 20 of the replicated data sets along with that of the original data (shaded).  In general it looks like we're doing pretty well here. The subsequent figure displays the density plot for individual predictions for a single value of $y$ from our data. In general the model captures this particular observation of the data decently.
 
 
 
@@ -315,7 +315,7 @@ ggplot(aes(x=yRep), data=gdat) +
 # ggsave('img/posteriorPredictiveFittedY.svg', bg='transparent')
 ```
 
-<span style="font-size:.75em">See <span class="func">ppc_dens_overlay</span> in <span class="pack">bayesplot</span>.</span>
+<p style="font-size:.75em; text-align:center">See <span class="func">ppc_dens_overlay</span> in <span class="pack">bayesplot</span>.</p>
 
 We can also examine residual plots of $y - E(y|X,\theta)$ as with standard analysis, shown as the final two figures for this section.  The first shows such *realized* residuals, so-called as they are based on a posterior draw of $\theta$ rather than point estimation of the parameters, versus the expected values from the model.  The next plot shows the average residual against the average fitted value.  No discernible patterns are present, so we may conclude that the model is adequate in this regard[^dupeplot].
 
@@ -386,6 +386,8 @@ As with standard approaches, every model should be checked to see whether it hol
 [^mcerr]: This is the 'naive' estimate the <span class="pack">coda</span> package provides in its summary output.
 
 [^ppcheck]: Gelman devotes an entire chapter to this topic to go along with examples of model checking throughout his text.  Much of this section follows that outline.
+
+[^ppcheck2]: $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$
 
 [^waic]: See [Gelman et al. (2013)](http://www.stat.columbia.edu/~gelman/research/published/waic_understand3.pdf) for a review and references. See [Vehtari & Gelman (2014)](http://www.stat.columbia.edu/~gelman/research/unpublished/waic_stan.pdf) for some more on WAIC, as well as the R package <span class="pack">loo</span>.
 

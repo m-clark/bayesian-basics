@@ -12,11 +12,6 @@ McElreath, R. (2015). *Statistical Rethinking*.  A good modeling book in general
 Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). *Bayesian Data Analysis*.
 
 
-## Other
-
-Statisticat, LLC. [*Bayesian Inference*](https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf). A quick overview from the original author's of the <span class="pack">LaplacesDemon</span> package.
-
-
 ### Stan Specific
 
 [Main website](http://mc-stan.org/)
@@ -30,6 +25,11 @@ Statisticat, LLC. [*Bayesian Inference*](https://cran.r-project.org/web/packages
 [The Stan Group](http://stan.fit/)
 
 More resources [here](http://mc-stan.org/documentation/)
+
+
+## Other
+
+Statisticat, LLC. [*Bayesian Inference*](https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf). A quick overview from the original author of the <span class="pack">LaplacesDemon</span> package.
 
 
 ## Works Cited/Used

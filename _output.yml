@@ -4,14 +4,6 @@ bookdown::gitbook:
   css: [css/standard_html.css]
   font-import: http://fonts.googleapis.com/css?family=Risque|Roboto|Open+Sans|Alex+Brush
   font-family: 'Roboto'
-  config:
-    toc:
-      before: |
-        <li><a href="./"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#b2001d; font-family:'Open Sans'">Become a Bayesian with R</span></a></li>
-      after: |
-        <li><a href="https://m-clark.github.io" target="blank"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#b2001d; font-family:'Open Sans'">Michael Clark</span></a></li>
-    edit:
-      link: https://github.com/rstudio/bookdown-demo/edit/master/%s
 bookdown::tufte_html_book:
   css: [toc.css, ../css/tufte_bookdown/mytufte.css]
   font-import: http://fonts.googleapis.com/css?family=Risque|Roboto|Open+Sans

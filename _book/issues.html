@@ -111,7 +111,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#b2001d; font-family:'Open Sans'">Become a Bayesian with R</span></a></li>
+<li><a href="./"><img src="../img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li>
 
 <li class="divider"></li>
 <li><a href="index.html#section"></a></li>
@@ -197,10 +197,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#hamiltonian-monte-carlo-example"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a><ul>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts-for-your-shelf"><i class="fa fa-check"></i>Texts for Your Shelf</a></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html#other"><i class="fa fa-check"></i>Other</a><ul>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts-for-your-shelf"><i class="fa fa-check"></i>Texts for Your Shelf</a><ul>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#stan-specific"><i class="fa fa-check"></i>Stan Specific</a></li>
 </ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#other"><i class="fa fa-check"></i>Other</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 <li class="divider"></li>
@@ -228,8 +228,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>This section highlights some things to think about, as well as questions that would naturally arise for the applied researcher who might now be ready to start in on their first Bayesian analysis. It provides merely a taste regarding some select issues, and at this point one should be consulting Bayesian analysis texts directly.</p>
 <div id="debugging" class="section level2">
 <h2>Debugging</h2>
-<p>An essential part of Bayesian analysis is debugging to see if your code and model are doing what it should be doing<a href="#fn46" class="footnoteRef" id="fnref46"><sup>46</sup></a>, and this especially holds for more complex models. For many models with typical numbers for posterior draws, Bayesian analysis might take several minutes on standard computers or laptops. With big data and/or very complex models, some might take hours or even <em>days</em>. In either case, it is a waste of time to let broken code/models run unnecessarily.</p>
-<p>The idea with debugging is that, once you think you have everything set up the way you like, run very short attempts to see if A, the code even compiles, and B, whether it runs appropriately. As such, you will only want to set your warm-up and iterations to some small number to begin with, e.g. maybe not even 100 iterations, and no more than two chains<a href="#fn47" class="footnoteRef" id="fnref47"><sup>47</sup></a>. Sometimes it will be obvious what a problem is, such as a typo resulting in the program of choice not being able to locate the parameter of interest. Other issues may be fairly subtle, for example, when it comes to prior specification.</p>
+<p>An essential part of Bayesian analysis is debugging to see if your code and model are doing what it should be doing<a href="#fn47" class="footnoteRef" id="fnref47"><sup>47</sup></a>, and this especially holds for more complex models. For many models with typical numbers for posterior draws, Bayesian analysis might take several minutes on standard computers or laptops. With big data and/or very complex models, some might take hours or even <em>days</em>. In either case, it is a waste of time to let broken code/models run unnecessarily.</p>
+<p>The idea with debugging is that, once you think you have everything set up the way you like, run very short attempts to see if A, the code even compiles, and B, whether it runs appropriately. As such, you will only want to set your warm-up and iterations to some small number to begin with, e.g. maybe not even 100 iterations, and no more than two chains<a href="#fn48" class="footnoteRef" id="fnref48"><sup>48</sup></a>. Sometimes it will be obvious what a problem is, such as a typo resulting in the program of choice not being able to locate the parameter of interest. Other issues may be fairly subtle, for example, when it comes to prior specification.</p>
 <p>Along with initial short runs, one should consider simpler models first, and perhaps using only a subset of the data. Especially for complex models, it helps to build the model up, debugging and checking for problems along the way. As a not too complicated example, consider a mixed model for logistic regression. One could even start with a standard linear model ignoring the binary nature of the target and random effect structure. Getting a sense of things from that and just making sure that inputs etc. are in place, one can supply the inverse logit link and change the sampling distribution to Bernoulli. Now you can think about adding the random effect, other explanatory variables of interest, and any other complexities that had not been included yet.</p>
 <p>As you identify issues, you fix any problems that arise and tinker with other settings. Once you are satisfied, <em>then</em> try for the big run. Even then, you might spot new issues with a longer chain, so you can rinse and repeat at that point. BUGS, JAGS, and Stan more or less have this capacity built in with model upgrade functions. For example, in Stan you can feed the previous setup of a model in to the main <span class="func">stan</span> function. Use one for your initial runs, then when you’re ready, supply the model object as input to the ‘fit’ argument, perhaps with adjustments to the Monte Carlo settings.</p>
 </div>
@@ -269,7 +269,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="summary-1" class="section level3">
 <h3>Summary</h3>
-<p>It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors<a href="#fn48" class="footnoteRef" id="fnref48"><sup>48</sup></a>. One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot for simpler models. While the choice might be considered subjective in some respects, it is not arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.</p>
+<p>It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors<a href="#fn49" class="footnoteRef" id="fnref49"><sup>49</sup></a>. One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot for simpler models. While the choice might be considered subjective in some respects, it is not arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.</p>
 </div>
 </div>
 <div id="sampling-procedure" class="section level2">
@@ -277,7 +277,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>There are <a href="http://m-clark.github.io/docs/ld_mcmc/">many ways</a> in which one might sample from the posterior. Bayesian analysis is highly flexible and can solve a great many statistical models in theory. In practice things can be more difficult. As more complex models are attempted, new approaches are undertaken to deal with the problems in estimation that inevitably arise. In an attempt to dissolve at least some of the mystery, a brief description follows.</p>
 <div id="metropolis" class="section level3">
 <h3>Metropolis</h3>
-<p>We have mentioned that BUGS and JAGS use <span class="emph">Gibbs sampling</span>, which is a special case of the <span class="emph">Metropolis-Hastings</span> (MH) algorithm<a href="#fn49" class="footnoteRef" id="fnref49"><sup>49</sup></a>, a very general approach encompassing a wide variety of techniques. The Metropolis algorithm can be briefly described in the following steps:</p>
+<p>We have mentioned that BUGS and JAGS use <span class="emph">Gibbs sampling</span>, which is a special case of the <span class="emph">Metropolis-Hastings</span> (MH) algorithm<a href="#fn50" class="footnoteRef" id="fnref50"><sup>50</sup></a>, a very general approach encompassing a wide variety of techniques. The Metropolis algorithm can be briefly described in the following steps:</p>
 <ol style="list-style-type: decimal">
 <li>Start with initial values for the parameters <span class="math inline">\(\theta^0\)</span></li>
 </ol>
@@ -287,7 +287,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li>Calculate the ratio <span class="math inline">\(r\)</span> of the posterior densities <span class="math inline">\(\frac{p(\theta^*|y)}{p(\theta^{t-1}|y)}\)</span></li>
 <li>Set <span class="math inline">\(\theta^t = \theta^*\)</span> with probability <span class="math inline">\(\min(r, 1)\)</span>, else <span class="math inline">\(\theta^t = \theta^{t-1}\)</span></li>
 </ol>
-<p>Conceptually, if the proposal increases the posterior density, <span class="math inline">\(\theta^t = \theta^*\)</span>. If it decreases the proposal density, set <span class="math inline">\(\theta^t = \theta^*\)</span> with probability <span class="math inline">\(r\)</span>, else it remains at <span class="math inline">\(\theta^{t-1}\)</span>. The MH algorithm generalizes the Metropolis to use asymmetric proposal distributions and uses an <span class="math inline">\(r\)</span> to correct for asymmetry<a href="#fn50" class="footnoteRef" id="fnref50"><sup>50</sup></a>.</p>
+<p>Conceptually, if the proposal increases the posterior density, <span class="math inline">\(\theta^t = \theta^*\)</span>. If it decreases the proposal density, set <span class="math inline">\(\theta^t = \theta^*\)</span> with probability <span class="math inline">\(r\)</span>, else it remains at <span class="math inline">\(\theta^{t-1}\)</span>. The MH algorithm generalizes the Metropolis to use asymmetric proposal distributions and uses an <span class="math inline">\(r\)</span> to correct for asymmetry<a href="#fn51" class="footnoteRef" id="fnref51"><sup>51</sup></a>.</p>
 <p>Let’s look at this in generic/pseudo R code for additional clarity (in practice we can take the difference in the log values for step 3):</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">nsim =<span class="st"> </span>numberSimulatedDraws
 theta0 =<span class="st"> </span>initValue
@@ -332,7 +332,7 @@ for (t in <span class="dv">2</span>:nsim) {
 <li>Calculate <span class="math inline">\(r = \frac{p(\theta^*|y)p(\phi^*)}{p(\theta^{t-1})p(\phi^{t-1})}\)</span></li>
 <li>Set <span class="math inline">\(\theta^t = \theta^*\)</span> with probability <span class="math inline">\(min(r, 1)\)</span>, else <span class="math inline">\(\theta^t = \theta^{t-1}\)</span></li>
 </ol>
-<p>The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow. An example using HMC on the regression model data can be found in the <a href="appendix.html#hamiltonian-monte-carlo-example">Hamiltonian Monte Carlo Example</a><a href="#fn51" class="footnoteRef" id="fnref51"><sup>51</sup></a>.</p>
+<p>The overall process allows it to move quite rapidly through the parameter space, and it can work well where other approaches such as Gibbs might be very slow. An example using HMC on the regression model data can be found in the <a href="appendix.html#hamiltonian-monte-carlo-example">Hamiltonian Monte Carlo Example</a><a href="#fn52" class="footnoteRef" id="fnref52"><sup>52</sup></a>.</p>
 </div>
 <div id="other-variations-and-approximate-methods" class="section level3">
 <h3>Other Variations and Approximate Methods</h3>
@@ -354,13 +354,13 @@ for (t in <span class="dv">2</span>:nsim) {
 </div>
 <div class="footnotes">
 <hr />
-<ol start="46">
-<li id="fn46"><p>It really should be a part of most analysis.<a href="issues.html#fnref46">↩</a></p></li>
-<li id="fn47"><p>With Stan I sometimes do a 1 iteration compile check first.<a href="issues.html#fnref47">↩</a></p></li>
-<li id="fn48"><p>The BUGS book has many examples for a wide variety of applications. The <a href="https://github.com/stan-dev/example-models/wiki">Stan github page</a> has Stan examples for each of those BUGS examples and many more.<a href="issues.html#fnref48">↩</a></p></li>
-<li id="fn49"><p>Originally developed in physics in the 50s, it eventually made its way across to other fields.<a href="issues.html#fnref49">↩</a></p></li>
-<li id="fn50"><p>Given a proposal/jumping distribution <span class="math inline">\(\mathcal{J}_t\)</span>, <br> <span class="math inline">\(r=\frac{p(\theta^*|y)/\mathcal{J}_t(\theta^*|\theta^{t-1})} {p(\theta^{t-1}|y)/\mathcal{J}_t(\theta^{t-1}|\theta^*)}\)</span><a href="issues.html#fnref50">↩</a></p></li>
-<li id="fn51"><p>See this entry at David Mimno’s blog for a <a href="http://www.mimno.org/articles/hmc/">visualization of HMC</a>, and Betancourt’s <a href="https://arxiv.org/pdf/1701.02434.pdf">Conceptual Introduction to Hamiltonian Monte Carlo</a>.<a href="issues.html#fnref51">↩</a></p></li>
+<ol start="47">
+<li id="fn47"><p>It really should be a part of most analysis.<a href="issues.html#fnref47">↩</a></p></li>
+<li id="fn48"><p>With Stan I sometimes do a 1 iteration compile check first.<a href="issues.html#fnref48">↩</a></p></li>
+<li id="fn49"><p>The BUGS book has many examples for a wide variety of applications. The <a href="https://github.com/stan-dev/example-models/wiki">Stan github page</a> has Stan examples for each of those BUGS examples and many more.<a href="issues.html#fnref49">↩</a></p></li>
+<li id="fn50"><p>Originally developed in physics in the 50s, it eventually made its way across to other fields.<a href="issues.html#fnref50">↩</a></p></li>
+<li id="fn51"><p>Given a proposal/jumping distribution <span class="math inline">\(\mathcal{J}_t\)</span>, <br> <span class="math inline">\(r=\frac{p(\theta^*|y)/\mathcal{J}_t(\theta^*|\theta^{t-1})} {p(\theta^{t-1}|y)/\mathcal{J}_t(\theta^{t-1}|\theta^*)}\)</span><a href="issues.html#fnref51">↩</a></p></li>
+<li id="fn52"><p>See this entry at David Mimno’s blog for a <a href="http://www.mimno.org/articles/hmc/">visualization of HMC</a>, and Betancourt’s <a href="https://arxiv.org/pdf/1701.02434.pdf">Conceptual Introduction to Hamiltonian Monte Carlo</a>.<a href="issues.html#fnref52">↩</a></p></li>
 </ol>
 </div>
             </section>
@@ -398,11 +398,17 @@ gitbook.start({
 "family": "sans",
 "size": 2
 },
-"edit": null,
+"edit": {
+"link": null,
+"text": null
+},
 "download": ["Bayesian-Basics.epub"],
 "toc": {
 "collapse": "section",
-"scroll_highlight": true
+"scroll_highlight": true,
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/%s"
+}
 },
 "search": true
 });
