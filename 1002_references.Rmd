@@ -3,7 +3,7 @@
 ## Texts for Your Shelf
 
 
-The following are three texts I recommend in my consulting to folks interested in doing Bayesian data analyis. They can be seen as introduction, moderate, and advanced respectively
+The following are three texts I recommend in my consulting to folks interested in doing Bayesian data analyis. They can be seen as introduction, intermediate, and advanced respectively.
 
 Kruschke, J. (2014) *Doing Bayesian Data Analysis*. Very intro book, but might be good for those not too confident in statistics generally speaking. And who doesn't like puppies? Second edition has Stan examples.
 
@@ -12,7 +12,7 @@ McElreath, R. (2015). *Statistical Rethinking*.  A good modeling book in general
 Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). *Bayesian Data Analysis*.
 
 
-### Stan Specific
+### Stan Specific Resources
 
 [Main website](http://mc-stan.org/)
 
