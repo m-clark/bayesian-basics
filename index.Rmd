@@ -60,9 +60,9 @@ url: 'https\://m-clark.github.io/Docs/bayesian_book/'  # evidently the \: is req
 
 
 # this is for pdf but also to paste into references; tufte style refs at point of citation in margin
-# nocite: | 
-#   @kruschke_doing_2010, @gelman_arm, @mcgrayne_theory_2012, @gelmanPardoe2006,
-#   @gelmanHwangVehtari, @gelmanVehtariWAIC, @mcelreath2016
+nocite: |
+  @kruschke_doing_2010, @gelman_arm, @mcgrayne_theory_2012, @gelmanPardoe2006,
+  @gelmanHwangVehtari, @gelmanVehtariWAIC, @mcelreath2016
 ---
 
 ```{r setup, include=FALSE}
