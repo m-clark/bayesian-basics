@@ -34,6 +34,7 @@ _book/*.pdf
 *.knit.md
 
 *.html linguist-vendored
+*.js linguist-vendored
 *.sh linguist-vendored
 *.css linguist-vendored
 
