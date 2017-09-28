@@ -17,6 +17,9 @@
 # RStudio files
 .Rproj.user/
 
+# primary conent
+*.Rmd
+
 # produced vignettes
 _book/*.html
 _book/*.pdf
@@ -38,7 +41,7 @@ _book/*.pdf
 *.sh linguist-vendored
 *.css linguist-vendored
 
-*.Rmd linguist-language=R
+
 *.stan linguist-language=Stan
 *.inp linguist-language=Mplus
 *.out linguist-generated=true
