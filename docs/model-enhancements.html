@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html >
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>Bayesian Basics</title>
+  <meta name="description" content="An introduction to Bayesian data analysis.">
+  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+
+  <meta property="og:title" content="Bayesian Basics" />
+  <meta property="og:type" content="book" />
+  <meta property="og:url" content="https://m-clark.github.io/Docs/bayesian_book/" />
+  <meta property="og:image" content="https://m-clark.github.io/Docs/bayesian_book/img/nineteeneightyR.png" />
+  <meta property="og:description" content="An introduction to Bayesian data analysis." />
+  <meta name="github-repo" content="m-clark/docs" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Bayesian Basics" />
+  
+  <meta name="twitter:description" content="An introduction to Bayesian data analysis." />
+  <meta name="twitter:image" content="https://m-clark.github.io/Docs/bayesian_book/img/nineteeneightyR.png" />
+
+
+
+<meta name="date" content="2017-09-30">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  
+  
+<link rel="prev" href="model-exploration.html">
+<link rel="next" href="issues.html">
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="libs/datatables-binding-0.2/datatables.js"></script>
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="libs/plotly-binding-4.7.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotlyjs-1.27.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotlyjs-1.27.1/plotly-latest.min.js"></script>
+
+
+<style type="text/css">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+<link rel="stylesheet" href="css\book.css" type="text/css" />
+<link rel="stylesheet" href="css\standard_html.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./"><img src="../../img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
+
+<li class="divider"></li>
+<li><a href="index.html#section"></a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#note"><i class="fa fa-check"></i>Note</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a><ul>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a><ul>
+<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#conditional-probability-bayes-theorem"><i class="fa fa-check"></i>Conditional probability &amp; Bayes theorem</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html"><i class="fa fa-check"></i>A Hands-on Example</a><ul>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#prior-likelihood-posterior-distributions"><i class="fa fa-check"></i>Prior, likelihood, &amp; posterior distributions</a></li>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#prior"><i class="fa fa-check"></i>Prior</a></li>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#likelihood"><i class="fa fa-check"></i>Likelihood</a></li>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#posterior"><i class="fa fa-check"></i>Posterior</a></li>
+<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html"><i class="fa fa-check"></i>Regression Models</a><ul>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a></li>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#setup"><i class="fa fa-check"></i>Setup</a><ul>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#stan-code"><i class="fa fa-check"></i>Stan Code</a></li>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#running-the-model"><i class="fa fa-check"></i>Running the Model</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html"><i class="fa fa-check"></i>Model Exploration</a><ul>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a><ul>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#visual-inspection-traceplot-densities"><i class="fa fa-check"></i>Visual Inspection: Traceplot &amp; Densities</a></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#statistical-measures"><i class="fa fa-check"></i>Statistical Measures</a></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#autocorrelation"><i class="fa fa-check"></i>Autocorrelation</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#model-checking"><i class="fa fa-check"></i>Model Checking</a><ul>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#sensitivity-analysis"><i class="fa fa-check"></i>Sensitivity Analysis</a></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#predictive-accuracy-model-comparison"><i class="fa fa-check"></i>Predictive Accuracy &amp; Model Comparison</a></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#posterior-predictive-checking-statistical"><i class="fa fa-check"></i>Posterior Predictive Checking: Statistical</a></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#posterior-predictive-checking-graphical"><i class="fa fa-check"></i>Posterior Predictive Checking: Graphical</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#summary"><i class="fa fa-check"></i>Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a><ul>
+<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html#generating-new-variables-of-interest"><i class="fa fa-check"></i>Generating New Variables of Interest</a></li>
+<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html#robust-regression"><i class="fa fa-check"></i>Robust Regression</a></li>
+<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html#generalized-linear-model"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#debugging"><i class="fa fa-check"></i>Debugging</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#choice-of-prior"><i class="fa fa-check"></i>Choice of Prior</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#noninformative-weakly-informative-informative"><i class="fa fa-check"></i>Noninformative, Weakly Informative, Informative</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#conjugacy"><i class="fa fa-check"></i>Conjugacy</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#hierarchical-priors"><i class="fa fa-check"></i>Hierarchical Priors</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sensitivity-analysis-revisited"><i class="fa fa-check"></i>Sensitivity Analysis Revisited</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#summary-1"><i class="fa fa-check"></i>Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sampling-procedure"><i class="fa fa-check"></i>Sampling Procedure</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#metropolis"><i class="fa fa-check"></i>Metropolis</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#gibbs"><i class="fa fa-check"></i>Gibbs</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#hamiltonian-monte-carlo"><i class="fa fa-check"></i>Hamiltonian Monte Carlo</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#other-variations-and-approximate-methods"><i class="fa fa-check"></i>Other Variations and Approximate Methods</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#number-of-draws-thinning-warm-up"><i class="fa fa-check"></i>Number of draws, thinning, warm-up</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#model-complexity"><i class="fa fa-check"></i>Model Complexity</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="final-thoughts.html"><a href="final-thoughts.html"><i class="fa fa-check"></i>Final Thoughts</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#example"><i class="fa fa-check"></i>Example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#linear-model"><i class="fa fa-check"></i>Linear Model</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#binomial-likelihood-example"><i class="fa fa-check"></i>Binomial Likelihood Example</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#modeling-languages"><i class="fa fa-check"></i>Modeling Languages</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#bugs"><i class="fa fa-check"></i>Bugs</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#jags"><i class="fa fa-check"></i>JAGS</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#stan"><i class="fa fa-check"></i>Stan</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#r"><i class="fa fa-check"></i>R</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#general-statistical-packages"><i class="fa fa-check"></i>General Statistical Packages</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#other-programming-languages"><i class="fa fa-check"></i>Other Programming Languages</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#summary-2"><i class="fa fa-check"></i>Summary</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#bugs-example"><i class="fa fa-check"></i>BUGS Example</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#jags-example"><i class="fa fa-check"></i>JAGS Example</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#metropolis-hastings-example"><i class="fa fa-check"></i>Metropolis Hastings Example</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#hamiltonian-monte-carlo-example"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a><ul>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts-for-your-shelf"><i class="fa fa-check"></i>Texts for Your Shelf</a><ul>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#stan-specific-resources"><i class="fa fa-check"></i>Stan Specific Resources</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#other"><i class="fa fa-check"></i>Other</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://m-clark.github.io" target="blank"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#b2001d; font-family:'Open Sans'">Michael Clark</span></a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39; ">Bayesian Basics</span></a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="model-enhancements" class="section level1">
+<h1>Model Enhancements</h1>
+<p>Enhancing and making adjustments to a model can often be straightforward in the Bayesian context, depending on what one wants to accomplish. In other cases, some things may be possible that aren’t readily available with standard approaches in the traditional setting. The following shows a few brief examples to give an idea of the possibilities.</p>
+<div id="generating-new-variables-of-interest" class="section level2">
+<h2>Generating New Variables of Interest</h2>
+<p>We have already seen one way to get at new statistics of interest in the predictive model checking section. I next show how to do so as part of the modeling process itself. In Stan we can accomplish this via the generated quantities section.</p>
+<p>A typical part of linear regression output is <span class="math inline">\(R^2\)</span>, the amount of variance accounted for by the model. To get this in Stan we just have to create the code necessary for the calculations, and place it within the generated quantities section. I only show this part of the model code; everything we had before would remain the same. For comparison I show the corresponding <span class="func">lm</span> results from R. There are a couple of ways to go about this, and I use some of Stan’s matrix operations as one approach.</p>
+<!-- You ran this and saved the image as data/mainModelDatawithRsq.RData -->
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">.
+.
+.
+
+generated quantities {
+  real rss;                
+  real totalss;
+  real<span class="op">&lt;</span>lower=<span class="dv">0</span>, upper=<span class="dv">1</span><span class="op">&gt;</span><span class="st"> </span>R2;                 
+  vector[N] mu;
+  
+  mu &lt;-<span class="st"> </span>X <span class="op">*</span><span class="st"> </span>beta;
+  rss &lt;-<span class="st"> </span><span class="kw">dot_self</span>(y<span class="op">-</span>mu);
+  totalss &lt;-<span class="st"> </span><span class="kw">dot_self</span>(y<span class="op">-</span><span class="kw">mean</span>(y));
+  R2 &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span>rss<span class="op">/</span>totalss;
+}</code></pre></div>
+<p>Using the results from the model using <span class="func">lm</span>, we do the same calculations for <code>rss</code> and <code>totalss</code>, and note the result is identical to what you’d see in the summary of the model.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">rss =<span class="st"> </span><span class="kw">crossprod</span>(<span class="kw">resid</span>(modlm))
+totalss =<span class="st"> </span><span class="kw">crossprod</span>(y<span class="op">-</span><span class="kw">mean</span>(y))
+rss =<span class="st"> </span>rss[<span class="dv">1</span>]; totalss =<span class="st"> </span>totalss[<span class="dv">1</span>] <span class="co"># for alignment, remove matrix</span>
+<span class="dv">1</span><span class="op">-</span>rss<span class="op">/</span>totalss; <span class="kw">summary</span>(modlm)<span class="op">$</span>r.squared</code></pre></div>
+<pre><code>[1] 0.4524289</code></pre>
+<pre><code>[1] 0.4524289</code></pre>
+<p>Now we can run the model with added <span class="math inline">\(R^2\)</span> <a href="#fn41" class="footnoteRef" id="fnref41"><sup>41</sup></a>. Note that as before we do not just get a point estimate, but a whole distribution of simulated values for <span class="math inline">\(R^2\)</span>. First the results.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(fitRsq, <span class="dt">digits=</span><span class="dv">3</span>, <span class="dt">par=</span><span class="kw">c</span>(<span class="st">&#39;beta&#39;</span>,<span class="st">&#39;sigma&#39;</span>,<span class="st">&#39;R2&#39;</span>), <span class="dt">prob=</span><span class="kw">c</span>(.<span class="dv">025</span>,.<span class="dv">5</span>,.<span class="dv">975</span>))</code></pre></div>
+<pre><code>Inference for Stan model: stanmodelcodeRsq.
+3 chains, each with iter=12000; warmup=2000; thin=10; 
+post-warmup draws per chain=1000, total post-warmup draws=3000.
+
+          mean se_mean    sd   2.5%    50%  97.5% n_eff  Rhat
+beta[1]  4.895   0.002 0.129  4.639  4.897  5.144  3000 1.000
+beta[2]  0.087   0.003 0.131 -0.169  0.086  0.342  2751 1.000
+beta[3] -1.466   0.002 0.125 -1.712 -1.469 -1.219  2826 0.999
+beta[4]  0.821   0.002 0.123  0.584  0.820  1.063  3000 0.999
+sigma    2.028   0.002 0.091  1.858  2.025  2.212  2945 1.000
+R2       0.443   0.000 0.006  0.427  0.445  0.451  2932 1.000
+
+Samples were drawn using NUTS(diag_e) at Sat May 24 13:10:08 2014.
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).</code></pre>
+<p>The nice thing here is that our <span class="math inline">\(R^2\)</span> incorporates the additional uncertainty in estimating the model parameters, and thus acts like an <em>adjusted</em> <span class="math inline">\(R^2\)</span> <a href="#fn42" class="footnoteRef" id="fnref42"><sup>42</sup></a>. The following is the classical regression adjusted <span class="math inline">\(R^2\)</span>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(modlm)<span class="op">$</span>adj</code></pre></div>
+<pre><code>[1] 0.4457512</code></pre>
+<p>Furthermore, in the Bayesian context we get an interval estimate and everything else we typically get as with other quantities of interest, and the same would be true for anything else we want to calculate (e.g. predictions). In addition, it would be trivial to calculate something like the actual adjusted <span class="math inline">\(R^2\)</span>, the probability that the value is greater than .5, and other things of that nature.</p>
+</div>
+<div id="robust-regression" class="section level2">
+<h2>Robust Regression</h2>
+<p>If we were concerned that extreme observations exist that our current model is not able to capture well, we could change the sampling distribution to one that had a little more probability in the tails. This is very easy to do in this situation, as we just change likelihood portion of our code to employ say, a t-distribution<a href="#fn43" class="footnoteRef" id="fnref43"><sup>43</sup></a>. In Stan, the t-distribution has parameters mean and sigma as with the normal distribution, but we also have the added parameter for degrees of freedom. Thus our code might look like the following:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stanmodelcodeT =<span class="st"> &quot;</span>
+<span class="st">.</span>
+<span class="st">.</span>
+<span class="st">.</span>
+
+<span class="st">model {                     </span>
+<span class="st">  vector[N] mu;</span>
+<span class="st">  mu &lt;- X * beta;           </span>
+<span class="st">  </span>
+<span class="st">  // priors</span>
+<span class="st">  beta ~ normal(0, 10);</span>
+<span class="st">  sigma ~ cauchy(0, 5);     </span>
+<span class="st">  </span>
+<span class="st">  // likelihood</span>
+<span class="st">  // y ~ normal(mu, sigma);            // previously used normal </span>
+<span class="st">  y ~ student_t(10, mu, sigma)         // t with df=10</span>
+<span class="st">}</span>
+<span class="st">&quot;</span></code></pre></div>
+<p>In this case we set the degrees of freedom at 10<a href="#fn44" class="footnoteRef" id="fnref44"><sup>44</sup></a>, but how would you know in advance what to set it as? It might be better to place a prior (with lower bound of one) for that value and estimate it as part of the modeling process. One should note that there are many distributions available in Stan (e.g. others might be useful for skewed data, truncated etc.), and more will be added in the future.</p>
+</div>
+<div id="generalized-linear-model" class="section level2">
+<h2>Generalized Linear Model</h2>
+<p>Expanding from standard linear model, we can move very easily to generalized linear models, of which the standard regression is a special case. The key components are use of a link function that links the linear predictor to the target variable, and an appropriate sampling distribution for the likelihood.</p>
+<p>Let’s consider a count model using the Poisson distribution. We can specify the model as follows:</p>
+<p><span class="math display">\[y \sim Pois(\lambda)\]</span></p>
+<p><span class="math display">\[g(\lambda) = X\beta\]</span></p>
+<p>where <span class="math inline">\(g(.)\)</span> is the link function, the canonical link function for Poisson being the natural logarithm. In Stan this can be expressed via the inverse link function, where we exponentiate the linear predictor<a href="#fn45" class="footnoteRef" id="fnref45"><sup>45</sup></a>. Aside from that we simply specify <span class="math inline">\(y\)</span> as distributed Poisson in the same way we used the normal and t-distribution in earlier efforts.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">stanmodelcodePoisson =<span class="st"> &quot;</span>
+<span class="st">.</span>
+<span class="st">.</span>
+<span class="st">.</span>
+
+<span class="st">model {                     </span>
+<span class="st">  vector[N] lambda;</span>
+<span class="st">  vector[N] eta;</span>
+
+<span class="st">  eta &lt;- X * beta;</span>
+<span class="st">  lambda &lt;- exp(eta)</span>
+<span class="st">   </span>
+<span class="st">  // priors</span>
+<span class="st">  beta ~ normal(0, 10);</span>
+
+<span class="st">  // likelihood</span>
+<span class="st">  y ~ poisson(lambda)</span>
+<span class="st">}</span>
+<span class="st">&quot;</span></code></pre></div>
+<p>And that’s all there is to that<a href="#fn46" class="footnoteRef" id="fnref46"><sup>46</sup></a>. We just saw that we are not limited to the exponential family distributions of glm(s), though that covers a lot of ground, and so at this point you have a lot of the tools covered in standard applied statistics course, and a few beyond.</p>
+
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol start="41">
+<li id="fn41"><p>With the <span class="pack">rstanarm</span> package, R<sup>2</sup> is automatically calculated and provided with the <span class="func">stan_lm</span> function.<a href="model-enhancements.html#fnref41">↩</a></p></li>
+<li id="fn42"><p>See <a href="http://www.stat.columbia.edu/~gelman/research/published/rsquared.pdf">Gelman &amp; Pardoe (2006)</a>, Bayesian Measures of Explained Variance.<a href="model-enhancements.html#fnref42">↩</a></p></li>
+<li id="fn43"><p>Note that with the <span class="pack">brms</span> package all one would have to do is change the <code>family</code> argument in the model function.<a href="model-enhancements.html#fnref43">↩</a></p></li>
+<li id="fn44"><p>Alternatively, we could add a value ‘df’ to the data list and data block.<a href="model-enhancements.html#fnref44">↩</a></p></li>
+<li id="fn45"><p>You can also forgo the exponentiation and instead use the <span class="func">poisson_log</span> function in your sampling statement (slightly faster too).<a href="model-enhancements.html#fnref45">↩</a></p></li>
+<li id="fn46"><p>Note that some link/inverse-link functions in Stan cannot be applied to vectors, only scalars. As such you would have to loop over the values of <span class="math inline">\(y\)</span>,<br> <code>for(n in 1:N) ...</code><a href="model-enhancements.html#fnref46">↩</a></p></li>
+</ol>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="model-exploration.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="issues.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"google": false,
+"weibo": false,
+"instapper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "weibo", "instapaper"],
+"epub": true
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "section",
+"scroll_highlight": true,
+"edit": {
+"link": "https://github.com/rstudio/bookdown-demo/edit/master/%s"
+}
+},
+"search": true
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(script.src))
+      script.src  = script.src.replace(/^https?:/, '');
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

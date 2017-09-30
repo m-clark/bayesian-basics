@@ -1,0 +1,83 @@
+@import url("http://fonts.googleapis.com/css?family=Roboto");
+@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+
+.book  {
+  background-color: #fffff8;
+  color: red;
+}
+
+.section {
+  background-color: #fffff8;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal {
+    display: block;
+    background-color: #fffff8;
+    color: #595959;
+    padding: 5px 15px;
+    font-family: Roboto;
+    word-wrap: break-word;
+    overflow: hidden;
+    line-height: 1.7;
+    text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+}
+
+.body-inner {
+    background-color: #fffff8;
+}
+
+.book .book-body .page-wrapper {
+    position: relative;
+    outline: 0;
+    background-color: #fffff8;
+}
+
+.book .book-body .page-wrapper .page-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px 0 40px;
+}
+
+.book .book-header {
+    overflow: visible;
+    height: 50px;
+    padding: 0 8px;
+    z-index: 2;
+    font-family: Roboto sans-serif;
+    font-size: .85em;
+    color: #7e888b;
+    background-color: #fffff8;
+    /* background: 0 0; */
+}
+
+element .style {
+  background-color: #fffff8;
+}
+
+.book.with-summary .book-header.fixed {
+  background-color: #fffff8;
+}
+
+i {
+  background-color: #fffff8;
+}
+
+.book .book-summary ul.summary li a:hover,
+.book .book-summary ul.summary li.active>a {
+  color: #b2001d;                               /* color of current chapter/selection*/
+}
+
+
+.book .book-summary ul.summary li a:focus  {
+  color:  #ffffff;                               /* color of current chapter/selection*/
+  background-color: #b2001d;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal code,
+.book .book-body .page-wrapper .page-inner section.normal pre {
+  background-color: #fffff8;
+  font-family: 'Source Code Pro', 'Roboto Mono';
+}
