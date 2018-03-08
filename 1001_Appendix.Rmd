@@ -161,7 +161,7 @@ plotdat$nll = -plotdat$ll
 ggplot(aes(x=mu, y=sigma), data=plotdat) + 
   geom_point(aes(), color='#ff5500', size=4, alpha=.25, show.legend=F, position = position_jitter(w = 0.2, h = 0.2)) +
   scale_size_continuous(range=c(.1,5)) +
-  geom_point(aes(), col=palettes$orange$complementary, data=data.frame(t(coef(mlnorm))), size=10, alpha=.9) + 
+  geom_point(aes(), col=palettes$orange$complementary[2], data=data.frame(t(coef(mlnorm))), size=10, alpha=.9) + 
   # geom_path(aes(), col='navy', alpha=.5) +
   labs(x=expression(mu), y=expression(sigma))+
   theme_trueMinimal() +
@@ -826,7 +826,7 @@ mass_vector = 1/vars
 ```
 
 
-We are now ready to run the model.  On my machine and with the above settings, it took about 45 seconds. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.
+We are now ready to run the model.  On my machine and with the above settings, it took a couple seconds. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.
 
 ```{r HMCexampleRun, message=T, eval=FALSE}
 # Run the model
@@ -868,7 +868,7 @@ rstan::monitor(M1$sims,
   round(digit=3) %>%
   format(digit=3) %>%
   pander(justify='lrrrrrrr')
-glue::glue('log posterior = ', round(log_p_th(X, y, finalest),3))
+glue::glue('log posterior = ', {round(log_p_th(X, y, finalest),3)})
 ```
 
 Our estimates look pretty good, and inspection of the diagnostics would show good mixing and convergence as well. At this point we can compare it to the Stan output.  For the following, I modified the previous Stan code to use the same inverse gamma prior and tweaked the control options for a little bit more similarity, but that's not necessary.

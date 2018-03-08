@@ -98,7 +98,7 @@ test = with(test0, data.frame(lag, acf))
 ggplot(data = test, mapping = aes(x = lag, y = acf)) +
   geom_hline(aes(yintercept = 0), col='gray90') +
   geom_segment(mapping = aes(xend = lag, yend = 0), col='#ff5500', lwd=1.5) +
-  geom_point(mapping = aes(x = lag, y=acf), col=palettes$orange$complementary, size=5) +
+  geom_point(mapping = aes(x = lag, y=acf), col=palettes$orange$complementary[2], size=5) +
   labs(x='Lag',  y='Autocorrelation') +
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25', size=15),
@@ -118,7 +118,7 @@ test = with(test0, data.frame(lag, acf))
 ggplot(data = test, mapping = aes(x = lag, y = acf)) +
   geom_hline(aes(yintercept = 0), col='gray90') +
   geom_segment(mapping = aes(xend = lag, yend = 0), col='#ff5500', lwd=1.5, show.legend=F) +
-  geom_point(mapping = aes(x = lag, y=acf), col=palettes$orange$complementary, size=5, show.legend=F) +
+  geom_point(mapping = aes(x = lag, y=acf), col=palettes$orange$complementary[2], size=5, show.legend=F) +
   labs(x='Lag',  y='Autocorrelation') +
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25', size=15),
@@ -202,7 +202,7 @@ prop.table(table(min_rep>sort(y)[3]))
 # dev.off()
 ggplot(aes(x=min_rep), data=data_frame(min_rep=min_rep)) + 
   geom_density(fill=scales::alpha('#ff5500', .5), color='transparent') + 
-  geom_line(color=palettes$orange$complementary, stat='density') + 
+  geom_line(color=palettes$orange$complementary[2], stat='density') + 
   geom_vline(xintercept=min_y, color='gray50', alpha=.75) + 
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25', size=15),
@@ -220,7 +220,7 @@ q10_rep = bayesplot::ppc_stat(y, t(yRep), stat=q10)$data
 
 ggplot(aes(x=value), data=q10_rep) + 
   geom_density(fill=scales::alpha('#ff5500', .5), color='transparent') + 
-  geom_line(color=palettes$orange$complementary, stat='density') + 
+  geom_line(color=palettes$orange$complementary[2], stat='density') + 
   geom_vline(xintercept=quantile(y, .1), color='gray50', alpha=.75) + 
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25', size=15),

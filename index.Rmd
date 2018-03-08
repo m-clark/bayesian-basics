@@ -1,5 +1,5 @@
 --- 
-title: <span style="font-size:250%; font-style:italic; font-family:'Alex Brush' ">Bayesian Basics</span>
+title: <span style="font-size:250%; font-style:italic; font-family:'Alex Brush'">Bayesian Basics</span>
 author:  |
   <div class="title"><span style="font-size:150%; font-variant:small-caps; font-style:normal;  font-family:'Roboto'">Michael Clark</span><br><br>
   <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br>
@@ -8,11 +8,8 @@ date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output:
     bookdown::gitbook:
-      # template: null
       css: [css/book.css, css/standard_html.css]
       highlight: pygments
-      # split_by: section
-      toc_depth: 3
       number_sections: no
       # toolbar:
       #   position: fixed
@@ -20,11 +17,13 @@ output:
       config:
         toc:
           collapse: section
+          toc_depth: 3
           scroll_highlight: yes
           before: |
-            <li><a href="./"><img src="../../img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
+            <li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
           after: |
-            <li><a href="https://m-clark.github.io" target="blank"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#b2001d; font-family:'Open Sans'">Michael Clark</span></a></li>
+            <li class='after'><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
+            <li class='after'><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa.png" /></a></li>
           edit:
             link: https://github.com/rstudio/bookdown-demo/edit/master/%s
         download : null
@@ -44,9 +43,9 @@ output:
     #   css: [toc.css, ../css/tufte_bookdown/mytufte.css]
     #   split_by: rmd
     #   config:
-    bookdown::epub_book:  # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else (for tufte)
-      stylesheet: [css/book.css, css/standard_html.css]
-    bookdown::pdf_book: no
+    # bookdown::epub_book:  # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else (for tufte)
+    #   stylesheet: [css/book.css, css/standard_html.css]
+    # bookdown::pdf_book: no
 always_allow_html: yes
 documentclass: book
 bibliography: ['packages.bib', 'BayesBasics.bib']
@@ -55,9 +54,7 @@ link-citations: yes
 github-repo: m-clark/docs
 description: "An introduction to Bayesian data analysis."
 cover-image: img/nineteeneightyR.png
-url: 'https\://m-clark.github.io/Docs/bayesian_book/'  # evidently the \: is required or you'll get text in the title/toc area
-
-
+url: 'https\://m-clark.github.io/bayesian-basics/'  # the \: is required or you'll get text in the title/toc area
 
 # this is for pdf but also to paste into references; tufte style refs at point of citation in margin
 nocite: |
@@ -75,7 +72,7 @@ knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib
 ```
 
 ```{r load_packages, echo=FALSE, cache=FALSE}
-library(tufte); library(tidyverse); library(lazerhawk); library(pander)
+library(tidyverse); library(lazerhawk); library(pander)
 ```
 
 
@@ -83,4 +80,11 @@ library(tufte); library(tidyverse); library(lazerhawk); library(pander)
 
 ```{r logo, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html')}
 knitr::include_graphics('img/nineteeneightyR.png', dpi = NA)
+
+```
+
+```{r ccimg, fig.align='center',  out.width=0, fig.show='hide', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html')}
+knitr::include_graphics('img/r_and_stan.png', dpi = NA)
+knitr::include_graphics('img/ccbysa.png', dpi = NA)
+knitr::include_graphics('img/mc.png', dpi = NA)
 ```

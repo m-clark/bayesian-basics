@@ -7,12 +7,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Bayesian Basics</title>
   <meta name="description" content="An introduction to Bayesian data analysis.">
-  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
 
   <meta property="og:title" content="Bayesian Basics" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://m-clark.github.io/Docs/bayesian_book/" />
-  <meta property="og:image" content="https://m-clark.github.io/Docs/bayesian_book/img/nineteeneightyR.png" />
+  <meta property="og:url" content="https://m-clark.github.io/bayesian-basics/" />
+  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
   <meta property="og:description" content="An introduction to Bayesian data analysis." />
   <meta name="github-repo" content="m-clark/docs" />
 
@@ -20,11 +20,11 @@
   <meta name="twitter:title" content="Bayesian Basics" />
   
   <meta name="twitter:description" content="An introduction to Bayesian data analysis." />
-  <meta name="twitter:image" content="https://m-clark.github.io/Docs/bayesian_book/img/nineteeneightyR.png" />
+  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
 
 
 
-<meta name="date" content="2017-09-30">
+<meta name="date" content="2018-03-07">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,17 +46,17 @@
 
 
 
-<script src="libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-1.0/htmlwidgets.js"></script>
 <script src="libs/datatables-binding-0.2/datatables.js"></script>
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="libs/plotly-binding-4.7.0/plotly.js"></script>
+<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotlyjs-1.27.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotlyjs-1.27.1/plotly-latest.min.js"></script>
+<link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
@@ -97,8 +97,8 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
-<link rel="stylesheet" href="css\book.css" type="text/css" />
-<link rel="stylesheet" href="css\standard_html.css" type="text/css" />
+<link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="css/standard_html.css" type="text/css" />
 </head>
 
 <body>
@@ -111,7 +111,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./"><img src="../../img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
+<li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
 
 <li class="divider"></li>
 <li><a href="index.html#section"></a></li>
@@ -204,7 +204,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 <li class="divider"></li>
-<li><a href="https://m-clark.github.io" target="blank"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#b2001d; font-family:'Open Sans'">Michael Clark</span></a></li>
+<li class='after'><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
+<li class='after'><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa.png" /></a></li>
 
 </ul>
 
@@ -215,7 +216,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39; ">Bayesian Basics</span></a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39;">Bayesian Basics</span></a>
           </h1>
         </div>
 
@@ -304,33 +305,57 @@ stanmodelcode =<span class="st"> &quot;</span>
 <h3>Stan Code</h3>
 <p>The first section is the <span class="emph">data</span> block, where we tell Stan the data it should be expecting from the data list. It is useful to put in bounds as a check on the data input, and that is what is being done between the <code>&lt; &gt;</code> (e.g. we should at least have a sample size of 1). The first two variables declared are <code>N</code> and <code>K</code>, both as integers. Next the code declares the model matrix and target vector respectively. As you’ll note here and for the next blocks, we declare the type and dimensions of the variable and then its name. In Stan, everything declared in one block is available to subsequent blocks, but those declared in a block may not be used in earlier blocks. Even within a block, anything declared, such as <code>N</code> and <code>K</code>, can then be used subsequently, as we did to specify dimensions of the model matrix <code>X</code>.</p>
 <p>For a reference, the following is from the Stan manual, and notes variables of interest and the associated blocks where they would be declared.</p>
-<table class='gmisc_table' style='border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;' >
+<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
 <thead>
 <tr>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Variable Kind</th>
-<th style='border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;'>Declaration Block</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Variable Kind
+</th>
+<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
+Declaration Block
+</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td style='text-align: center;'>modeled, unmodeled data</td>
-<td style='text-align: center;'>data, transformed data</td>
+<td style="text-align: center;">
+modeled, unmodeled data
+</td>
+<td style="text-align: center;">
+data, transformed data
+</td>
 </tr>
 <tr>
-<td style='text-align: center;'>modeled parameters, missing data</td>
-<td style='text-align: center;'>parameters, transformed parameters</td>
+<td style="text-align: center;">
+modeled parameters, missing data
+</td>
+<td style="text-align: center;">
+parameters, transformed parameters
+</td>
 </tr>
 <tr>
-<td style='text-align: center;'>unmodeled parameters</td>
-<td style='text-align: center;'>data, transformed data</td>
+<td style="text-align: center;">
+unmodeled parameters
+</td>
+<td style="text-align: center;">
+data, transformed data
+</td>
 </tr>
 <tr>
-<td style='text-align: center;'>generated quantities</td>
-<td style='text-align: center;'>transformed data, transformed parameters, generated quantities</td>
+<td style="text-align: center;">
+generated quantities
+</td>
+<td style="text-align: center;">
+transformed data, transformed parameters, generated quantities
+</td>
 </tr>
 <tr>
-<td style='border-bottom: 2px solid grey; text-align: center;'>loop indices</td>
-<td style='border-bottom: 2px solid grey; text-align: center;'>loop statement</td>
+<td style="border-bottom: 2px solid grey; text-align: center;">
+loop indices
+</td>
+<td style="border-bottom: 2px solid grey; text-align: center;">
+loop statement
+</td>
 </tr>
 </tbody>
 </table>
@@ -373,13 +398,13 @@ convergence, Rhat=1).</code></pre>
 <p>So far so good. The mean estimates reflect the mean of posterior draws for the parameters of interest, and are the typical coefficients reported in standard regression analysis. The 95% probability, or, <span class="emph">credible intervals</span> are worth noting, because <em>they are not confidence intervals as you know them</em>. There is no repeated sampling interpretation here<a href="#fn28" class="footnoteRef" id="fnref28"><sup>28</sup></a>. The probability interval is more intuitive. It means simply that, based on the results of this model, there is a 95% chance the true value will fall between those two points. The other values printed out I will return to in just a moment.</p>
 <p>Comparing the results to those from R’s <span class="func">lm</span> function, we can see we obtain similar estimates, as they are identical to two decimal places. In fact, had we used uniform priors<a href="#fn29" class="footnoteRef" id="fnref29"><sup>29</sup></a>, we would doing essentially the same model as what is being conducted with standard maximum likelihood estimation. Here, we have a decent amount of data for a model that isn’t complex, so we would expect the likelihood to notably outweigh the prior, as we demonstrated previously with our binomial example.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(modlm)</code></pre></div>
-<table style="width:86%;">
+<table style="width:89%;">
 <colgroup>
 <col width="25%" />
 <col width="15%" />
 <col width="18%" />
 <col width="13%" />
-<col width="13%" />
+<col width="16%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -392,41 +417,41 @@ convergence, Rhat=1).</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><strong>X1</strong></td>
-<td align="right">0.08408</td>
-<td align="right">0.1296</td>
-<td align="right">0.6488</td>
-<td align="right">0.5171</td>
-</tr>
-<tr class="even">
-<td align="center"><strong>X2</strong></td>
-<td align="right">-1.469</td>
-<td align="right">0.1261</td>
-<td align="right">-11.64</td>
-<td align="right">3.049e-25</td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>X3</strong></td>
-<td align="right">0.8196</td>
-<td align="right">0.1207</td>
-<td align="right">6.793</td>
-<td align="right">8.207e-11</td>
-</tr>
-<tr class="even">
 <td align="center"><strong>(Intercept)</strong></td>
 <td align="right">4.898</td>
 <td align="right">0.1284</td>
 <td align="right">38.13</td>
 <td align="right">3.026e-105</td>
 </tr>
+<tr class="even">
+<td align="center"><strong>X1</strong></td>
+<td align="right">0.08408</td>
+<td align="right">0.1296</td>
+<td align="right">0.6488</td>
+<td align="right">0.5171</td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>X2</strong></td>
+<td align="right">-1.469</td>
+<td align="right">0.1261</td>
+<td align="right">-11.64</td>
+<td align="right">3.049e-25</td>
+</tr>
+<tr class="even">
+<td align="center"><strong>X3</strong></td>
+<td align="right">0.8196</td>
+<td align="right">0.1207</td>
+<td align="right">6.793</td>
+<td align="right">8.207e-11</td>
+</tr>
 </tbody>
 </table>
-<table style="width:85%;">
+<table style="width:86%;">
 <caption>Fitting linear model: y ~ .</caption>
 <colgroup>
 <col width="20%" />
 <col width="30%" />
-<col width="11%" />
+<col width="12%" />
 <col width="22%" />
 </colgroup>
 <thead>
@@ -506,6 +531,7 @@ gitbook.start({
 "facebook": true,
 "twitter": true,
 "google": false,
+"linkedin": false,
 "weibo": false,
 "instapper": false,
 "vk": false,
@@ -521,9 +547,10 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": null,
+"download": ["Bayesian-Basics.epub"],
 "toc": {
 "collapse": "section",
+"toc_depth": 3,
 "scroll_highlight": true,
 "edit": {
 "link": "https://github.com/rstudio/bookdown-demo/edit/master/%s"
@@ -539,9 +566,11 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

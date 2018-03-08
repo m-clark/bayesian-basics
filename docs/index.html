@@ -7,12 +7,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Bayesian Basics</title>
   <meta name="description" content="An introduction to Bayesian data analysis.">
-  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
 
   <meta property="og:title" content="Bayesian Basics" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://m-clark.github.io/Docs/bayesian_book/" />
-  <meta property="og:image" content="https://m-clark.github.io/Docs/bayesian_book/img/nineteeneightyR.png" />
+  <meta property="og:url" content="https://m-clark.github.io/bayesian-basics/" />
+  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
   <meta property="og:description" content="An introduction to Bayesian data analysis." />
   <meta name="github-repo" content="m-clark/docs" />
 
@@ -20,11 +20,11 @@
   <meta name="twitter:title" content="Bayesian Basics" />
   
   <meta name="twitter:description" content="An introduction to Bayesian data analysis." />
-  <meta name="twitter:image" content="https://m-clark.github.io/Docs/bayesian_book/img/nineteeneightyR.png" />
+  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
 
 
 
-<meta name="date" content="2017-09-30">
+<meta name="date" content="2018-03-07">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,17 +46,17 @@
 
 
 
-<script src="libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-1.0/htmlwidgets.js"></script>
 <script src="libs/datatables-binding-0.2/datatables.js"></script>
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="libs/plotly-binding-4.7.0/plotly.js"></script>
+<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotlyjs-1.27.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotlyjs-1.27.1/plotly-latest.min.js"></script>
+<link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
@@ -97,8 +97,8 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
-<link rel="stylesheet" href="css\book.css" type="text/css" />
-<link rel="stylesheet" href="css\standard_html.css" type="text/css" />
+<link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="css/standard_html.css" type="text/css" />
 </head>
 
 <body>
@@ -111,7 +111,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./"><img src="../../img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
+<li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
 
 <li class="divider"></li>
 <li><a href="index.html#section"></a></li>
@@ -204,7 +204,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 <li class="divider"></li>
-<li><a href="https://m-clark.github.io" target="blank"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#b2001d; font-family:'Open Sans'">Michael Clark</span></a></li>
+<li class='after'><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
+<li class='after'><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa.png" /></a></li>
 
 </ul>
 
@@ -215,7 +216,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39; ">Bayesian Basics</span></a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39;">Bayesian Basics</span></a>
           </h1>
         </div>
 
@@ -224,15 +225,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39; ">Bayesian Basics</span></h1>
+<h1 class="title"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39;">Bayesian Basics</span></h1>
 <h4 class="author"><em><div class="title">
 <span style="font-size:150%; font-variant:small-caps; font-style:normal;  font-family:&#39;Roboto&#39;">Michael Clark</span><br><br> <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br> <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;">
 </div></em></h4>
-<h4 class="date"><em>2017-09-30</em></h4>
+<h4 class="date"><em>2018-03-07</em></h4>
 </div>
 <div id="section" class="section level1">
 <h1></h1>
 <p><img src="img/nineteeneightyR.png" style="display: block; margin: auto;" /></p>
+<p><img src="img/r_and_stan.png" width="0" style="display: block; margin: auto;" /><img src="img/ccbysa.png" width="0" style="display: block; margin: auto;" /><img src="img/mc.png" width="0" style="display: block; margin: auto;" /></p>
 
 </div>
             </section>
@@ -259,6 +261,7 @@ gitbook.start({
 "facebook": true,
 "twitter": true,
 "google": false,
+"linkedin": false,
 "weibo": false,
 "instapper": false,
 "vk": false,
@@ -274,9 +277,10 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": null,
+"download": ["Bayesian-Basics.epub"],
 "toc": {
 "collapse": "section",
+"toc_depth": 3,
 "scroll_highlight": true,
 "edit": {
 "link": "https://github.com/rstudio/bookdown-demo/edit/master/%s"
@@ -292,9 +296,11 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

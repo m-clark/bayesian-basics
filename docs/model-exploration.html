@@ -7,12 +7,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <title>Bayesian Basics</title>
   <meta name="description" content="An introduction to Bayesian data analysis.">
-  <meta name="generator" content="bookdown 0.5 and GitBook 2.6.7">
+  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
 
   <meta property="og:title" content="Bayesian Basics" />
   <meta property="og:type" content="book" />
-  <meta property="og:url" content="https://m-clark.github.io/Docs/bayesian_book/" />
-  <meta property="og:image" content="https://m-clark.github.io/Docs/bayesian_book/img/nineteeneightyR.png" />
+  <meta property="og:url" content="https://m-clark.github.io/bayesian-basics/" />
+  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
   <meta property="og:description" content="An introduction to Bayesian data analysis." />
   <meta name="github-repo" content="m-clark/docs" />
 
@@ -20,11 +20,11 @@
   <meta name="twitter:title" content="Bayesian Basics" />
   
   <meta name="twitter:description" content="An introduction to Bayesian data analysis." />
-  <meta name="twitter:image" content="https://m-clark.github.io/Docs/bayesian_book/img/nineteeneightyR.png" />
+  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
 
 
 
-<meta name="date" content="2017-09-30">
+<meta name="date" content="2018-03-07">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -46,17 +46,17 @@
 
 
 
-<script src="libs/htmlwidgets-0.9/htmlwidgets.js"></script>
+<script src="libs/htmlwidgets-1.0/htmlwidgets.js"></script>
 <script src="libs/datatables-binding-0.2/datatables.js"></script>
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
 <link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
 <script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
-<script src="libs/plotly-binding-4.7.0/plotly.js"></script>
+<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
 <script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotlyjs-1.27.1/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotlyjs-1.27.1/plotly-latest.min.js"></script>
+<link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
@@ -97,8 +97,8 @@ code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* Com
 code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
 </style>
 
-<link rel="stylesheet" href="css\book.css" type="text/css" />
-<link rel="stylesheet" href="css\standard_html.css" type="text/css" />
+<link rel="stylesheet" href="css/book.css" type="text/css" />
+<link rel="stylesheet" href="css/standard_html.css" type="text/css" />
 </head>
 
 <body>
@@ -111,7 +111,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./"><img src="../../img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
+<li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
 
 <li class="divider"></li>
 <li><a href="index.html#section"></a></li>
@@ -204,7 +204,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 <li class="divider"></li>
-<li><a href="https://m-clark.github.io" target="blank"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#b2001d; font-family:'Open Sans'">Michael Clark</span></a></li>
+<li class='after'><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
+<li class='after'><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa.png" /></a></li>
 
 </ul>
 
@@ -215,7 +216,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39; ">Bayesian Basics</span></a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39;">Bayesian Basics</span></a>
           </h1>
         </div>
 
@@ -235,16 +236,16 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p><img src="img/badchains.svg" style="display:block; margin: 0 auto;"  width=50%></p>
 <p>This is an example where things have gone horribly wrong. The chains never converge nor do they mix with one another. One reason for running multiple chains is that any individual chain might converge toward one target, while another chain might converge elsewhere, and this would still be a problem. Also you might see otherwise healthy chains get stuck on occasion over the course of the series, which might suggest more model tweaking or a change in the sampler settings is warranted.</p>
 <p>We can examine the mixed chains and density plots of the posterior with standard functions in the <span class="pack">rstan</span> package displayed previously, various functions in the <span class="pack">bayesplot</span> package, or interactively via <span class="pack">shinyStan</span> package and its <span class="func">launch_shiny</span> function. In the Bayesian approach, increasing amounts of data leads to a posterior distribution of the parameter vector approaching multivariate normality. The following shows a density, trace and autocorrelation plots for one of the regression coefficients using <span class="pack">shinyStan</span>.</p>
-<p><br> <img src="img/shinyStan.png" style="display:block; margin: 0 auto;"></p>
+<p><br> <img src="img/shinystan.png" style="display:block; margin: 0 auto;"></p>
 </div>
 <div id="statistical-measures" class="section level3">
 <h3>Statistical Measures</h3>
 <p>To go along with visual inspection, we can examine various statistics that might help our determination of convergence or lack thereof. Gelman and Rubin’s <span class="emph">potential scale reduction factor</span>, <span class="math inline">\(\hat{R}\)</span>, provides an estimate of convergence based on the variance of an estimated parameter <span class="math inline">\(\theta\)</span> between chains, and the variance within a chain. It is interpreted as the factor by which the variance in the estimate might be reduced with longer chains. We are looking for a value near 1 (and at the very least less than 1.1), and it will get there as <span class="math inline">\(N_{sim} \rightarrow \infty\)</span>. In the regression model things are looking good in this respect.</p>
-<table style="width:35%;">
+<table style="width:40%;">
 <colgroup>
-<col width="11%" />
+<col width="13%" />
 <col width="15%" />
-<col width="8%" />
+<col width="11%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -291,11 +292,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <!-- <img src="img/acfPlotSerial.svg" style="display:block; margin: 0 auto;" width=50%> -->
 <p><img src="Bayesian-Basics_files/figure-html/autocorrExample-1.svg" width="500px" style="display: block; margin: auto;" /><img src="Bayesian-Basics_files/figure-html/autocorrExample-2.svg" width="500px" style="display: block; margin: auto;" /></p>
 <p>The effective number of simulation draws is provided as <span class="math inline">\(n_{\textrm{eff}}\)</span> in the Stan output, and is similarly obtained in BUGS/JAGS. Ideally, we would desire this number to equal the number of posterior draws requested, and in the presence of essentially no autocorrelation the values would be equal. This is not a requirement though, and technically a low number of draws would still be usable. However, a notable discrepancy might suggest there are some issues with the model, or simply that longer chains could be useful. In our current model, all our effective sample sizes are at or near the total number of posterior draws.</p>
-<table style="width:33%;">
+<table style="width:38%;">
 <colgroup>
-<col width="11%" />
+<col width="13%" />
 <col width="15%" />
-<col width="6%" />
+<col width="8%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -333,10 +334,10 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </tbody>
 </table>
 <p><span class="emph">Monte Carlo error</span> is an estimate of the uncertainty contributed by only having a finite number of posterior draws. Typically we’d want roughly less than 5% of the posterior standard deviation (reported right next to it in the Stan output), but might as well go for less than 1%. With no autocorrelation it would equal <span class="math inline">\(\sqrt{\frac{var(\theta)}{n_{\textrm{eff}}}}\)</span><a href="#fn34" class="footnoteRef" id="fnref34"><sup>34</sup></a>. and <span class="math inline">\(n_{\textrm{eff}}\)</span> would equal the number of simulation draws requested.</p>
-<table style="width:42%;">
+<table style="width:44%;">
 <colgroup>
 <col width="19%" />
-<col width="9%" />
+<col width="12%" />
 <col width="12%" />
 </colgroup>
 <thead>
@@ -490,6 +491,7 @@ gitbook.start({
 "facebook": true,
 "twitter": true,
 "google": false,
+"linkedin": false,
 "weibo": false,
 "instapper": false,
 "vk": false,
@@ -505,9 +507,10 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": null,
+"download": ["Bayesian-Basics.epub"],
 "toc": {
 "collapse": "section",
+"toc_depth": 3,
 "scroll_highlight": true,
 "edit": {
 "link": "https://github.com/rstudio/bookdown-demo/edit/master/%s"
@@ -523,9 +526,11 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    script.src  = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(script.src))
-      script.src  = script.src.replace(/^https?:/, '');
+    var src = "";
+    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:" && /^https?:/.test(src))
+      src = src.replace(/^https?:/, '');
+    script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
 </script>

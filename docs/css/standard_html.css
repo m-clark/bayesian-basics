@@ -1,30 +1,28 @@
-@import url("http://fonts.googleapis.com/css?family=Roboto");
-@import url("http://fonts.googleapis.com/css?family=Roboto+Mono");
-@import url("http://fonts.googleapis.com/css?family=Roboto+Condensed");
-@import url("http://fonts.googleapis.com/css?family=Open+Sans");
+@import url("https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Roboto+Condensed");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans");
 @import url('https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300');
 @import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
-@import url('https://fonts.googleapis.com/css?family=Alex+Brush');
-@import url('https://fonts.googleapis.com/css?family=Press+Start+2P');
+@import url('https://fonts.googleapis.com/css?family=Stalemate|Alex+Brush');
+
 
 .emph {
-  color: #ff5500;
+  color: #E32D00 ;  /*#ff5500 #D14300*/
   font-weight: 500;
 }
 
-/* pack func and objclass colors come from hcl(seq(90,360, length.out=4), c=80, l=80)*/
+/* pack func and objclass colors initially come from hcl(seq(90,360, length.out=4), c=80, l=80); redone for contrast*/
 .pack {
-  color: #AC9CFF; /*#e41a1c*/
+  color: #990071; /*#AC9CFF #e41a1c*/
   font-weight: 500;
 }
 
-.func {            /*#984ea3;can just use `` instead*/
-  color: #00CBB6;
+.func {
+  color: #007199;   /*#00CBB6; #984ea3; can just use `` instead*/
   font-weight: 500;
 }
 
 .objclass {
-  color:  #AAB400;  /*#4daf4a; #FFC5D0*/
+  color:  #947100;  /*#AAB400 #4daf4a; #FFC5D0*/
   font-weight: 500;
 }
 
@@ -33,7 +31,7 @@ a {
 }
 
 body {
-  color: #595959; /*#595959 (i.e. gray35) provides recommended contrast ratio 7:1; previous  #7f7f7f (4:1); */
+  color: #585858; /*#595959 (i.e. gray35) provides recommended contrast ratio 7:1 on white; change 9s to 8s for offwhite;*/
   background-color: #fffff8;
 }
 
@@ -57,11 +55,22 @@ code {
   /*background-color:#ff5500;*/   /* results background*/
 
 }
+pre .r {
+  box-sizing: border-box;
+  left: 0; /* This changes where the code chunk box actually starts */
+  /* padding: 10px 0 10px 60px; /* Change the last value here to move the text left or right */
+  position: relative;
+  /*width: 100%; /* This changes where the code chunk box ends on the right side */
+  font-family: 'Roboto Mono' 'Lucida Sans' Consolas monospace;
+  /*font-size: 100%; /*changes output size; and comments*/
+  /*border: 10px solid #ff5500;*/  /*code block and results border*/
+  /*background-color:#ff5500;*/   /* results background*/
 
-
+}
 
 #TOC{
   font-size: 75%;
+
 }
 
 .table {
@@ -83,10 +92,9 @@ li.tocify-item.list-group-item.active {
   background-color: rgb(97,151,213);             /* background of current section in toc */
 }
 
-
 h1, h2, h3, h4, h5 {
-  color:#b2001d;
-  font-family: 'Open Sans Condensed';
+  color:#990024;
+  font-family: 'Roboto Condensed';
 }
 
 .col2 {

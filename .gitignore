@@ -8,3 +8,4 @@ _bookdown_files/
 data/
 *.log
 *delete
+.DS_Store

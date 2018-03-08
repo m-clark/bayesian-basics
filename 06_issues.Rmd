@@ -38,7 +38,7 @@ diff(pbeta(c(.6, .9), 9, 3))
 ```{r chooseBetaPrior2, echo=F, out.width='500px'}
 
 ggplot(aes(x=x), data=data.frame(x=rbeta(10000, 9, 3))) + 
-  geom_line(stat='density', color=palettes$orange$complementary) + 
+  geom_line(stat='density', color=palettes$orange$complementary[2]) + 
   geom_density(fill=scales::alpha('#ff5500', .75), color='transparent') + 
   lazerhawk::theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
