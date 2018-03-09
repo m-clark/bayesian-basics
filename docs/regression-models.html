@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-03-07">
+<meta name="date" content="2018-03-08">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -132,8 +132,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html"><i class="fa fa-check"></i>Regression Models</a><ul>
-<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a></li>
-<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#setup"><i class="fa fa-check"></i>Setup</a><ul>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a><ul>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#setup"><i class="fa fa-check"></i>Setup</a></li>
 <li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#stan-code"><i class="fa fa-check"></i>Stan Code</a></li>
 <li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#running-the-model"><i class="fa fa-check"></i>Running the Model</a></li>
 </ul></li>
@@ -230,9 +230,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="example-linear-regression-model" class="section level2">
 <h2>Example: Linear Regression Model</h2>
 <p>In the following we will have some initial data set up and also run the model using the standard <span class="func">lm</span> function for later comparison. I choose simulated data so that not only should you know what to expect from the model, it can easily be modified to enable further understanding. I will also use some matrix operations, and if these techniques are unfamiliar to you, you’ll perhaps want to do some refreshing or learning on your own beforehand.</p>
-</div>
-<div id="setup" class="section level2">
-<h2>Setup</h2>
+<div id="setup" class="section level3">
+<h3>Setup</h3>
 <p>First we need to create the data we’ll use here and for most of the other examples in this document. I use simulated data so that there is no ambiguity about what to expect.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># set seed for replicability</span>
 <span class="kw">set.seed</span>(<span class="dv">8675309</span>)
@@ -264,7 +263,7 @@ modlm =<span class="st"> </span><span class="kw">lm</span>(y<span class="op">~</
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create the data list object for Stan input</span>
 dat =<span class="st"> </span><span class="kw">list</span>(<span class="dt">N=</span>N, <span class="dt">K=</span><span class="kw">ncol</span>(X), <span class="dt">y=</span>y, <span class="dt">X=</span>X)</code></pre></div>
 <p>Next comes the Stan code. In <span class="pack">R2OpenBugs</span> or <span class="pack">rjags</span> one would call a separate text file with the code, and one can do the same with <span class="pack">rstan</span><a href="#fn17" class="footnoteRef" id="fnref17"><sup>17</sup></a>, but for our purposes, we’ll display it within the R code. The first thing to note then is the model code. Next, Stan has programming blocks that have to be called in order. I will have all of the blocks in the code to note their order and discuss each in turn, even though we won’t use them all. Anything following a // or #, or between /* */, are comments pertaining to the code. Assignments in Stan are <code>=</code><a href="#fn18" class="footnoteRef" id="fnref18"><sup>18</sup></a>, while distributions are specified with a <span class="math inline">\(\sim\)</span>, e.g. <code>y ~ normal(0, 1)</code> means y is normally distributed with mean 0 and standard deviation of 1.</p>
-<p>The primary goal here is to get to the results and beyond, but one should examine the <a href="http://mc-stan.org/documentation/">Stan manual</a> for details about the code. In addition, to install <span class="pack">rstan</span> one will need to do so via CRAN or Github (<a href="https://github.com/Stan-dev/rstan/wiki/RStan-Getting-Started">quickstart guide</a>). It does not require a separate installation of Stan itself, but it does take a couple steps and does require a C++ compiler<a href="#fn19" class="footnoteRef" id="fnref19"><sup>19</sup></a>. Once you have <span class="pack">rstan</span> installed it is called like any other R package as will see shortly.</p>
+<p>The primary goal here is to get to the results and beyond, but one should examine the <a href="http://mc-stan.org/documentation/">Stan manual</a> for details about the code. In addition, to install <span class="pack">rstan</span> one will need to do so via CRAN or GitHub (<a href="https://github.com/Stan-dev/rstan/wiki/RStan-Getting-Started">quickstart guide</a>). It does not require a separate installation of Stan itself, but it does take a couple steps and does require a C++ compiler<a href="#fn19" class="footnoteRef" id="fnref19"><sup>19</sup></a>. Once you have <span class="pack">rstan</span> installed it is called like any other R package as will see shortly.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># Create the stan model object using Stan&#39;s syntax</span>
 stanmodelcode =<span class="st"> &quot;</span>
 <span class="st">data {                      // Data block</span>
@@ -301,66 +300,47 @@ stanmodelcode =<span class="st"> &quot;</span>
 <span class="st">}</span>
 <span class="st">*/</span>
 <span class="st">&quot;</span></code></pre></div>
+</div>
 <div id="stan-code" class="section level3">
 <h3>Stan Code</h3>
 <p>The first section is the <span class="emph">data</span> block, where we tell Stan the data it should be expecting from the data list. It is useful to put in bounds as a check on the data input, and that is what is being done between the <code>&lt; &gt;</code> (e.g. we should at least have a sample size of 1). The first two variables declared are <code>N</code> and <code>K</code>, both as integers. Next the code declares the model matrix and target vector respectively. As you’ll note here and for the next blocks, we declare the type and dimensions of the variable and then its name. In Stan, everything declared in one block is available to subsequent blocks, but those declared in a block may not be used in earlier blocks. Even within a block, anything declared, such as <code>N</code> and <code>K</code>, can then be used subsequently, as we did to specify dimensions of the model matrix <code>X</code>.</p>
 <p>For a reference, the following is from the Stan manual, and notes variables of interest and the associated blocks where they would be declared.</p>
-<table class="gmisc_table" style="border-collapse: collapse; margin-top: 1em; margin-bottom: 1em;">
+<table>
+<colgroup>
+<col width="35%" />
+<col width="64%" />
+</colgroup>
 <thead>
-<tr>
-<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
-Variable Kind
-</th>
-<th style="border-bottom: 1px solid grey; border-top: 2px solid grey; text-align: center;">
-Declaration Block
-</th>
+<tr class="header">
+<th align="center">Variable Kind</th>
+<th align="center">Declaration Block</th>
 </tr>
 </thead>
 <tbody>
-<tr>
-<td style="text-align: center;">
-modeled, unmodeled data
-</td>
-<td style="text-align: center;">
-data, transformed data
-</td>
+<tr class="odd">
+<td align="center">modeled, unmodeled data</td>
+<td align="center">data, transformed data</td>
 </tr>
-<tr>
-<td style="text-align: center;">
-modeled parameters, missing data
-</td>
-<td style="text-align: center;">
-parameters, transformed parameters
-</td>
+<tr class="even">
+<td align="center">modeled parameters, missing data</td>
+<td align="center">parameters, transformed parameters</td>
 </tr>
-<tr>
-<td style="text-align: center;">
-unmodeled parameters
-</td>
-<td style="text-align: center;">
-data, transformed data
-</td>
+<tr class="odd">
+<td align="center">unmodeled parameters</td>
+<td align="center">data, transformed data</td>
 </tr>
-<tr>
-<td style="text-align: center;">
-generated quantities
-</td>
-<td style="text-align: center;">
-transformed data, transformed parameters, generated quantities
-</td>
+<tr class="even">
+<td align="center">generated quantities</td>
+<td align="center">transformed data, transformed parameters, generated quantities</td>
 </tr>
-<tr>
-<td style="border-bottom: 2px solid grey; text-align: center;">
-loop indices
-</td>
-<td style="border-bottom: 2px solid grey; text-align: center;">
-loop statement
-</td>
+<tr class="odd">
+<td align="center">loop indices</td>
+<td align="center">loop statement</td>
 </tr>
 </tbody>
 </table>
 <p>The <span class="emph">transformed data</span> block is where you could do such things as log or center variables and similar, i.e. you can create new data based on the input data or just in general. If you are using R though, it would almost always be easier to do those things in R first and just include them in the data list. You can also declare any unmodeled parameters here, e.g. those you want fixed at some value.</p>
-<p>The primary parameters of interest that are to be estimated go in the <span class="emph">parameters </span> block. As with the data block you can only declare these variables, you cannot make any assignments. Here we note the <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\sigma\)</span> to be estimated, with a lower bound of zero on the latter. In practice you might prefer to split out the intercept or other coefficients to be modeled separately if they are on notably different scales.</p>
+<p>The primary parameters of interest that are to be estimated go in the <span class="emph">parameters </span> block. As with the data block you can only declare these variables, you cannot make any assignments. Here we note the <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\sigma\)</span> to be estimated, with a lower bound of zero on the latter. In practice, you might prefer to split out the intercept or other coefficients to be modeled separately if they are on notably different scales.</p>
 <p>The <span class="emph">transformed parameters</span> block is where optional parameters of interest might be included. What might go here is fairly open, but for efficiency’s sake you will typically want to put things only of specific interest that are dependent on the parameters block. These are evaluated along with the parameters, so if the objects are not of special interest you can instead generate them in the model or generated quantities block to save time.</p>
 <p>The <span class="emph">model</span> block is where your priors and likelihood are specified, along with the declaration of any variables necessary. As an example, the linear predictor is included here, as it will go towards the likelihood<a href="#fn20" class="footnoteRef" id="fnref20"><sup>20</sup></a>. Note that we could have instead put the linear predictor in the transformed parameters section, but this would slow down the process, and again, we’re not so interested in those specific values.</p>
 <p>I use a normal prior for the coefficients with a zero mean and a very large standard deviation to reflect my notable ignorance here<a href="#fn21" class="footnoteRef" id="fnref21"><sup>21</sup></a>. For the <span class="math inline">\(\sigma\)</span> estimate I use a Cauchy distribution<a href="#fn22" class="footnoteRef" id="fnref22"><sup>22</sup></a>. Many regression examples using BUGS will use an inverse gamma prior, which is perfectly okay for this model, though it would not work so well for other variance parameters. Had we not specified anything for the prior distribution for the parameters, vague (discussed more in the <a href="issues.html#choice-of-prior">Choice of Prior section</a>), uniform distributions would be the default. The likelihood is specified in a similar manner as one would with R. BUGS style languages would actually use <span class="func">dnorm</span> as in R, though Stan uses <span class="func">normal</span> for the function name.</p>
@@ -369,12 +349,12 @@ loop statement
 <div id="running-the-model" class="section level3">
 <h3>Running the Model</h3>
 <p>Now that we have an idea of what the code is doing, let’s put it to work. Bayesian estimation, like maximum likelihood, starts with initial guesses as starting points and then runs in an iterative fashion, producing simulated draws from the posterior distribution at each step, and then correcting those draws until finally getting to some target, or <span class="emph">stationary</span> distribution. This part is key and different from classical statistics. We are aiming for a <em>distribution</em>, not a <em>point estimate</em>.</p>
-<p>The simulation process is referred to as <span class="emph">Markov Chain Monte Carlo</span>, or MCMC for short. The specifics of this process are what sets many of the Bayesian programming languages/approaches apart, and something we will cover in more detail in a later section (see <a href="issues.html#sampling-procedure">Sampling Procedure</a>). In MCMC, all of the simulated draws from the posterior are based on and correlated with previous draws<a href="#fn23" class="footnoteRef" id="fnref23"><sup>23</sup></a>, as the process moves along the path toward a stationary distribution. Typically we will allow the process to <em>warm up</em>, or rather get a bit settled down from the initial starting point, which might be way off, and thus the subsequent estimates will also be way off for the first few iterations<a href="#fn24" class="footnoteRef" id="fnref24"><sup>24</sup></a>. Rest assured, assuming the model and data are otherwise acceptable, the process will get to where it needs to go. However, as a further check, we will run the whole thing multiple times, i.e. have more than one <span class="emph">chain</span>. As the chains will start from different places, if multiple chains get to the same place in the end, we can feel more confident about our results.</p>
+<p>The simulation process is referred to as <span class="emph">Markov Chain Monte Carlo</span>, or MCMC for short. The specifics of this process are what sets many of the Bayesian programming languages/approaches apart, and something we will cover in more detail in a later section (see <a href="issues.html#sampling-procedure">Sampling Procedure</a>). In MCMC, all of the simulated draws from the posterior are based on and correlated with previous draws<a href="#fn23" class="footnoteRef" id="fnref23"><sup>23</sup></a>, as the process moves along the path toward a stationary distribution. We will typically allow the process to <em>warm up</em>, or rather get a bit settled down from the initial starting point, which might be way off, and thus the subsequent estimates will also be way off for the first few iterations<a href="#fn24" class="footnoteRef" id="fnref24"><sup>24</sup></a>. Rest assured, assuming the model and data are otherwise acceptable, the process will get to where it needs to go. However, as a further check, we will run the whole thing multiple times, i.e. have more than one <span class="emph">chain</span>. As the chains will start from different places, if multiple chains get to the same place in the end, we can feel more confident about our results.</p>
 <p>While this process may sound like it might take a long time to complete, for the following you’ll note that it will likely take more time for Stan to compile its code to C++ than it will to run the model<a href="#fn25" class="footnoteRef" id="fnref25"><sup>25</sup></a>, and on my computer each chain only takes only a little more than a second. However, the Bayesian approach used to take a very long time even for a standard regression such as this, and that is perhaps the primary reason why Bayesian analysis only caught on in the last couple decades; we simply didn’t have the machines to do it efficiently. Even now though, for highly complex models and large data sets it can still take a long time to run, though typically not prohibitively so.</p>
-<p>In the following code, we note the object that contains the Stan model code, the data list, how many iterations we want (5000)<a href="#fn26" class="footnoteRef" id="fnref26"><sup>26</sup></a>, how long we want the process to run before we start to keep any estimates (<code>warmup=2500</code>), how many of the post-warmup draws of the posterior we want to keep (<code>thin=10</code> means every tenth draw), and the number of chains (<code>chains=4</code>). In the end we will have three chains of 1000<a href="#fn27" class="footnoteRef" id="fnref27"><sup>27</sup></a> draws from the posterior distribution of the parameters. Stan spits out a lot of output to the R console even with <code>verbose = FALSE</code>, and I omit it here, but you will see some initial info about the compiling process, updates as each chain gets through 10% of iterations specified in the <code>iter</code> argument, and finally an estimate of the elapsed time. You may also see <em>informational messages</em> which, unless they are highly repetitive, should not be taken as an error.</p>
+<p>In the following code, we note the object that contains the Stan model code, the data list, how many iterations we want (5000)<a href="#fn26" class="footnoteRef" id="fnref26"><sup>26</sup></a>, how long we want the process to run before we start to keep any estimates (<code>warmup=2500</code>), how many of the post-warmup draws of the posterior we want to keep (<code>thin=10</code> means every tenth draw), and the number of chains (<code>chains=4</code>). In the end, we will have three chains of 1000<a href="#fn27" class="footnoteRef" id="fnref27"><sup>27</sup></a> draws from the posterior distribution of the parameters. Stan spits out a lot of output to the R console even with <code>verbose = FALSE</code>, and I omit it here, but you will see some initial info about the compiling process, updates as each chain gets through 10% of iterations specified in the <code>iter</code> argument, and finally an estimate of the elapsed time. You may also see <em>informational messages</em> which, unless they are highly repetitive, should not be taken as an error.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rstan)
 
-### Run the model and examine results <span class="al">###</span>
+### Run the model and examine results
 fit =<span class="st"> </span><span class="kw">stan</span>(<span class="dt">model_code=</span>stanmodelcode, <span class="dt">data=</span>dat, <span class="dt">iter=</span><span class="dv">5000</span>, 
            <span class="dt">warmup=</span><span class="dv">2500</span>, <span class="dt">thin=</span><span class="dv">10</span>, <span class="dt">chains=</span><span class="dv">4</span>)</code></pre></div>
 <p>With the model run, we can now examine the results. In the following, we specify the digit precision to display, which parameters we want (not necessary here), and which quantiles of the posterior draws we want, which in this case are the median and those that would produce a 95% interval estimate.</p>
@@ -396,7 +376,7 @@ For each parameter, n_eff is a crude measure of effective sample size,
 and Rhat is the potential scale reduction factor on split chains (at 
 convergence, Rhat=1).</code></pre>
 <p>So far so good. The mean estimates reflect the mean of posterior draws for the parameters of interest, and are the typical coefficients reported in standard regression analysis. The 95% probability, or, <span class="emph">credible intervals</span> are worth noting, because <em>they are not confidence intervals as you know them</em>. There is no repeated sampling interpretation here<a href="#fn28" class="footnoteRef" id="fnref28"><sup>28</sup></a>. The probability interval is more intuitive. It means simply that, based on the results of this model, there is a 95% chance the true value will fall between those two points. The other values printed out I will return to in just a moment.</p>
-<p>Comparing the results to those from R’s <span class="func">lm</span> function, we can see we obtain similar estimates, as they are identical to two decimal places. In fact, had we used uniform priors<a href="#fn29" class="footnoteRef" id="fnref29"><sup>29</sup></a>, we would doing essentially the same model as what is being conducted with standard maximum likelihood estimation. Here, we have a decent amount of data for a model that isn’t complex, so we would expect the likelihood to notably outweigh the prior, as we demonstrated previously with our binomial example.</p>
+<p>Comparing the results to those from R’s <span class="func">lm</span> function, we can see we obtain similar estimates, as they are identical to two decimal places. In fact, had we used uniform priors<a href="#fn29" class="footnoteRef" id="fnref29"><sup>29</sup></a>, we would be doing essentially the same model as what is being conducted with standard maximum likelihood estimation. Here, we have a decent amount of data for a model that isn’t complex, so we would expect the likelihood to notably outweigh the prior, as we demonstrated previously with our binomial example.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">summary</span>(modlm)</code></pre></div>
 <table style="width:89%;">
 <colgroup>
@@ -489,17 +469,17 @@ betas.mcmc =<span class="st"> </span><span class="kw">as.mcmc</span>(betas)
 <div class="footnotes">
 <hr />
 <ol start="16">
-<li id="fn16"><p>For just a standard regression model I would ultimately suggest using <span class="pack">rstanarm</span> or <span class="pack">brms</span>, because they would allow you to keep to the usual R approach for modeling, allowing you to more or less jump right in. However, writing Stan code makes it more clear what is being done, so we’ll keep to it for our purposes here. When I first started writing this document, <span class="pack">brms</span> didn’t exist, <span class="pack">rstanarm</span> was still in its infancy, there was no interactive <span class="pack">shinystan</span> etc. I may end up moving the Stan code to the appendix and just using <span class="pack">rstanarm</span> in the future, but I think it’s worth knowing what’s actually going on specifically behind the scenes, so will stick to the <span class="pack">rstan</span> approach for now.<a href="regression-models.html#fnref16">↩</a></p></li>
-<li id="fn17"><p>In your own Stan pursuits it’s better to have the Stan model as a separate file.<a href="regression-models.html#fnref17">↩</a></p></li>
+<li id="fn16"><p>For just a standard regression model I would ultimately suggest using <span class="pack">rstanarm</span> or <span class="pack">brms</span>, because they would allow you to keep to the usual R approach for modeling, allowing you to more or less jump right in. However, writing Stan code makes it clearer what is being done, so we’ll keep to it for our purposes here. When I first started writing this document, <span class="pack">brms</span> didn’t exist, <span class="pack">rstanarm</span> was still in its infancy, there was no interactive <span class="pack">shinystan</span> etc. I may end up moving the Stan code to the appendix and just using <span class="pack">rstanarm</span> in the future, but I think it’s worth knowing what’s actually going on specifically behind the scenes, so will stick to the <span class="pack">rstan</span> approach for now.<a href="regression-models.html#fnref16">↩</a></p></li>
+<li id="fn17"><p>In your own Stan pursuits, it’s better to have the Stan model as a separate file.<a href="regression-models.html#fnref17">↩</a></p></li>
 <li id="fn18"><p><code>&lt;-</code> is now deprecated, but you may see older examples using it.<a href="regression-models.html#fnref18">↩</a></p></li>
 <li id="fn19"><p>You can examine this <a href="https://en.wikipedia.org/wiki/List_of_compilers#C.2B.2B_compilers">list</a> of compilers, or on Windows simply install Rtools from the R website (recommended). Note that you may already have one incidentally. Try the Stan test in their ‘getting started’ guide before downloading one.<a href="regression-models.html#fnref19">↩</a></p></li>
 <li id="fn20"><p>The position within the model block isn’t crucial. I tend to like to do all the variable declarations at the start, but others might prefer to have them under the likelihood heading at the point they are actually used.<a href="regression-models.html#fnref20">↩</a></p></li>
 <li id="fn21"><p>By setting the prior mean to zero, this will have the effect of shrinking the coefficients toward zero to some extent. In this sense, it is equivalent to penalized regression in the non-Bayesian setting, ridge regression in particular.<a href="regression-models.html#fnref21">↩</a></p></li>
-<li id="fn22"><p>Actually a half-Cauchy as it is bounded to be positive. This is equivalent to a student t with df=1, and there is some tendency of late to use the student t directly with df=3 for slight gains in performance for some models.<a href="regression-models.html#fnref22">↩</a></p></li>
+<li id="fn22"><p>Actually, a half-Cauchy as it is bounded to be positive. This is equivalent to a student t with df=1, and there is some tendency of late to use the student t directly with df=3 for slight gains in performance for some models.<a href="regression-models.html#fnref22">↩</a></p></li>
 <li id="fn23"><p>In a Markov Chain, <span class="math inline">\(\theta_t\)</span> is independent of previous <span class="math inline">\(\theta_{t-2...t_1}\)</span>, conditional on <span class="math inline">\(\theta_{t-1}\)</span>.<a href="regression-models.html#fnref23">↩</a></p></li>
 <li id="fn24"><p>How far one wants to go down the rabbit hole regarding MCMC is up to the reader. A great many applied researchers do classical statistical analysis without putting much thought into the actual maximum likelihood estimation process, and I suppose one could do so here as well.<a href="regression-models.html#fnref24">↩</a></p></li>
 <li id="fn25"><p>Not usually the case except for simple models with smaller data.<a href="regression-models.html#fnref25">↩</a></p></li>
-<li id="fn26"><p>This is way overkill for a simple model like this. One probably would be fine with 500 warmup and 500 iterations for a standard regression.<a href="regression-models.html#fnref26">↩</a></p></li>
+<li id="fn26"><p>This is way overkill for a simple model like this. One probably would be fine with 500 warm-up and 500 iterations for a standard regression.<a href="regression-models.html#fnref26">↩</a></p></li>
 <li id="fn27"><p><span class="math inline">\(\frac{5000-2500}{10} \cdot 4 = 1000\)</span><a href="regression-models.html#fnref27">↩</a></p></li>
 <li id="fn28"><p>A standard confidence implies that if we’d done the study exactly the same over and over, and calculated a confidence interval each time, 95% of them would capture the true value. The one you have is just one from that process.<a href="regression-models.html#fnref28">↩</a></p></li>
 <li id="fn29"><p>In Stan code this can be done by not explicitly specifying a prior.<a href="regression-models.html#fnref29">↩</a></p></li>

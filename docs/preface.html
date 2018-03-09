@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-03-07">
+<meta name="date" content="2018-03-08">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -132,8 +132,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html"><i class="fa fa-check"></i>Regression Models</a><ul>
-<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a></li>
-<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#setup"><i class="fa fa-check"></i>Setup</a><ul>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a><ul>
+<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#setup"><i class="fa fa-check"></i>Setup</a></li>
 <li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#stan-code"><i class="fa fa-check"></i>Stan Code</a></li>
 <li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#running-the-model"><i class="fa fa-check"></i>Running the Model</a></li>
 </ul></li>
@@ -230,8 +230,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <p>After a conceptual introduction, a fully visible by-hand example is provided using the binomial distribution. After that, the document proceeds to introduce fully Bayesian analysis with the standard linear regression model, as that is the basis for most applied statistics courses and is assumed to be most familiar to the reader. Model diagnostics, model enhancements, and additional modeling issues are then explored. Supplemental content in the appendix provides more technical detail if desired, and includes a maximum likelihood refresher, an overview of programming options in Bayesian analysis, the same regression model using BUGS and JAGS, and ‘by-hand’ code for the model using the Metropolis-Hastings and Hamiltonian Monte Carlo algorithms.</p>
 <div id="prerequisites" class="section level2">
 <h2>Prerequisites</h2>
-<p>Prerequisites include a basic statistical exposure such as what would be covered in typical (probably graduate) <em>applied</em> science statistics course. At least some familiarity with R is necessary to follow the code, but that itself is not necessary, and one may go through any number of introductions on the web to acquire enough knowledge in that respect. However, note that for the examples here, at least part of the code will employ some Bayesian-specific programming language (e.g. Stan primarily, BUGS and JAGS in the appendix). No attempt is made to teach those languages though, as it would be difficult to do so efficiently in this more conceptually oriented setting. As such, it is suggested that one follow the code as best they can, and investigate the respective manuals, relevant texts, etc. further on their own. Between the text and comments within the code it is hoped that what the code is accomplishing will be fairly clear. However, I also provide a set of notes that can serve as an overview of Stan <a href="https://m-clark.github.io/workshops/bayesian/">here</a>.</p>
-<p>This document relies heavily on <span class="citation">Gelman et al. (<a href="#ref-gelman_bda">2013</a>)</span>, which I highly recommend, if one is ready for it. Other sources used or particularly pertinent to the material in this document can be found in the <a href="references.html#references">references section</a> at the end. Some are more introductory, and which might be more suitable depending on the context you bring.</p>
+<p>Prerequisites include a basic statistical exposure such as what would be covered in a typical (probably graduate) <em>applied</em> science statistics course. At least some familiarity with R is necessary to follow the code, but that itself is not necessary, and one may go through any number of introductions on the web to acquire enough knowledge in that respect. However, note that for the examples here, at least part of the code will employ some Bayesian-specific programming language (e.g. Stan primarily, BUGS and JAGS in the appendix). No attempt is made to teach those languages though, as it would be difficult to do so efficiently in this more conceptually oriented setting. As such, it is suggested that one follow the code as best they can, and investigate the respective manuals, relevant texts, etc. further on their own. Between the text and comments within the code it is hoped that what the code is accomplishing will be fairly clear. However, I also provide a set of notes that can serve as an overview of Stan <a href="https://m-clark.github.io/workshops/bayesian/">here</a>.</p>
+<p>This document relies heavily on <span class="citation">Gelman et al. (<a href="#ref-gelman_bda">2013</a>)</span>, which I highly recommend, if one is ready for it. Other sources used, or particularly pertinent to the material for this document, can be found in the <a href="references.html#references">references section</a> at the end. Some are more introductory, and which might be more suitable depending on the context you bring.</p>
 <p>Color coding:</p>
 <ul>
 <li><span class="emph">emphasis</span></li>

@@ -9,11 +9,11 @@ There are various ways to assess whether or not the model has converged to a tar
 
 ### Visual Inspection: Traceplot & Densities
 
-In the previous model we noted the traceplot for a single parameter, and a visual approach to monitoring convergence is certainly one good method.  In general we look for a plot that shows random scatter around a mean value, and our model results suggest that the chains mixed well and the traceplot looked satisfactory.
+In the previous model we noted the traceplot for a single parameter, and a visual approach to monitoring convergence is certainly one good method.  In general, we look for a plot that shows random scatter around a mean value, and our model results suggest that the chains mixed well and the traceplot looked satisfactory.
 
 <img src="img/badchains.svg" style="display:block; margin: 0 auto;"  width=50%>
 
-This is an example where things have gone horribly wrong.  The chains never converge nor do they mix with one another.  One reason for running multiple chains is that any individual chain might converge toward one target, while another chain might converge elsewhere, and this would still be a problem.  Also you might see otherwise healthy chains get stuck on occasion over the course of the series, which might suggest more model tweaking or a change in the sampler settings is warranted.
+This is an example where things have gone horribly wrong.  The chains never converge nor do they mix with one another.  One reason for running multiple chains is that any individual chain might converge toward one target, while another chain might converge elsewhere, and this would still be a problem.  Also, you might see otherwise healthy chains get stuck on occasion over the course of the series, which might suggest more model tweaking or a change in the sampler settings is warranted.
 
 We can examine the mixed chains and density plots of the posterior with standard functions in the <span class="pack">rstan</span> package displayed previously, various functions in the <span class="pack">bayesplot</span> package, or interactively via <span class="pack">shinyStan</span> package and its <span class="func">launch_shiny</span> function.  In the Bayesian approach, increasing amounts of data leads to a posterior distribution of the parameter vector approaching multivariate normality.  The following shows a density, trace and autocorrelation plots for one of the regression coefficients using <span class="pack">shinyStan</span>.
 
@@ -136,7 +136,7 @@ The effective number of simulation draws is provided as $n_{\textrm{eff}}$ in th
 broom::tidy(fit, ess=T)[,c(1:2,4)] %>% format(digits=4) %>% pander(justify='lrr')
 ```
 
-<span class="emph">Monte Carlo error</span> is an estimate of the uncertainty contributed by only having a finite number of posterior draws. Typically we'd want roughly less than 5% of the posterior standard deviation (reported right next to it in the Stan output), but might as well go for less than 1%. With no autocorrelation it would equal $\sqrt{\frac{var(\theta)}{n_{\textrm{eff}}}}$[^mcerr]. and $n_{\textrm{eff}}$ would equal the number of simulation draws requested.
+<span class="emph">Monte Carlo error</span> is an estimate of the uncertainty contributed by only having a finite number of posterior draws. We'd typically want roughly less than 5% of the posterior standard deviation (reported right next to it in the Stan output), but might as well go for less than 1%. With no autocorrelation it would equal $\sqrt{\frac{var(\theta)}{n_{\textrm{eff}}}}$[^mcerr]. and $n_{\textrm{eff}}$ would equal the number of simulation draws requested.
 
 ```{r showMCerror, echo=FALSE}
 rstan::summary(fit, pars=c('beta', 'sigma'))$summary[,c('mean', 'se_mean')] %>% 
@@ -165,9 +165,9 @@ For model comparison of out of sample predictive performance, there are informat
 
 For an overall assessment of model fit, we can examine how well the model can reproduce the data at hand given the $\theta$ draws from the posterior.  We discussed earlier the <span class="emph">posterior predictive distribution</span> for a future observation $\tilde{y}$[^ppcheck2], and here we'll dive in to using it explicitly. There are two sources of uncertainty in our regression model, the variance in $y$ not explained by the model ($\sigma^2$), and posterior uncertainty in the parameters due to having a finite sample size.  As $N\rightarrow\infty$, the latter goes to zero, and so we can simulate draws of $\tilde{y} \sim N(\tilde{X}\beta, \sigma^2I)$[^conjugate]. If $\tilde{X}$ is the model data as in the following, then we will refer to $y^{\textrm{Rep}}$ instead of $\tilde{y}$.
 
-For our model this entails extracting the simulated values from the model object, and taking a random draw from the normal distribution based on the $\beta$ and $\sigma$ that are drawn to produce our <span class="emph">replicated data</span>, $y^{\textrm{Rep}}$ (see @gelman_bda, Appendix C).  In what follows, I write out the process explicitly, but <span class="pack">bayesplot</span>, <span class="pack">rstanarm</span>, and <span class="pack">brms</span> make this straightforward, possibly with a single line of code, the latter packages using <span class="pack">bayesplot</span>. In addition, it's often simpler to create the $y^{\textrm{Rep}}$ as part of your generated quantities section of the model code if modeling with Stan explicitly.
+For our model, this entails extracting the simulated values from the model object, and taking a random draw from the normal distribution based on the $\beta$ and $\sigma$ that are drawn to produce our <span class="emph">replicated data</span>, $y^{\textrm{Rep}}$ (see @gelman_bda, Appendix C).  In what follows, I write out the process explicitly, but <span class="pack">bayesplot</span>, <span class="pack">rstanarm</span>, and <span class="pack">brms</span> make this straightforward, possibly with a single line of code, the latter packages using <span class="pack">bayesplot</span>. In addition, it's often simpler to create the $y^{\textrm{Rep}}$ as part of your generated quantities section of the model code if modeling with Stan explicitly.
 
-```{r posteriorPredictiveExample, fig.show='hide', echo=6:14}
+```{r posteriorPredictiveExample, fig.show='hide', echo=-(1:3)}
 load('data/mainModels.RData')
 library(rstan)
 
@@ -186,7 +186,7 @@ With the $y^{\textrm{Rep}}$ in hand we can calculate all manner of statistics th
 
 As a starting point, we can check our minimum value among the replicated data sets versus that observed in the data.
 
-```{r posteriorPredictiveMinComparison, fig.keep='none', fig.show='hide', echo=1:7}
+```{r posteriorPredictiveMinComparison, fig.keep='none', fig.show='hide'}
 min_rep = apply(yRep, 2, min)
 min_y = min(y)
 hist(min_rep, main=''); abline(v=min_y)
@@ -231,12 +231,12 @@ ggplot(aes(x=value), data=q10_rep) +
 
 <p style="font-size:.75em; text-align:center">See <span class="func">ppc_stat</span> in <span class="pack">bayesplot</span>.</p>
 
-In general, we can devise a test statistic, $T_{\textrm{Rep}}$, and associated p-value to check *any* particular result of interest based on the simulated data.  The p-value in this context is simply the percentage of times the statistic of interest is equal to or more extreme than the statistic, $T_y$, calculated for the original data.  Thus p-values near 0 or 1 are indicative of areas where the model is falling short in some fashion. Sometimes $T_y$ may be based on the $\theta$ parameters being estimated, and thus you'd have a $T_y$ for every posterior draw. In such a case one might examine the scatterplot of $T_{\textrm{Rep}}$ vs. $T_y$, or examine a density plot of the difference between the two.  In short, this is an area where one can get creative, and the <span class="pack">bayesplot</span> package can help with make this fairly easy.  However, it must be stressed that we are not trying to accept or reject a model hypothesis as in the frequentist setting- we're not going to throw a model out because of an extreme p-value in our posterior predictive check.  We are merely trying to understand the model's shortcomings as best we can, and make appropriate adjustments if applicable.  It is often the case that the model will still be good enough for practical purposes.
+In general, we can devise a test statistic, $T_{\textrm{Rep}}$, and associated p-value to check *any* particular result of interest based on the simulated data.  The p-value in this context is simply the percentage of times the statistic of interest is equal to or more extreme than the statistic, $T_y$, calculated for the original data.  Thus p-values near 0 or 1 are indicative of areas where the model is falling short in some fashion. Sometimes $T_y$ may be based on the $\theta$ parameters being estimated, and thus you'd have a $T_y$ for every posterior draw. In such a case, one might examine the scatterplot of $T_{\textrm{Rep}}$ vs. $T_y$, or examine a density plot of the difference between the two.  In short, this is an area where one can get creative, and the <span class="pack">bayesplot</span> package can help with make this fairly easy.  However, it must be stressed that we are not trying to accept or reject a model hypothesis as in the frequentist setting- we're not going to throw a model out because of an extreme p-value in our posterior predictive check.  We are merely trying to understand the model's shortcomings as best we can, and make appropriate adjustments if applicable.  It is often the case that the model will still be good enough for practical purposes.
 
 
 ### Posterior Predictive Checking: Graphical
 
-As there are any number of ways to do statistical posterior predictive checks, we have many options for graphical inspection as well.  As a starting point I show a graph of our average fitted value versus the observed data.  The average is over all posterior draws of $\theta$.
+As there are any number of ways to do statistical posterior predictive checks, we have many options for graphical inspection as well.  I show a graph of our average fitted values versus the observed data as a starting point.  The average is over all posterior draws of $\theta$.
 
 ```{r posteriorPredictiveFitted, echo=FALSE, out.width='500px'}
 fits = sapply(1:nsims, function(s) X%*%betas[s,])
@@ -254,7 +254,7 @@ ggplot(aes(x=y, y=avgfits), data=data.frame(y=y, avgfits=avgfits)) +
 <p style="font-size:.75em; text-align:center">See <span class="func">ppc_scatter_avg</span> in <span class="pack">bayesplot</span>.</p>
 
 
-Next, I show density plots for a random sample of 20 of the replicated data sets along with that of the original data (shaded).  In general it looks like we're doing pretty well here. The subsequent figure displays the density plot for individual predictions for a single value of $y$ from our data. In general the model captures this particular observation of the data decently.
+Next, I show density plots for a random sample of 20 of the replicated data sets along with that of the original data (shaded).  It looks like we're doing pretty well here. The subsequent figure displays the density plot for individual predictions for a single value of $y$ from our data. In general, the model captures this particular observation of the data decently.
 
 
 

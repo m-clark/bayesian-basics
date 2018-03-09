@@ -6,9 +6,9 @@ Enhancing and making adjustments to a model can often be straightforward in the 
 
 ## Generating New Variables of Interest
 
-We have already seen one way to get at new statistics of interest in the predictive model checking section.  I next show how to do so as part of the modeling process itself.  In Stan we can accomplish this via the generated quantities section.
+We have already seen one way to get at new statistics of interest in the predictive model checking section.  I next show how to do so as part of the modeling process itself.  In Stan, we can accomplish this via the generated quantities section.
 
-A typical part of linear regression output is $R^2$, the amount of variance accounted for by the model.  To get this in Stan we just have to create the code necessary for the calculations, and place it within the generated quantities section.  I only show this part of the model code; everything we had before would remain the same.  For comparison I show the corresponding <span class="func">lm</span> results from R. There are a couple of ways to go about this, and I use some of Stan's matrix operations as one approach.
+A typical part of linear regression output is $R^2$, the amount of variance accounted for by the model.  To get this in Stan we just have to create the code necessary for the calculations, and place it within the generated quantities section.  I only show this part of the model code; everything we had before would remain the same.  I show the corresponding <span class="func">lm</span> results from R for comparison. There are a couple of ways to go about this, and I use some of Stan's matrix operations as one approach.
 
 <!-- You ran this and saved the image as data/mainModelDatawithRsq.RData -->
 
@@ -96,7 +96,7 @@ Furthermore, in the Bayesian context we get an interval estimate and everything 
 
 ## Robust Regression
 
-If we were concerned that extreme observations exist that our current model is not able to capture well, we could change the sampling distribution to one that had a little more probability in the tails.  This is very easy to do in this situation, as we just change likelihood portion of our code to employ say, a t-distribution[^rstant]. In Stan, the t-distribution has parameters mean and sigma as with the normal distribution, but we also have the added parameter for degrees of freedom.  Thus our code might look like the following:
+If we were concerned that extreme observations exist that our current model is not able to capture well, we could change the sampling distribution to one that had a little more probability in the tails.  This is very easy to do in this situation, as we just change likelihood portion of our code to employ say, a t-distribution[^rstant]. In Stan, the t-distribution has parameters mean and sigma as with the normal distribution, but we also have the added parameter for degrees of freedom.  Thus, our code might look like the following:
 
 
 ```{r robustRegressionT}
@@ -135,7 +135,7 @@ $$y \sim Pois(\lambda)$$
 $$g(\lambda) = X\beta$$
 
 
-where $g(.)$ is the link function, the canonical link function for Poisson being the natural logarithm.  In Stan this can be expressed via the inverse link function, where we exponentiate the linear predictor[^poislog].  Aside from that we simply specify $y$ as distributed Poisson in the same way we used the normal and t-distribution in earlier efforts.
+where $g(.)$ is the link function, the canonical link function for Poisson being the natural logarithm.  In Stan, this can be expressed via the inverse link function, where we exponentiate the linear predictor[^poislog].  Aside from that we simply specify $y$ as distributed Poisson in the same way we used the normal and t-distribution in earlier efforts.
 
 ```{r poissonRegression}
 stanmodelcodePoisson = "
@@ -159,7 +159,7 @@ model {
 "
 ```
 
-And that's all there is to that[^stannotvec].  We just saw that we are not limited to the exponential family distributions of glm(s), though that covers a lot of ground, and so at this point you have a lot of the tools covered in standard applied statistics course, and a few beyond.
+And that's all there is to that[^stannotvec].  We just saw that we are not limited to the exponential family distributions of GLM(s), though that covers a lot of ground, and so at this point you have a lot of the tools covered in standard applied statistics course, and a few beyond.
 
 
 [^rstanarmR2]: With the <span class="pack">rstanarm</span> package, R^2^ is automatically calculated and provided with the <span class="func">stan_lm</span> function.

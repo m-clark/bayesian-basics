@@ -12,7 +12,7 @@ $$\mathcal{L}(\theta) = \prod_{i=1}^N f(y_i|\theta)$$
 
 <!-- <img src="img/maxLikeNormalCompareLLforDifferentMeans.svg" style="display:block; margin: 0 auto; width:50%"> -->
 
-Thus the *likelihood* for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates.  Furthermore we can compare one set, $\mathcal{L}(\theta_A)$, to that of another, $\mathcal{L}(\theta_B)$, and whichever produces the greater likelihood would be the preferred set of estimates.  We can get a sense of this with the following visualization, based on a single parameter, Poisson distributed variable. The data is drawn from  a variable with mean $\theta=5$.  We note the calculated likelihood increases as we estimate values for $\theta$ closer to $5$. With more and more data, the final ML estimate will converge on the true value.
+Thus, the *likelihood* for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates.  Furthermore, we can compare one set, $\mathcal{L}(\theta_A)$, to that of another, $\mathcal{L}(\theta_B)$, and whichever produces the greater likelihood would be the preferred set of estimates.  We can get a sense of this with the following visualization, based on a single parameter, Poisson distributed variable. The data is drawn from  a variable with mean $\theta=5$.  We note the calculated likelihood increases as we estimate values for $\theta$ closer to $5$. With more and more data, the final ML estimate will converge on the true value.
 
 ```{r maxLikeillustration, cache=FALSE, echo=FALSE, out.width='500px', message=T}
 set.seed(1234)
@@ -46,7 +46,7 @@ ggplot(data.frame(mus, L)) +
 
 
 
-For computational reasons we instead work with the sum of the natural log probabilities[^logs], and thus the *log likelihood*:
+For computational reasons, we instead work with the sum of the natural log probabilities[^logs], and thus the *log likelihood*:
 
 
 $$\ln\mathcal{L}(\theta) = \sum_{i=1}^N \ln[f(y_i|\theta)]$$
@@ -82,11 +82,11 @@ LL = function(mu=startvals[1], sigma=startvals[2], verbose=TRUE) {
 
 The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them $\mu$ and $\sigma$, which will be set to `r startvals[1]` and `r startvals[2]` respectively.  Only the first line (ll = -sum...) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point[^reasy].  Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood.  Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values.  I do not show that here but you'll see it in your console if `verbose=TRUE`.
 
-We are now ready to obtain maximum likelihood estimates for the parameters.  For the <span class="func">mle2</span> function we will need the function we've created, plus other inputs related to that function or the underlying optimizing function used (by default <span class="func">optim</span>).  In this case we will use an optimization procedure that will allow us to set a lower bound for $\sigma$.  This isn't strictly necessary, but otherwise you would get get warnings and possibly lack of convergence if negative estimates for $\sigma$ were allowed[^logsigma].
+We are now ready to obtain maximum likelihood estimates for the parameters.  For the <span class="func">mle2</span> function we will need the function we've created, plus other inputs related to that function or the underlying optimizing function used (by default <span class="func">optim</span>).  In this case we will use an optimization procedure that will allow us to set a lower bound for $\sigma$.  This isn't strictly necessary, but otherwise you would get warnings and possibly lack of convergence if negative estimates for $\sigma$ were allowed[^logsigma].
 
 ```{r bblmDemo1B}
 library(bbmle)
-# using optim, and L-BFGS-B so as to contrain sigma to be positive by setting
+# using optim, and L-BFGS-B so as to constrain sigma to be positive by setting
 # the lower bound at zero
 mlnorm =  mle2(LL, start=list(mu=2, sigma=1), method="L-BFGS-B", lower=c(sigma=0)) 
 mlnorm
@@ -97,7 +97,7 @@ summary(lm(y~1))
 
 We can see that the ML estimates are the same as the intercept only model estimates[^MLvOLS], which given the sample size are close to the true values.
 
-In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a <span class="emph">likelihood surface</span> that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point[^tangent]. For simpler settings such as this, we can  visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum (the surface plot is interactive- feel free to adjust).  I also plot the the path of the optimizer from a top down view.  The large blue dot noted represents the minimum negative log likelihood. 
+In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a <span class="emph">likelihood surface</span> that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point[^tangent]. For simpler settings such as this, we can  visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum (the surface plot is interactive- feel free to adjust).  I also plot the path of the optimizer from a top down view.  The large blue dot noted represents the minimum negative log likelihood. 
 
 ```{r plotSurface, echo=FALSE}
 # RSTUDIO VIEWER WILL NOT CORRECTLY DISPLAY EVEN IF PLOT IS CORRECT
@@ -185,7 +185,7 @@ Please note that there are many other considerations in optimization completely 
 
 ## Linear Model
 
-In the standard regression context, our expected value for the target variable comes from our linear predictor, i.e. the weighted combination of our explanatory variables, and we estimate the regression weights/coefficients and possibly other relevant parameters.  We can expand our previous example to the standard linear model without too much change.  In this case we estimate a mean for each observation, but otherwise assume the variance is constant across observations.  Again we first construct some data so that we know exactly what to expect, then write out the likelihood function with starting parameters.  As we need to estimate our intercept and  coefficient for the X predictor (collectively referred to as $\beta$), we can can think of our likelihood  explicitly as before:
+In the standard regression context, our expected value for the target variable comes from our linear predictor, i.e. the weighted combination of our explanatory variables, and we estimate the regression weights/coefficients and possibly other relevant parameters.  We can expand our previous example to the standard linear model without too much change.  In this case we estimate a mean for each observation, but otherwise assume the variance is constant across observations.  Again, we first construct some data so that we know exactly what to expect, then write out the likelihood function with starting parameters.  As we need to estimate our intercept and  coefficient for the X predictor (collectively referred to as $\beta$), we can think of our likelihood  explicitly as before:
 
 $$\ln\mathcal{L}(\beta, \sigma^2) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\frac{(y-X\beta)^2}{2\sigma^2})]$$
 
@@ -281,7 +281,7 @@ I will talk only briefly about a couple of the modeling language options availab
 
 ### Bugs
 
-BUGS [@bugsbook] (*B*ayesian inference *U*sing *G*ibbs *S*ampling) is perhaps the most widely known and used Bayesian modeling language, as it has been around for over 25 years at this point.  It is implemented via [OpenBUGS](http://www.openbugs.net/) and freely available for download[^winbugs]. It even has a GUI interface if such a thing is desired.
+When I first wrote this document, BUGS [@bugsbook] (*B*ayesian inference *U*sing *G*ibbs *S*ampling) was perhaps the most widely known and used Bayesian modeling language, and it has been around for almost 30 years at this point.  It is implemented via [OpenBUGS](http://www.openbugs.net/) and freely available for download[^winbugs]. It even has a GUI interface if such a thing is desired.
 
 ### JAGS
 
@@ -513,7 +513,7 @@ par(mar=c(5, 4, 4, 2) + 0.1) # reset margins
 
 ## Metropolis Hastings Example
 
-Next depicted is a random walk Metropolis-Hastings algorithm using the the data and model from prior sections of the document.  I had several texts open while cobbling together this code such as @gelman_bda, and some oriented towards the social sciences by @jeff_gill_bayesian_2008, @simon_jackman_bayesian_2009, and @scott_lynch_2007 etc.  Some parts of the code reflect information and code examples found therein, and follows Lynch's code a bit more.
+Next depicted is a random walk Metropolis-Hastings algorithm using the data and model from prior sections of the document.  I had several texts open while cobbling together this code such as @gelman_bda, and some oriented towards the social sciences by @jeff_gill_bayesian_2008, @simon_jackman_bayesian_2009, and @scott_lynch_2007 etc.  Some parts of the code reflect information and code examples found therein, and follows Lynch's code a bit more.
 
 The primary functions that we need to specify regard the posterior distribution[^MHexample], an update step for beta coefficients, and an update step for the variance estimate.<br><br>
 
@@ -522,7 +522,7 @@ The primary functions that we need to specify regard the posterior distribution[
 
 post = function(x, y, b, s2) {
   # Args: X is the model matrix; y the target vector; b and s2 the parameters
-  # to be esitmated
+  # to be estimated
 
   beta = b           
   sigma = sqrt(s2)
@@ -539,7 +539,7 @@ post = function(x, y, b, s2) {
   
   # Note that you will not find the exact same presentation across texts and 
   # other media for the log posterior in this conjugate setting.  In the end
-  # they are conceputally still (log) prior + (log) likelihood (See commented 'else')
+  # they are conceptually still (log) prior + (log) likelihood (See commented 'else')
   else {                            
     -.5*nrow(X)*log(sigma2) - (.5*(1/sigma2) * (crossprod(y-mu))) +
       -.5*ncol(X)*log(sigma2) - (.5*(1/sigma2) * (t(beta)%*%priorbvarinv%*%beta)) + 
@@ -697,7 +697,7 @@ log_p_th = function(X, y, th) {
   if (is.nan(sigma) | sigma<=0) {     # scale parameter must be positive, so post
     return(-Inf)                    # density is zero if it jumps below zero
   }
-  # log posterior in this conjugate setting. Conceputally it's 
+  # log posterior in this conjugate setting. conceptuallyit's 
   # (log) prior + (log) likelihood. (See commented 'else')
   else {
     -.5*nrow(X)*log(sigma2) - (.5*(1/sigma2) * (crossprod(y-mu))) +
@@ -939,7 +939,7 @@ glue::glue('log posterior = ', round(get_posterior_mean(fitIG, par='lp__')[,3],3
 
 [^logs]: Math refresher on logs: `log(A*B) = log(A)+log(B)`. So summing the log probabilities will result in the same values for $\theta$, but won't result in extremely small values that will break our computer.
 
-[^notlazy]: Of course we could just use the sample estimates, but this is for demonstration.
+[^notlazy]: Of course, we could just use the sample estimates, but this is for demonstration.
 
 [^distributions]: Type `?Distributions` at the console for some of the basic R distributions available.
 
@@ -947,7 +947,7 @@ glue::glue('log posterior = ', round(get_posterior_mean(fitIG, par='lp__')[,3],3
 
 [^logsigma]: An alternative approach would be to work with the log of $\sigma$ which can take on negative values, and then convert it back to the original scale.
 
-[^MLvOLS]: Actually there is a difference between the sigma estimates in that OLS estimates are based on a variance estimate divided by $N-p$ while the MLE estimate has a divisor of $N$.
+[^MLvOLS]: Actually, there is a difference between the sigma estimates in that OLS estimates are based on a variance estimate divided by $N-p$ while the MLE estimate has a divisor of $N$.
 
 [^tangent]: Which is equivalent to finding the point where the slope of the tangent line to some function, i.e. the derivative, to the surface is zero. The derivative, or gradient in the case of multiple parameters, of the likelihood function with respect to the parameters is known as the <span class="emph">score function</span>.
 

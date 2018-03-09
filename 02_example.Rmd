@@ -4,7 +4,7 @@
 
 The following is an attempt to provide a small example to show the connection between prior distribution, likelihood and posterior distribution.  Let's say we want to estimate the probability that a soccer/football player[^football] will score a penalty kick in a shootout.  We will employ the binomial distribution to model this.
 
-Our goal is to estimate a parameter $\theta$, the probability that the random knucklehead from your favorite football team will score the penalty in a overtime shootout.  Let's say that for this match takes 10 shots per team before the game is decided[^rooney].
+Our goal is to estimate a parameter $\theta$, the probability that the random knucklehead from your favorite football team will score the penalty in an overtime shootout.  Let's say that for this match it takes 10 shots per team before the game is decided[^rooney].
 
 In R, we can represent the following data for your team as follows, as well as set up some other things for later.
 
@@ -33,8 +33,8 @@ mean(x2); hist(x2)
 
 ```{r binomdist_hist, eval=FALSE, echo=FALSE}
 # if desired
-qplot(x1) + geom_bar(fill=palettes$orange$orange, color=palettes$orange$complementary) + theme_trueMinimal()
-qplot(x2) + geom_bar(fill=palettes$orange$orange, color=palettes$orange$complementary) + theme_trueMinimal()
+qplot(x1) + geom_bar(fill=palettes$orange$orange, color=palettes$orange$complementary[2]) + theme_trueMinimal()
+qplot(x2) + geom_bar(fill=palettes$orange$orange, color=palettes$orange$complementary[2]) + theme_trueMinimal()
 ```
 
 
@@ -43,7 +43,7 @@ The histograms are not shown, but we can see the means are roughly around $N*p$ 
 
 ## Prior
 
-For our current situation, we don't know $\theta$ and are trying to estimate it.  We will start by supplying some possible values. To keep things simple we'll only consider 10 values that fall between 0 and 1. 
+For our current situation, we don't know $\theta$ and are trying to estimate it.  We will start by supplying some possible values. To keep things simple, we'll only consider 10 values that fall between 0 and 1. 
 
 ```{r binomGoalStart }
 theta = seq(from=1/(N+1), to=N/(N+1), length=10)
@@ -66,7 +66,7 @@ pTheta = pmin(theta, 1-theta)
 pTheta = pTheta/sum(pTheta) 
 ```
 
-So given some estimate of $\theta$, we have a probability of that value based on our chosen prior.
+So, given some estimate of $\theta$, we have a probability of that value based on our chosen prior.
 
 
 ## Likelihood
@@ -115,11 +115,11 @@ pData = sum(pDataGivenTheta*pTheta)  # marginal probability of the data
 pThetaGivenData = pDataGivenTheta*pTheta / pData  # Bayes theorem
 ```
 
-Now lets examine what all we've got.
+Now let's examine what all we've got.
 
 ```{r binomGoalResult, echo=F}
 out = data.frame(theta, prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaGivenData)
-# htmlTable::htmlTable(format(round(out, 3), nsmall = 3), rnames=F)
+
 DT::datatable(format(round(out, 3), nsmall = 3), width='50%',
               rownames=F,
               options=list(ordering=F, paging=F, searching=F, info=F, autowidth=F,
@@ -138,7 +138,7 @@ posteriorMean = sum(pThetaGivenData*theta)
 posteriorMean
 ```
 
-So we start with a prior centered on a value of $\theta=.5$, add data whose ML estimate is $\theta=.6$, and our posterior distribution suggests we end up somewhere in between.
+So, we start with a prior centered on a value of $\theta=.5$, add data whose ML estimate is $\theta=.6$, and our posterior distribution suggests we end up somewhere in between.
 
 We can perhaps understand this further via the following visualizations. In each of these the prior is represented by the blue density, the likelihood by the red, and the posterior by purple.  This first is based on a different prior than just used in our example, and instead employs the beta distribution noted among the possibilities in the [code above][Prior].  The beta distribution is highly flexible, and with shape parameters $\mathcal{A}$ and $\mathcal{B}$ set to 10 and 10 we get a symmetric distribution centered on $\theta = .5$.  This would actually be a somewhat stronger prior than we might normally want to use, but serves to illustrate a point.  The mean of the beta is $\frac{\mathcal{A}}{\mathcal{A}+\mathcal{B}}$, and thus has a nice interpretation as a prior based on data with sample size equal to $\mathcal{A}+\mathcal{B}$.  The posterior distribution that results would have a mean somewhere between the maximum likelihood value and that of the prior. With the stronger prior, the posterior is pulled closer to it.
 
@@ -226,7 +226,7 @@ g
 ```
 
 
-The third graph employs the initial $\beta(10,10)$ prior again, but this time we add more observations to the data.  Again this serves to give more weight to the likelihood, which is what we want.  As scientists, we'd want the evidence, i.e. data, to eventually outweigh our prior beliefs about the state of things the more we have of it. 
+The third graph employs the initial $\beta(10,10)$ prior again, but this time we add more observations to the data.  This serves to give more weight to the likelihood, which is what we want.  As scientists, we'd want the evidence, i.e. data, to eventually outweigh our prior beliefs about the state of things the more we have of it. 
 
 
 ```{r  prior2post_3, echo=FALSE}
@@ -246,7 +246,6 @@ pData = sum(pDataGivenTheta*pTheta)
 pThetaGivenData = pDataGivenTheta*pTheta  / pData
 
 probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaGivenData)
-
 
 g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
@@ -268,7 +267,6 @@ g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
         panel.background=element_rect(fill = "transparent",colour = NA))
 g
 
-
 # ggplotly()
 ```
 
@@ -279,7 +277,7 @@ For an interactive demonstration of the above, [see this](https://micl.shinyapps
 
 At this point it is hoped you have a better understanding of the process of Bayesian estimation.  Conceptually, one starts with prior beliefs about the state of the world and adds evidence to one's understanding, ultimately coming to a conclusion that serves as a combination of evidence and prior belief.  More concretely, we have a prior distribution regarding parameters, a distribution regarding the data given those parameters, and finally a posterior distribution that is the weighted combination of the two.
 
-However there is yet another distribution of interest to us- the <span class="emph">posterior predictive distribution</span>.  Stated simply, once we have the posterior distribution for $\theta$, we can then feed (possibly new or unobserved) data into the data generating process and get distributions for $\tilde{y}$[^postpred]. Where $\tilde{y}$ can regard *any* potential observation, we can distinguish it from the case where we use the current data to produce $y^{\textrm{Rep}}$, i.e. a replicate of $y$. For example, if a regression model had predictor variables $X$, the predictor variables are identical for producing $y^{\textrm{Rep}}$ as they were in modeling $y$.  However, $\tilde{y}$ might be based on any values $\tilde{X}$ that might be feasible or interesting, whether actually observed in the data or not.  Since $y^{\textrm{Rep}}$ is an attempt to replicate the observed data based on the parameters $\theta$, we can compare our simulated data to the observed data to see how well they match. 
+However, there is yet another distribution of interest to us- the <span class="emph">posterior predictive distribution</span>.  Stated simply, once we have the posterior distribution for $\theta$, we can then feed (possibly new or unobserved) data into the data generating process and get distributions for $\tilde{y}$[^postpred]. Where $\tilde{y}$ can regard *any* potential observation, we can distinguish it from the case where we use the current data to produce $y^{\textrm{Rep}}$, i.e. a replicate of $y$. For example, if a regression model had predictor variables $X$, the predictor variables are identical for producing $y^{\textrm{Rep}}$ as they were in modeling $y$.  However, $\tilde{y}$ might be based on any values $\tilde{X}$ that might be feasible or interesting, whether actually observed in the data or not.  Since $y^{\textrm{Rep}}$ is an attempt to replicate the observed data based on the parameters $\theta$, we can compare our simulated data to the observed data to see how well they match. 
 
 We can implement the simulation process with the data and model at hand, given a sample of values of $\theta$ drawn from the posterior. I provide the results of such a process with the following graph. Each bar graph of frequencies represents a replication of the 10 shots taken, i.e. $y^{\textrm{Rep}}$, given an estimate of $\theta$ from the posterior distribution (16 total).  These are plausible sets of 10 makes and misses, given $\theta$.
 
@@ -430,7 +428,7 @@ ggsave('figure/priorlikepost3.png', width=8, height=8, bg = "transparent") # png
 
 [^postpred]: Mathematically represented as: $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$ <br><br> We can get a sense of the structure of this process via the following table, taken from Gelman: <br><br> <img src="img/gelmanTable.png" style="display:block; margin: 0 auto;" width='50%'>
 
-[^chooseprior]: Choose the prior that makes most sense to you.  If I were thinking logically, I might choose a prior that reflects that all advantage is to a person that spends their entire life kicking a ball, rather than the person who is required by the rules to stand still.  If the penalty taker can simply kick to the upper right or left of the goal, even with only moderate pace, they could point it out like Babe Ruth every time, and simple physics, i.e. that the goalie can never reach the ball given the rule that he start in the middle, would mean they score 95% of the time under perfect conditions. We might revise it downward to account for unspecified things, e.g. how tired they are, weather etc. A prior based on a beta distribution `beta(9,1)`, with a mean of .90, would perhaps be about right.  Of course the *data* would eventually suggest something much lower, because soccer players aren't that bright and don't listen to their team statistician, or perhaps the games are rigged, but it's chalked up to drama and mind games because that's what the fans want to believe (and, more importantly, will pay for).  I'll let you decide that binomial outcome.
+[^chooseprior]: Choose the prior that makes most sense to you.  If I were thinking logically, I might choose a prior that reflects that all advantage is to a person that spends their entire life kicking a ball, rather than the person who is required by the rules to stand still.  If the penalty taker can simply kick to the upper right or left of the goal, even with only moderate pace, they could point it out like Babe Ruth every time, and simple physics, i.e. that the goalie can never reach the ball given that he has to start in the middle, would mean they score 95% of the time under perfect conditions. We might revise it downward to account for unspecified things, e.g. how tired they are, weather etc. A prior based on a beta distribution `beta(9,1)`, with a mean of .90, would perhaps be about right.  Of course, the *data* would eventually suggest something much lower, perhaps because soccer players aren't that bright and don't listen to their team statistician, or perhaps the games are rigged, but it's chalked up to drama and mind games because that's what the fans want to believe (and, more importantly, will pay for).  I'll let you decide that binomial outcome.
 
 [^addcovariates]: Note that if we had covariates as in a regression model, we would have different estimates of theta for each observation, and thus would calculate each observation's likelihood and then take their product or sum their log values, see the [Maximum Likelihhood Review][Maximum Likelihood Review] for further details). Even here, if you turn this into binary logistic regression with 10 outcomes of goal scored vs. not, the 'intercept only' model would be identical to our results here.
 

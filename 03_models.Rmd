@@ -8,15 +8,11 @@ Now armed with a conceptual understanding of the Bayesian approach, we will actu
 In the following we will have some initial data set up and also run the model using the standard <span class="func">lm</span> function for later comparison.  I choose simulated data so that not only should you know what to expect from the model, it can easily be modified to enable further understanding.  I will also use some matrix operations, and if these techniques are unfamiliar to you, you'll perhaps want to do some refreshing or learning on your own beforehand.
 
 
-## Setup
+### Setup
 
 First we need to create the data we'll use here and for most of the other examples in this document. I use simulated data so that there is no ambiguity about what to expect.
 
-```{r rstanDataSetup, echo=-c(1:4)}
-##########################
-### Initial Data Setup ###
-##########################
-
+```{r rstanDataSetup}
 # set seed for replicability
 set.seed(8675309)
 
@@ -56,7 +52,7 @@ dat = list(N=N, K=ncol(X), y=y, X=X)
 
 Next comes the Stan code.  In <span class="pack">R2OpenBugs</span> or <span class="pack">rjags</span> one would call a separate text file with the code, and one can do the same with <span class="pack">rstan</span>[^stringvsfile], but for our purposes, we'll display it within the R code. The first thing to note then is the model code.  Next, Stan has programming blocks that have to be called in order. I will have all of the blocks in the code to note their order and discuss each in turn, even though we won't use them all.  Anything following a // or #, or between /\* \*/, are comments pertaining to the code.  Assignments in Stan are `=`[^assignment], while distributions are specified with a $\sim$, e.g. `y ~ normal(0, 1)` means y is normally distributed with mean 0 and standard deviation of 1.
 
-The primary goal here is to get to the results and beyond, but one should examine the [Stan manual](http://mc-stan.org/documentation/) for details about the code.  In addition, to install <span class="pack">rstan</span> one will need to do so via CRAN or Github ([quickstart guide](https://github.com/Stan-dev/rstan/wiki/RStan-Getting-Started)).  It does not require a separate installation of Stan itself, but it does take a couple steps and does require a C++ compiler[^compiler]. Once you have <span class="pack">rstan</span> installed it is called like any other R package as will see shortly.
+The primary goal here is to get to the results and beyond, but one should examine the [Stan manual](http://mc-stan.org/documentation/) for details about the code.  In addition, to install <span class="pack">rstan</span> one will need to do so via CRAN or GitHub ([quickstart guide](https://github.com/Stan-dev/rstan/wiki/RStan-Getting-Started)).  It does not require a separate installation of Stan itself, but it does take a couple steps and does require a C++ compiler[^compiler]. Once you have <span class="pack">rstan</span> installed it is called like any other R package as will see shortly.
 
 
 ```{r rstanStanSetup}
@@ -109,12 +105,12 @@ For a reference, the following is from the Stan manual, and notes variables of i
 tab = data.frame(c('modeled, unmodeled data', 'modeled parameters, missing data', 'unmodeled parameters', 'generated quantities', 'loop indices'),
                  c('data, transformed data', 'parameters, transformed parameters', 'data, transformed data', 'transformed data, transformed parameters, generated quantities','loop statement'))
 colnames(tab) = c('Variable Kind', 'Declaration Block')
-htmlTable::htmlTable(tab, rnames=F)
+pander(tab, split.cells=Inf, split.table=Inf)
 ```
 
 The <span class="emph">transformed data</span> block is where you could do such things as log or center variables and similar, i.e. you can create new data based on the input data or just in general.  If you are using R though, it would almost always be easier to do those things in R first and just include them in the data list.  You can also declare any unmodeled parameters here, e.g. those you want fixed at some value.
 
-The primary parameters of interest that are to be estimated go in the <span class="emph">parameters </span> block.  As with the data block you can only declare these variables, you cannot make any assignments.  Here we note the $\beta$ and $\sigma$ to be estimated, with a lower bound of zero on the latter. In practice you might prefer to split out the intercept or other coefficients to be modeled separately if they are on notably different scales.
+The primary parameters of interest that are to be estimated go in the <span class="emph">parameters </span> block.  As with the data block you can only declare these variables, you cannot make any assignments.  Here we note the $\beta$ and $\sigma$ to be estimated, with a lower bound of zero on the latter. In practice, you might prefer to split out the intercept or other coefficients to be modeled separately if they are on notably different scales.
 
 The <span class="emph">transformed parameters</span> block is where optional parameters of interest might be included.  What might go here is fairly open, but for efficiency's sake you will typically want to put things only of specific interest that are dependent on the parameters block.  These are evaluated along with the parameters, so if the objects are not of special interest you can instead generate them in the model or generated quantities block to save time.
 
@@ -129,18 +125,18 @@ Finally, we get to the <span class="emph">generated quantities</span>, which is 
 
 Now that we have an idea of what the code is doing, let's put it to work.  Bayesian estimation, like maximum likelihood, starts with initial guesses as starting points and then runs in an iterative fashion, producing simulated draws from the posterior distribution at each step, and then correcting those draws until finally getting to some target, or <span class="emph">stationary</span> distribution. This part is key and different from classical statistics.  We are aiming for a *distribution*, not a *point estimate*.
 
-The simulation process is referred to as <span class="emph">Markov Chain Monte Carlo</span>, or MCMC for short.  The specifics of this process are what sets many of the Bayesian programming languages/approaches apart, and something we will cover in more detail in a later section (see [Sampling Procedure][Sampling Procedure]).  In MCMC, all of the simulated draws from the posterior are based on and correlated with previous draws[^mcmccor], as the process moves along the path toward a stationary distribution.  Typically we will allow the process to *warm up*, or rather get a bit settled down from the initial starting point, which might be way off, and thus the subsequent estimates will also be way off for the first few iterations[^moremcmc]. Rest assured, assuming the model and data are otherwise acceptable, the process will get to where it needs to go.  However, as a further check, we will run the whole thing multiple times, i.e. have more than one <span class="emph">chain</span>.  As the chains will start from different places, if multiple chains get to the same place in the end, we can feel more confident about our results.
+The simulation process is referred to as <span class="emph">Markov Chain Monte Carlo</span>, or MCMC for short.  The specifics of this process are what sets many of the Bayesian programming languages/approaches apart, and something we will cover in more detail in a later section (see [Sampling Procedure][Sampling Procedure]).  In MCMC, all of the simulated draws from the posterior are based on and correlated with previous draws[^mcmccor], as the process moves along the path toward a stationary distribution.  We will typically allow the process to *warm up*, or rather get a bit settled down from the initial starting point, which might be way off, and thus the subsequent estimates will also be way off for the first few iterations[^moremcmc]. Rest assured, assuming the model and data are otherwise acceptable, the process will get to where it needs to go.  However, as a further check, we will run the whole thing multiple times, i.e. have more than one <span class="emph">chain</span>.  As the chains will start from different places, if multiple chains get to the same place in the end, we can feel more confident about our results.
 
 
 While this process may sound like it might take a long time to complete, for the following you'll note that it will likely take more time for Stan to compile its code to C++ than it will to run the model[^speed], and on my computer each chain only takes only a little more than a second.  However, the Bayesian approach used to take a very long time even for a standard regression such as this, and that is perhaps the primary reason why Bayesian analysis only caught on in the last couple decades; we simply didn't have the machines to do it efficiently.  Even now though, for highly complex models and large data sets it can still take a long time to run, though typically not prohibitively so.
 
-In the following code, we note the object that contains the Stan model code, the data list, how many iterations we want (5000)[^toomanyiter], how long we want the process to run before we start to keep any estimates (`warmup=2500`), how many of the post-warmup draws of the posterior we want to keep (`thin=10` means every tenth draw), and the number of chains (`chains=4`).  In the end we will have three chains of 1000[^finaliter] draws from the posterior distribution of the parameters.  Stan spits out a lot of output to the R console even with `verbose = FALSE`, and I omit it here, but you will see some initial info about the compiling process, updates as each chain gets through 10% of iterations specified in the `iter` argument, and finally an estimate of the elapsed time.  You may also see *informational messages* which, unless they are highly repetitive, should not be taken as an error.
+In the following code, we note the object that contains the Stan model code, the data list, how many iterations we want (5000)[^toomanyiter], how long we want the process to run before we start to keep any estimates (`warmup=2500`), how many of the post-warmup draws of the posterior we want to keep (`thin=10` means every tenth draw), and the number of chains (`chains=4`).  In the end, we will have three chains of 1000[^finaliter] draws from the posterior distribution of the parameters.  Stan spits out a lot of output to the R console even with `verbose = FALSE`, and I omit it here, but you will see some initial info about the compiling process, updates as each chain gets through 10% of iterations specified in the `iter` argument, and finally an estimate of the elapsed time.  You may also see *informational messages* which, unless they are highly repetitive, should not be taken as an error.
 
 
 ```{r rstanRunModel, eval=F}
 library(rstan)
 
-### Run the model and examine results ###
+### Run the model and examine results
 fit = stan(model_code=stanmodelcode, data=dat, iter=5000, 
            warmup=2500, thin=10, chains=4)
 ```
@@ -160,7 +156,7 @@ print(fit, pars=c('beta', 'sigma'), digits=3, prob=c(.025,.5,.975))
 
 So far so good.  The mean estimates reflect the mean of posterior draws for the parameters of interest, and are the typical coefficients reported in standard regression analysis.  The 95% probability, or, <span class="emph">credible intervals</span> are worth noting, because *they are not confidence intervals as you know them*.  There is no repeated sampling interpretation here[^confint].  The probability interval is more intuitive. It means simply that, based on the results of this model, there is a 95% chance the true value will fall between those two points.  The other values printed out I will return to in just a moment.
 
-Comparing the results to those from R's <span class="func">lm</span> function, we can see we obtain similar estimates, as they are identical to two decimal places. In fact, had we used uniform priors[^justlikelm], we would doing essentially the same model as what is being conducted with standard maximum likelihood estimation.  Here, we have a decent amount of data for a model that isn't complex, so we would expect the likelihood to notably outweigh the prior, as we demonstrated previously with our binomial example.
+Comparing the results to those from R's <span class="func">lm</span> function, we can see we obtain similar estimates, as they are identical to two decimal places. In fact, had we used uniform priors[^justlikelm], we would be doing essentially the same model as what is being conducted with standard maximum likelihood estimation.  Here, we have a decent amount of data for a model that isn't complex, so we would expect the likelihood to notably outweigh the prior, as we demonstrated previously with our binomial example.
 
 ```{r rstanCompareStanlm, eval=FALSE}
 summary(modlm)
@@ -234,7 +230,7 @@ So there you have it.  Aside from the initial setup with making a data list and 
 
 [^bugs2stan]: In general their modeling syntax is not too difficult to translate from Stan and often very similar.
 
-[^stringvsfile]: In your own Stan pursuits it's better to have the Stan model as a separate file.
+[^stringvsfile]: In your own Stan pursuits, it's better to have the Stan model as a separate file.
 
 [^compiler]: You can examine this [list](https://en.wikipedia.org/wiki/List_of_compilers\#C.2B.2B_compilers) of compilers, or on Windows simply install Rtools from the R website (recommended). Note that you may already have one incidentally.  Try the Stan test in their 'getting started' guide before downloading one.
 
@@ -242,13 +238,13 @@ So there you have it.  Aside from the initial setup with making a data list and 
 
 [^regularize]: By setting the prior mean to zero, this will have the effect of shrinking the coefficients toward zero to some extent.  In this sense, it is equivalent to penalized regression in the non-Bayesian setting, ridge regression in particular.
 
-[^cauchy]: Actually a half-Cauchy as it is bounded to be positive. This is equivalent to a student t with df=1, and there is some tendency of late to use the student t directly with df=3 for slight gains in performance for some models.
+[^cauchy]: Actually, a half-Cauchy as it is bounded to be positive. This is equivalent to a student t with df=1, and there is some tendency of late to use the student t directly with df=3 for slight gains in performance for some models.
 
 [^mcmccor]: In a Markov Chain, $\theta_t$ is independent of previous $\theta_{t-2...t_1}$, conditional on $\theta_{t-1}$.
 
 [^speed]: Not usually the case except for simple models with smaller data.
 
-[^toomanyiter]: This is way overkill for a simple model like this.  One probably would be fine with 500 warmup and 500 iterations for a standard regression.
+[^toomanyiter]: This is way overkill for a simple model like this.  One probably would be fine with 500 warm-up and 500 iterations for a standard regression.
 
 [^confint]: A standard confidence implies that if we'd done the study exactly the same over and over, and calculated a confidence interval each time, 95% of them would capture the true value. The one you have is just one from that process.
 
@@ -258,7 +254,7 @@ So there you have it.  Aside from the initial setup with making a data list and 
 
 [^otherpacks]: As noted previously, other R packages would allow for regression models to be specified just like you would with the <span class="func">lm</span> and <span class="func">glm</span> functions.  See the <span class="pack">rstanarm</span> (from the developers of Stan) and <span class="pack">brms</span> packages especially.
 
-[^easystan]: For just a standard regression model I would ultimately suggest using <span class="pack">rstanarm</span> or <span class="pack">brms</span>, because they would allow you to keep to the usual R approach for modeling, allowing you to more or less jump right in. However, writing Stan code makes it more clear what is being done, so we'll keep to it for our purposes here. When I first started writing this document, <span class="pack">brms</span> didn't exist, <span class="pack">rstanarm</span> was still in its infancy, there was no interactive <span class="pack">shinystan</span> etc. I may end up moving the Stan code to the appendix and just using <span class="pack">rstanarm</span> in the future, but I think it's worth knowing what's actually going on specifically behind the scenes, so will stick to the <span class="pack">rstan</span> approach for now.
+[^easystan]: For just a standard regression model I would ultimately suggest using <span class="pack">rstanarm</span> or <span class="pack">brms</span>, because they would allow you to keep to the usual R approach for modeling, allowing you to more or less jump right in. However, writing Stan code makes it clearer what is being done, so we'll keep to it for our purposes here. When I first started writing this document, <span class="pack">brms</span> didn't exist, <span class="pack">rstanarm</span> was still in its infancy, there was no interactive <span class="pack">shinystan</span> etc. I may end up moving the Stan code to the appendix and just using <span class="pack">rstanarm</span> in the future, but I think it's worth knowing what's actually going on specifically behind the scenes, so will stick to the <span class="pack">rstan</span> approach for now.
 
 [^moremcmc]: How far one wants to go down the rabbit hole regarding MCMC is up to the reader.  A great many applied researchers do classical statistical analysis without putting much thought into the actual maximum likelihood estimation process, and I suppose one could do so here as well.
 
