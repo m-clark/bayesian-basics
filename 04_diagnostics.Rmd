@@ -304,7 +304,7 @@ gdat = data.frame(yRepSample) %>%
   filter(N %in% yq)
 ggplot(aes(x=yRep), data=gdat) +
   geom_vline(aes(xintercept=sort(y)[yq]), alpha=.5) +
-  stat_density(aes(group=as.factor(N)), color='#ff5503', 
+  stat_density(aes(group=as.factor(N)), color='#ff5500', 
                alpha=.85, show.legend=F, geom='line', position='dodge') +  
   labs(x='', y='') +
   lazerhawk::theme_trueMinimal() +

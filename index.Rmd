@@ -51,9 +51,9 @@ documentclass: book
 bibliography: ['packages.bib', 'BayesBasics.bib']
 biblio-style: apalike
 link-citations: yes
-github-repo: m-clark/docs
-description: "An introduction to Bayesian data analysis."
-cover-image: img/nineteeneightyR.png
+github-repo: 'm-clark/bayesian-basics/'
+description: "This document provides an introduction to Bayesian data analysis.  It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more."
+cover-image: 'img/nineteeneightyR.png'
 url: 'https\://m-clark.github.io/bayesian-basics/'  # the \: is required or you'll get text in the title/toc area
 
 # this is for pdf but also to paste into references; tufte style refs at point of citation in margin
