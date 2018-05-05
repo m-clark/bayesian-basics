@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-03-10">
+<meta name="date" content="2018-05-05">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -355,8 +355,12 @@ stanmodelcode =<span class="st"> &quot;</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(rstan)
 
 ### Run the model and examine results
-fit =<span class="st"> </span><span class="kw">stan</span>(<span class="dt">model_code=</span>stanmodelcode, <span class="dt">data=</span>dat, <span class="dt">iter=</span><span class="dv">5000</span>, 
-           <span class="dt">warmup=</span><span class="dv">2500</span>, <span class="dt">thin=</span><span class="dv">10</span>, <span class="dt">chains=</span><span class="dv">4</span>)</code></pre></div>
+fit =<span class="st"> </span><span class="kw">stan</span>(<span class="dt">model_code =</span> stanmodelcode,
+           <span class="dt">data =</span> dat,
+           <span class="dt">iter =</span> <span class="dv">5000</span>,
+           <span class="dt">warmup =</span> <span class="dv">2500</span>,
+           <span class="dt">thin =</span> <span class="dv">10</span>,
+           <span class="dt">chains =</span> <span class="dv">4</span>)</code></pre></div>
 <p>With the model run, we can now examine the results. In the following, we specify the digit precision to display, which parameters we want (not necessary here), and which quantiles of the posterior draws we want, which in this case are the median and those that would produce a 95% interval estimate.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># summary</span>
 <span class="kw">print</span>(fit, <span class="dt">pars=</span><span class="kw">c</span>(<span class="st">&#39;beta&#39;</span>, <span class="st">&#39;sigma&#39;</span>), <span class="dt">digits=</span><span class="dv">3</span>, <span class="dt">prob=</span><span class="kw">c</span>(.<span class="dv">025</span>,.<span class="dv">5</span>,.<span class="dv">975</span>))</code></pre></div>

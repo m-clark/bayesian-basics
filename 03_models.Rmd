@@ -137,8 +137,12 @@ In the following code, we note the object that contains the Stan model code, the
 library(rstan)
 
 ### Run the model and examine results
-fit = stan(model_code=stanmodelcode, data=dat, iter=5000, 
-           warmup=2500, thin=10, chains=4)
+fit = stan(model_code = stanmodelcode,
+           data = dat,
+           iter = 5000,
+           warmup = 2500,
+           thin = 10,
+           chains = 4)
 ```
 
 ```{r rstanModelsave, echo=F, eval=F}

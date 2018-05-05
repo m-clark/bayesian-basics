@@ -26,7 +26,7 @@ As an example, let's assume a uniform distribution $(-\infty,\infty)$ for some p
 
 In general, there are several issues with using a noninformative or reference prior.  For many models, there may be no clear choice of what to use.  In any case, if the data are sufficient, the prior won't matter as much, so establishing some reference to be used automatically isn't exactly in keeping with Bayesian thinking. In addition, such choices can still have unintended effects on the results.  Furthermore, if you had clear prior information, e.g. from previous research, one should use it. 
 
-In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague.  As an example, consider our earlier [binomial distribution example][prior-likelihood-posterior-distributions].  Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80%  of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a $\mathcal{B}(9,3)$ would probably be a good way to proceed.  One can examine such a distribution in the subsequent density plot. 
+In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague.  As an example, consider our earlier [binomial distribution example][prior].  Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80%  of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a $\mathcal{B}(9,3)$ would probably be a good way to proceed.  One can examine such a distribution in the subsequent density plot. 
 
 
 ```{r chooseBetaPrior, results='hold', echo=c(1:3)}
@@ -47,7 +47,12 @@ ggplot(aes(x=x), data=data.frame(x=rbeta(10000, 9, 3))) +
 # ggsave('img/betaDistr9and3.svg', bg='transparent')
 ```
 
-With our regression model, we were dealing with standardized predictors, so even choosing a $\mathcal{N}(0, 10)$ might be overly vague, though it would be near flat from -1 to 1.  The nice part about setting the prior mean on zero is that it has a regularizing effect, shrinking coefficients toward 0, that can help avoid overfitting with smaller samples.
+With our regression model, we were dealing with standardized predictors, so even choosing a $\mathcal{N}(0, 10)$ might be overly vague, as it would be near flat from -1 to 1, which is the range we'd expect the coefficients to fall in.  The nice part about setting the prior mean on zero is that it has a regularizing effect, shrinking coefficients toward 0, that can help avoid overfitting with smaller samples.
+
+Gelman has [recently proposed](https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations#how-informative-is-the-prior) the following as a practical check on how informative your prior might be:
+
+> Here's an idea for not getting tripped up with default priors: For each parameter (or other quantity of interest), compare the posterior sd to the prior sd. If the posterior sd for any parameter is more than 0.1 times the prior sd, then print out a note: "The prior distribution for this parameter is informative." Then the user can go back and check that the default prior makes sense for this particular example.
+
 
 Thus, weakly informative priors can be based on perfectly reasonable settings, and this probably makes more sense than claiming complete ignorance, not to mention they simply work better for parameter estimation relative to flat priors. As mentioned, just some casual thought in many settings will often reveal that one isn't completely ignorant.  Furthermore, if we have clear prior information, in the form of prior research for example, we can then use <span class="emph">informative</span> priors based on those results.  This again would be preferable to a completely noninformative approach.
 
@@ -60,7 +65,7 @@ $$p(\theta|y, n) \propto \beta(y+\mathcal{A}, n-y+\mathcal{B})$$
 
 Thus the posterior has the same parametric form as the prior, i.e. the beta distribution is *congugate* for the binomial likelihood.  In this sense, the prior has the interpretation as providing additional data points.  In our regression model, the conjugate setting uses a normal distribution for the predictor coefficients and an inverse gamma for $\sigma^2$.  In the case of exponential family distributions of generalized linear models, there are also natural conjugate prior distributions.
 
-While there can be practical advantages to using a conjugate prior, it is not required, and for many more complex models, may not even be possible.  However, it might be useful to consider a known conjugate prior as a starting point.
+While there can be practical advantages to using a conjugate prior, it is not required for some estimation approaches, and for many more complex models, may not even be possible.  However, it might be useful to consider a known conjugate prior as a starting point.
 
 
 ### Hierarchical Priors

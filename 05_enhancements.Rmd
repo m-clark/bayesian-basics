@@ -162,7 +162,7 @@ model {
 And that's all there is to that[^stannotvec].  We just saw that we are not limited to the exponential family distributions of GLM(s), though that covers a lot of ground, and so at this point you have a lot of the tools covered in standard applied statistics course, and a few beyond.
 
 
-[^rstanarmR2]: With the <span class="pack">rstanarm</span> package, R^2^ is automatically calculated and provided with the <span class="func">stan_lm</span> function.
+[^rstanarmR2]: With the <span class="pack">rstanarm</span> package, R^2^ is automatically calculated and provided with the <span class="func">stan_lm</span> function.  It is also available in <span class="pack">rstanarm</span> and <span class="pack">brms</span> via the <span class="func">bayes_R2</span> function.
 
 [^adjr2]: See [Gelman & Pardoe (2006)](http://www.stat.columbia.edu/~gelman/research/published/rsquared.pdf), Bayesian Measures of Explained Variance.
 
