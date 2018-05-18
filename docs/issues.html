@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-05-11">
+<meta name="date" content="2018-05-17">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -299,10 +299,10 @@ theta0 =<span class="st"> </span>initValue
 theta =<span class="st"> </span><span class="kw">c</span>(theta0, <span class="kw">rep</span>(<span class="ot">NA</span>, nsim))
 
 <span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span>nsim) {
-  thetaStar =<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1</span>, theta[<span class="op">-</span><span class="dv">1</span>], sd)
+  thetaStar =<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1</span>, theta[t<span class="op">-</span><span class="dv">1</span>], sd)
   u =<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)
   r =<span class="st"> </span><span class="kw">exp</span>(logPosterior_thetaStar <span class="op">-</span><span class="st"> </span>logPosterior_theta0)
-  theta[t] =<span class="st"> </span><span class="kw">ifelse</span>(u<span class="op">&lt;=</span>r, thetaStar, theta[<span class="op">-</span><span class="dv">1</span>])
+  theta[t] =<span class="st"> </span><span class="kw">ifelse</span>(u<span class="op">&lt;=</span>r, thetaStar, theta[t<span class="op">-</span><span class="dv">1</span>])
 }</code></pre></div>
 <p>One can see the <a href="appendix.html#metropolis-hastings-example">Metropolis-Hastings Example</a> to see the Metropolis algorithm applied to our regression problem.</p>
 </div>

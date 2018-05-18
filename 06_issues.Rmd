@@ -114,10 +114,10 @@ theta0 = initValue
 theta = c(theta0, rep(NA, nsim))
 
 for (t in 2:nsim) {
-  thetaStar = rnorm(1, theta[-1], sd)
+  thetaStar = rnorm(1, theta[t-1], sd)
   u = runif(1)
   r = exp(logPosterior_thetaStar - logPosterior_theta0)
-  theta[t] = ifelse(u<=r, thetaStar, theta[-1])
+  theta[t] = ifelse(u<=r, thetaStar, theta[t-1])
 }
 ```
 
