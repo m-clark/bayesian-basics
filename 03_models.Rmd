@@ -41,7 +41,7 @@ modlm = lm(y~., data=data.frame(X[,-1]))
 ```
 
 Just to make sure we're on the same page, at this point we have three covariates, and a $y$ that is a normally distributed, linear function of them, and with standard deviation equal to `r sigma`.  The population values for the coefficients including the intercept are `r paste0(coefs[1:3], ', ', collapse='')` and `r coefs[4]`, though with the noise added, the actual estimated values for the sample are slightly different.  Now we are ready to set up an R list object of the data for input into Stan, as well as the corresponding Stan code to model this data.  I will show all the Stan code, which is implemented in R via a single character string, and then provide some detail on each corresponding model block.  However, the goal here isn't to focus on tools as it is to focus on concepts.
-<span class="margin_note">Related code for this same model in BUGS and JAGS is provided in the appendix [here][Bugs Example]. I don't think there is an easy way to learn these programming languages except by diving in and using them yourself with models and data you understand.</span>
+<span class="margin_note">Related code for this same model in BUGS and JAGS is provided in the appendix [here][Bugs Example]. I don't think there is an easy way to learn these programming languages except by diving in and using them yourself with models and data you understand[^bugs2stan].</span>
 
 The data list for Stan should include any matrix, vector, or value that might be used in the Stan code.  For example, along with the data one can include things like sample size, group indicators (e.g. for mixed models) and so forth.  Here we can get by with just the sample size (N), the number of columns in the model matrix (K), the target variable (y) and the model matrix itself (X).
 
@@ -188,14 +188,14 @@ stan_trace(fit, pars=c('beta[4]'))
 #   theme(panel.grid=element_blank(),
 #         plot.background=element_rect(fill='transparent', color=NA))   # as of 5-2016, rstan's traceplot isn't working properly, and is ugly anyway
 beta4 = extract(fit, pars=c('beta[4]'), inc_warmup=T, permute=F)[,,1]
-beta4 = tidyr::gather(data.frame(beta4), key=chain, value=estimate) %>% mutate(Iteration=rep(1:1200, t=3))
+beta4 = gather(data.frame(beta4), key=chain, value=estimate) %>% mutate(Iteration=rep(1:1200, t=3))
 ggplot(data=beta4) +
   annotate("rect", xmin = 0, xmax = 200, ymin = -Inf, ymax = Inf, fill = 'black', alpha=.1) +
   geom_path(aes(x=Iteration, y=estimate, color=chain), alpha=.5)  +
   guides(colour = guide_legend(override.aes = list(alpha = 1))) +
   scale_x_continuous(limits=c(0,1200), breaks=c(200,500,750,1000,1200)) +
   labs(x='Iteration', y='Estimate') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(plot.background=element_rect(fill='transparent', color=NA),
         legend.background=element_rect(fill='transparent', color=NA),
         legend.title=element_blank())

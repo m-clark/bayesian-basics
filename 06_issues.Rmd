@@ -40,7 +40,7 @@ diff(pbeta(c(.6, .9), 9, 3))
 ggplot(aes(x=x), data=data.frame(x=rbeta(10000, 9, 3))) + 
   geom_line(stat='density', color=palettes$orange$complementary[2]) + 
   geom_density(fill=scales::alpha('#ff5500', .75), color='transparent') + 
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
         axis.title.y=element_text(color='gray25'),
         plot.background = element_rect(fill = "transparent",colour = NA))
@@ -170,7 +170,7 @@ The overall process allows it to move quite rapidly through the parameter space,
 
 ### Other Variations and Approximate Methods
 
-Within these MH approaches there are variations such as slice sampling, reversible jump, particle filtering, etc. Also, one can reparameterize the model to help overcome some convergence issues if applicable.  In addition, there exist many approximate methods such as Variational Bayes, INLA, Approximate Bayesian Computation, etc.  The main thing is just to be familiar with what's out there in case it might be useful.  Any particular method might be particularly well suited to certain models (e.g. INLA for spatial regression models), those that are notably complex, or they may just be convenient for a particular case.
+Within these MH approaches there are variations such as slice sampling, reversible jump, particle filtering, etc. Also, one can reparameterize the model to help overcome some convergence issues if applicable.  In addition, there exist many approximate methods such as Variational Bayes, INLA, Approximate Bayesian Computation, etc.  The main thing is just to be familiar with what's out there in case it might be useful.  Any particular method might be particularly well suited to certain models (e.g. INLA for spatial regression models), those that are notably complex, or they may just be convenient for a particular case.  For a fun animated way to explore some different sampling procedures, [look here](https://chi-feng.github.io/mcmc-demo/).
 
 
 

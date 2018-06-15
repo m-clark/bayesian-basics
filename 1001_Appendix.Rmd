@@ -14,7 +14,7 @@ $$\mathcal{L}(\theta) = \prod_{i=1}^N f(y_i|\theta)$$
 
 Thus, the *likelihood* for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates.  Furthermore, we can compare one set, $\mathcal{L}(\theta_A)$, to that of another, $\mathcal{L}(\theta_B)$, and whichever produces the greater likelihood would be the preferred set of estimates.  We can get a sense of this with the following visualization, based on a single parameter, Poisson distributed variable. The data is drawn from  a variable with mean $\theta=5$.  We note the calculated likelihood increases as we estimate values for $\theta$ closer to $5$. With more and more data, the final ML estimate will converge on the true value.
 
-```{r maxLikeillustration, cache=FALSE, echo=FALSE, out.width='500px', message=T}
+```{r maxLikeillustration, echo=FALSE, out.width='500px', message=T}
 set.seed(1234)
 y = rpois(100000, lambda=5)
 mus = seq(3, 8, l=100)
@@ -35,7 +35,7 @@ ggplot(data.frame(mus, L)) +
   geom_hline(aes(yintercept=max(L)), alpha=.5, lty=2) +
   geom_path(aes(x=mus, y=L), color='#ff5500', lwd=2) + 
   labs(x=expression(theta), y='Likelihood') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.ticks.y=element_blank(),
         axis.text.y=element_blank(),
         axis.text.x=element_text(color='gray10', size=14),

@@ -72,7 +72,7 @@ knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib
 ```
 
 ```{r load_packages, echo=FALSE, cache=FALSE}
-library(tidyverse); library(lazerhawk); library(pander)
+library(tidyverse); library(lazerhawk); library(pander); library(visibly)
 ```
 
 

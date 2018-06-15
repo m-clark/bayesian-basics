@@ -18,7 +18,7 @@ This is an example where things have gone horribly wrong.  The chains never conv
 We can examine the mixed chains and density plots of the posterior with standard functions in the <span class="pack">rstan</span> package displayed previously, various functions in the <span class="pack">bayesplot</span> package, or interactively via <span class="pack">shinyStan</span> package and its <span class="func">launch_shiny</span> function.  In the Bayesian approach, increasing amounts of data leads to a posterior distribution of the parameter vector approaching multivariate normality.  The following shows a density, trace and autocorrelation plots for one of the regression coefficients using <span class="pack">shinyStan</span>.
 
 <br>
-<img src="img/shinyStan.png" style="display:block; margin: 0 auto;">
+<img src="img/shinystan.png" style="display:block; margin: 0 auto;">
 
 ```{r badChain, eval=FALSE, echo=FALSE}
 # see https://groups.google.com/forum/#!topic/stan-users/hio0siMTvhE
@@ -51,7 +51,7 @@ gdat = melt(data.frame(extract(m_bad3, 'a1', permuted=F)[,,1]))
 ggplot(aes(x=rep(1:1000, 4), y=value, color=variable, group=variable), data=gdat) +
   geom_line(show.legend=F) + 
   labs(x='', y='') +
-  lazerhawk::theme_trueMinimal() + 
+  theme_trueMinimal() + 
   theme(axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         plot.background=element_rect(fill = "transparent",colour = NA))
@@ -100,7 +100,7 @@ ggplot(data = test, mapping = aes(x = lag, y = acf)) +
   geom_segment(mapping = aes(xend = lag, yend = 0), col='#ff5500', lwd=1.5) +
   geom_point(mapping = aes(x = lag, y=acf), col=palettes$orange$complementary[2], size=5) +
   labs(x='Lag',  y='Autocorrelation') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25', size=15),
         axis.title.y=element_text(color='gray25', size=15),
         plot.background = element_rect(fill = "transparent",colour = NA))
@@ -120,7 +120,7 @@ ggplot(data = test, mapping = aes(x = lag, y = acf)) +
   geom_segment(mapping = aes(xend = lag, yend = 0), col='#ff5500', lwd=1.5, show.legend=F) +
   geom_point(mapping = aes(x = lag, y=acf), col=palettes$orange$complementary[2], size=5, show.legend=F) +
   labs(x='Lag',  y='Autocorrelation') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25', size=15),
         axis.title.y=element_text(color='gray25', size=15),
         plot.background = element_rect(fill = "transparent",colour = NA))
@@ -204,7 +204,7 @@ ggplot(aes(x=min_rep), data=data_frame(min_rep=min_rep)) +
   geom_density(fill=scales::alpha('#ff5500', .5), color='transparent') + 
   geom_line(color=palettes$orange$complementary[2], stat='density') + 
   geom_vline(xintercept=min_y, color='gray50', alpha=.75) + 
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25', size=15),
         axis.title.y=element_text(color='gray25', size=15),
         plot.background = element_rect(fill = "transparent",colour = NA))
@@ -222,7 +222,7 @@ ggplot(aes(x=value), data=q10_rep) +
   geom_density(fill=scales::alpha('#ff5500', .5), color='transparent') + 
   geom_line(color=palettes$orange$complementary[2], stat='density') + 
   geom_vline(xintercept=quantile(y, .1), color='gray50', alpha=.75) + 
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25', size=15),
         axis.title.y=element_text(color='gray25', size=15),
         plot.background = element_rect(fill = "transparent",colour = NA))
@@ -245,7 +245,7 @@ ggplot(aes(x=y, y=avgfits), data=data.frame(y=y, avgfits=avgfits)) +
   # geom_point(col=palettes$orange$complementary, alpha=.75, size=3) +
   geom_point(col='#ff5500', alpha=.75, size=3) +
   labs(x='Observed y', y='Expected y') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.title.x=element_text(color='gray25'),
         axis.title.y=element_text(color='gray25'),
         plot.background = element_rect(fill = "transparent",colour = NA))
@@ -273,7 +273,7 @@ ggplot(aes(x=yRep), data=gdat) +
                alpha=.25, show.legend=F, geom='line', position='dodge') +  
   # scale_color_discrete()
   labs(x='', y='') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         plot.background = element_rect(fill = "transparent",colour = NA))
@@ -287,7 +287,7 @@ ggplot(aes(x=yRep), data=gdat) +
 #                alpha=.5, show.legend=F, geom='line', position='dodge') +  
 #   geom_vline(aes(xintercept=quantile(y)[3])) +
 #   labs(x='', y='') +
-#   lazerhawk::theme_trueMinimal() +
+#   theme_trueMinimal() +
 #   theme(axis.text.y=element_blank(),
 #         axis.ticks.y=element_blank())
 
@@ -307,7 +307,7 @@ ggplot(aes(x=yRep), data=gdat) +
   stat_density(aes(group=as.factor(N)), color='#ff5500', 
                alpha=.85, show.legend=F, geom='line', position='dodge') +  
   labs(x='', y='') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.text.y=element_blank(),
         axis.ticks.y=element_blank(),
         plot.background = element_rect(fill = "transparent",colour = NA))
@@ -343,7 +343,7 @@ ggplot(aes(x=fit, y=residual), data=gdat[1:250,]) +
   geom_point(aes(ymin=minres, ymax=maxres), color='#FF5500', alpha=.85) + 
   scale_x_continuous(breaks=c(-3,0,3,6,9,12)) +
   labs(x='Expected y', y='Realized Residual') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.title.x=element_text(size=15),
         axis.title.y=element_text(size=15),
         axis.text.y=element_blank(),
@@ -361,7 +361,7 @@ avgresidRep = rowMeans(yRep-fits)
 ggplot(aes(x=avgfits, y=avgresidRep), data=data.frame(avgfits, avgresidRep)) +
   geom_point(alpha=.85, color='#FF5500') +
   labs(x='Average Expected y', y='Average Realized Residual') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.title.x=element_text(size=15),
         axis.title.y=element_text(size=15),
         axis.text.y=element_blank(),

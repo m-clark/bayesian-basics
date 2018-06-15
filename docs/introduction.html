@@ -24,7 +24,7 @@
 
 
 
-<meta name="date" content="2018-05-17">
+<meta name="date" content="2018-06-14">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
@@ -60,41 +60,69 @@
 
 
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; position: absolute; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine:empty
+  { position: absolute; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
 <link rel="stylesheet" href="css/book.css" type="text/css" />
@@ -227,7 +255,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>Bayesian analysis is now fairly common in applied work. It is no longer a surprising thing to see it utilized in non-statistical journals, though it is still fresh enough that many researchers feel they have to put ‘Bayesian’ in the title of their papers when they implement it. However, to be clear, one doesn’t conduct a Bayesian analysis per se. A Bayesian logistic regression is still just logistic regression. The <em>Bayesian</em> part comes into play with the perspective on probability that one uses to interpret the results, and in how the estimates are arrived at.</p>
-<p>The Bayesian approach itself is very old at this point. Bayes and Laplace started the whole shebang in the 18<sup>th</sup> and 19<sup>th</sup> centuries<a href="#fn1" class="footnoteRef" id="fnref1"><sup>1</sup></a>, and even the modern implementation of it has its foundations in the 30s, 40s and 50s of last century<a href="#fn2" class="footnoteRef" id="fnref2"><sup>2</sup></a>. So while it may still seem somewhat newer to applied researchers, much of the groundwork has long since been hashed out, and there is no more need to justify a Bayesian analysis any more than there is to use the standard maximum likelihood approach<a href="#fn3" class="footnoteRef" id="fnref3"><sup>3</sup></a>. While there are perhaps many reasons why the Bayesian approach to analysis did not catch on until relatively recently, perhaps the biggest is simply computational power. Bayesian analysis requires an iterative and time-consuming approach that simply wasn’t viable for most applied researchers until modern computers. But nowadays, one can conduct such analysis even on their laptop very easily.</p>
+<p>The Bayesian approach itself is very old at this point. Bayes and Laplace started the whole shebang in the 18<sup>th</sup> and 19<sup>th</sup> centuries<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, and even the modern implementation of it has its foundations in the 30s, 40s and 50s of last century<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. So while it may still seem somewhat newer to applied researchers, much of the groundwork has long since been hashed out, and there is no more need to justify a Bayesian analysis any more than there is to use the standard maximum likelihood approach<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. While there are perhaps many reasons why the Bayesian approach to analysis did not catch on until relatively recently, perhaps the biggest is simply computational power. Bayesian analysis requires an iterative and time-consuming approach that simply wasn’t viable for most applied researchers until modern computers. But nowadays, one can conduct such analysis even on their laptop very easily.</p>
 <p>The Bayesian approach to data analysis requires a different way of thinking about things, but its implementation can be seen as an extension of traditional approaches. In fact, as we will see later, it incorporates the very likelihood one uses in standard statistical techniques. The key difference regards the notion of probability, which, while different than Fisherian or frequentist statistics, is actually more akin to how the average Joe thinks about probability. Furthermore, p-values and intervals will have the interpretation that many applied researchers incorrectly think their current methods provide. On top of this, one gets a very flexible toolbox that can handle many complex analyses. In short, the reason to engage in Bayesian analysis is that it has a lot to offer and can potentially handle whatever you throw at it.</p>
 <p>As we will see shortly, one must also get used to thinking about distributions rather than fixed points. With Bayesian analysis, we are not so much as making guesses about specific values as in the traditional setting, but more so understanding the limits of our knowledge and getting a healthy sense of the uncertainty of those guesses.</p>
 <div id="bayesian-probability" class="section level2">
@@ -237,12 +265,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <h3>Conditional probability &amp; Bayes theorem</h3>
 <p>Bayes theorem is illustrated in terms of probability as follows:</p>
 <p><span class="math display">\[p(\mathcal{A}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A})p(\mathcal{A})}{p(\mathcal{B})}\]</span></p>
-<p>In short, we are attempting to ascertain the conditional probability of <span class="math inline">\(\mathcal{A}\)</span> given <span class="math inline">\(\mathcal{B}\)</span> based on the conditional probability of <span class="math inline">\(\mathcal{B}\)</span> given <span class="math inline">\(\mathcal{A}\)</span> and the respective probabilities of <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\mathcal{B}\)</span>. This is perhaps not altogether enlightening in and of itself, so we will frame it in other ways, and for the upcoming depictions we will ignore the denominator<a href="#fn4" class="footnoteRef" id="fnref4"><sup>4</sup></a>.</p>
+<p>In short, we are attempting to ascertain the conditional probability of <span class="math inline">\(\mathcal{A}\)</span> given <span class="math inline">\(\mathcal{B}\)</span> based on the conditional probability of <span class="math inline">\(\mathcal{B}\)</span> given <span class="math inline">\(\mathcal{A}\)</span> and the respective probabilities of <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\mathcal{B}\)</span>. This is perhaps not altogether enlightening in and of itself, so we will frame it in other ways, and for the upcoming depictions we will ignore the denominator<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
 <p><span class="math display">\[p(hypothesis|data) \propto p(data|hypothesis)p(hypothesis)\]</span></p>
-<p>In the above formulation<a href="#fn5" class="footnoteRef" id="fnref5"><sup>5</sup></a>, we are trying to obtain the probability of a hypothesis given the evidence at hand (data) and our initial (prior) beliefs regarding that hypothesis. Here we are already able to see at least one key difference between Bayesian and classical statistics. The Bayesian approach provides a probability of the hypothesis given the data, which is something generally highly desirable from a scientific perspective.</p>
+<p>In the above formulation<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>, we are trying to obtain the probability of a hypothesis given the evidence at hand (data) and our initial (prior) beliefs regarding that hypothesis. Here we are already able to see at least one key difference between Bayesian and classical statistics. The Bayesian approach provides a probability of the hypothesis given the data, which is something generally highly desirable from a scientific perspective.</p>
 <p>Here is yet another way to consider this:</p>
 <p><span class="math display">\[posterior \propto likelihood * prior\]</span></p>
-<p>For this depiction let us consider a standard regression coefficient <span class="math inline">\(b\)</span><a href="#fn6" class="footnoteRef" id="fnref6"><sup>6</sup></a>. Here we have a prior belief about <span class="math inline">\(b\)</span> expressed as a probability distribution. As a preliminary example, we will assume perhaps that the distribution is normal, and is centered on some value <span class="math inline">\(\mu_b\)</span>, and with some variance <span class="math inline">\(\sigma_b^2\)</span>. The likelihood here is the exact same one used in classical statistics- if <span class="math inline">\(y\)</span> is our variable of interest, then the likelihood is <span class="math inline">\(p(y|b)\)</span> as in the standard regression approach using maximum likelihood estimation. What we end up with in the Bayesian context however is not a specific value of <span class="math inline">\(b\)</span> that would make the data most likely, but a probability distribution for <span class="math inline">\(b\)</span> that serves as a weighted combination of the likelihood and prior. Given that <span class="emph">posterior distribution</span> for <span class="math inline">\(b\)</span>, we can then get the mean, median, 95% <span class="emph">credible interval</span><a href="#fn7" class="footnoteRef" id="fnref7"><sup>7</sup></a>, and a whole host of other statistics that might be of interest to us.</p>
+<p>For this depiction let us consider a standard regression coefficient <span class="math inline">\(b\)</span><a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. Here we have a prior belief about <span class="math inline">\(b\)</span> expressed as a probability distribution. As a preliminary example, we will assume perhaps that the distribution is normal, and is centered on some value <span class="math inline">\(\mu_b\)</span>, and with some variance <span class="math inline">\(\sigma_b^2\)</span>. The likelihood here is the exact same one used in classical statistics- if <span class="math inline">\(y\)</span> is our variable of interest, then the likelihood is <span class="math inline">\(p(y|b)\)</span> as in the standard regression approach using maximum likelihood estimation. What we end up with in the Bayesian context however is not a specific value of <span class="math inline">\(b\)</span> that would make the data most likely, but a probability distribution for <span class="math inline">\(b\)</span> that serves as a weighted combination of the likelihood and prior. Given that <span class="emph">posterior distribution</span> for <span class="math inline">\(b\)</span>, we can then get the mean, median, 95% <span class="emph">credible interval</span><a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>, and a whole host of other statistics that might be of interest to us.</p>
 <p>To summarize conceptually, we have some belief about the state of the world, expressed as a mathematical model (such as the linear model used in regression). The Bayesian approach provides an updated belief as a weighted combination of prior beliefs regarding that state and the currently available evidence, with the possibility of the current evidence overwhelming prior beliefs, or prior beliefs remaining largely intact in the face of scant evidence.</p>
 <p><span class="math display">\[\text{updated belief} = \text{current evidence} * \text{prior belief or evidence}\]</span></p>
 <p>We will make these concepts more concrete in the next section.</p>
@@ -253,13 +281,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="footnotes">
 <hr />
 <ol start="1">
-<li id="fn1"><p>Bayes theorem possibly <a href="https://en.wikipedia.org/wiki/Nicholas_Saunderson">predates</a> Bayes himself by some accounts.<a href="introduction.html#fnref1">↩</a></p></li>
-<li id="fn2"><p>Jeffreys, Metropolis etc.<a href="introduction.html#fnref2">↩</a></p></li>
-<li id="fn3"><p>Though some might suggest that the typical practice of hypothesis testing that comes with standard methods would need <em>more</em>.<a href="introduction.html#fnref3">↩</a></p></li>
-<li id="fn4"><p>The denominator reflects the sum of the numerator for <em>all</em> values <span class="math inline">\(\mathcal{A}\)</span> might take on. For example: <span class="math display">\[p(\mathcal{A_i}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i})}{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i}) + \dots + p(\mathcal{B}|\mathcal{A_n})p(\mathcal{A_n})}\]</span><a href="introduction.html#fnref4">↩</a></p></li>
-<li id="fn5"><p>The <span class="math inline">\(\propto\)</span> means ‘proportional to’.<a href="introduction.html#fnref5">↩</a></p></li>
-<li id="fn6"><p>If we think of y as our outcome and <span class="math inline">\(\Theta\)</span> as our <em>set</em> of coefficients that include all the regression coefficients <span class="math inline">\(b\)</span> and <span class="math inline">\(\sigma^2\)</span> variance, i.e. all parameters we need to estimate for the model: <span class="math display">\[p(\mathcal{\Theta}|\mathcal{y}) = \frac{p(\mathcal{y}|\mathcal{\Theta})p(\mathcal{\Theta})}{p(\mathcal{y})}\]</span><a href="introduction.html#fnref6">↩</a></p></li>
-<li id="fn7"><p>More on this later.<a href="introduction.html#fnref7">↩</a></p></li>
+<li id="fn1"><p>Bayes theorem possibly <a href="https://en.wikipedia.org/wiki/Nicholas_Saunderson">predates</a> Bayes himself by some accounts.<a href="introduction.html#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Jeffreys, Metropolis etc.<a href="introduction.html#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>Though some might suggest that the typical practice of hypothesis testing that comes with standard methods would need <em>more</em>.<a href="introduction.html#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>The denominator reflects the sum of the numerator for <em>all</em> values <span class="math inline">\(\mathcal{A}\)</span> might take on. For example:
+<span class="math display">\[p(\mathcal{A_i}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i})}{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i}) + \dots + p(\mathcal{B}|\mathcal{A_n})p(\mathcal{A_n})}\]</span><a href="introduction.html#fnref4" class="footnote-back">↩</a></p></li>
+<li id="fn5"><p>The <span class="math inline">\(\propto\)</span> means ‘proportional to’.<a href="introduction.html#fnref5" class="footnote-back">↩</a></p></li>
+<li id="fn6"><p>If we think of y as our outcome and <span class="math inline">\(\Theta\)</span> as our <em>set</em> of coefficients that include all the regression coefficients <span class="math inline">\(b\)</span> and <span class="math inline">\(\sigma^2\)</span> variance, i.e. all parameters we need to estimate for the model: <span class="math display">\[p(\mathcal{\Theta}|\mathcal{y}) = \frac{p(\mathcal{y}|\mathcal{\Theta})p(\mathcal{\Theta})}{p(\mathcal{y})}\]</span><a href="introduction.html#fnref6" class="footnote-back">↩</a></p></li>
+<li id="fn7"><p>More on this later.<a href="introduction.html#fnref7" class="footnote-back">↩</a></p></li>
 </ol>
 </div>
             </section>
@@ -321,7 +350,7 @@ gitbook.start({
   (function () {
     var script = document.createElement("script");
     script.type = "text/javascript";
-    var src = "";
+    var src = "true";
     if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
     if (location.protocol !== "file:" && /^https?:/.test(src))
       src = src.replace(/^https?:/, '');

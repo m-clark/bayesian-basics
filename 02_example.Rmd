@@ -169,7 +169,7 @@ g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   ylim(c(0, .001)) +
   ylab('Density') +
   xlab(substitute('theta')) +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.ticks.y=element_blank(),
         axis.text.y=element_blank(),
         axis.title.y=element_text(color='gray35'),
@@ -214,7 +214,7 @@ g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   ylim(c(0, .001)) +
   ylab('Density') +
   xlab(expression('theta')) +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.ticks.y=element_blank(),
         axis.text.y=element_blank(),
         axis.title.y=element_text(color='gray35'),
@@ -258,7 +258,7 @@ g = ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   ylim(c(0, .0014)) +
   ylab('Density') +
   xlab('theta') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.ticks.y=element_blank(),
         axis.text.y=element_blank(),
         axis.title.y=element_text(color='gray35'),
@@ -344,7 +344,7 @@ ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   ylab('Density') +
 #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
 #   labs(title = expression("Prior~with~ beta(10, 10)"))
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.ticks.y=element_line(color='white'),
         axis.text.y=element_text(color='white'),
         plot.background = element_rect(fill = "transparent",colour = NA))
@@ -375,7 +375,7 @@ ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   ylab('Density') +
 #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
 #   labs(title = 'A more vague prior') +
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.ticks.y=element_line(color='white'),
         axis.text.y=element_text(color='white'),
         plot.background = element_rect(fill = "transparent",colour = NA))
@@ -410,7 +410,7 @@ ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
   ylab('Density') +
 #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
 #   labs(title = expression("Prior~with~ beta(10, 10)"))
-  lazerhawk::theme_trueMinimal() +
+  theme_trueMinimal() +
   theme(axis.ticks.y=element_line(color='white'),
         axis.text.y=element_text(color='white'),
         plot.background = element_rect(fill = "transparent",colour = NA))
