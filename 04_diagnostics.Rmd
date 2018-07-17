@@ -18,7 +18,7 @@ This is an example where things have gone horribly wrong.  The chains never conv
 We can examine the mixed chains and density plots of the posterior with standard functions in the <span class="pack">rstan</span> package displayed previously, various functions in the <span class="pack">bayesplot</span> package, or interactively via <span class="pack">shinyStan</span> package and its <span class="func">launch_shiny</span> function.  In the Bayesian approach, increasing amounts of data leads to a posterior distribution of the parameter vector approaching multivariate normality.  The following shows a density, trace and autocorrelation plots for one of the regression coefficients using <span class="pack">shinyStan</span>.
 
 <br>
-<img src="img/shinystan.png" style="display:block; margin: 0 auto;">
+<img src="img/shiny_stan.png" style="display:block; margin: 0 auto;">
 
 ```{r badChain, eval=FALSE, echo=FALSE}
 # see https://groups.google.com/forum/#!topic/stan-users/hio0siMTvhE
