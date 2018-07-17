@@ -12,7 +12,7 @@ McElreath, R. (2015). *Statistical Rethinking*.  A good modeling book in general
 Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). *Bayesian Data Analysis*.
 
 
-### Stan Specific Resources
+## Stan Specific Resources
 
 [Main website](http://mc-stan.org/)
 
