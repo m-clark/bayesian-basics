@@ -1,51 +1,13 @@
 --- 
-title: <span style="font-size:250%; font-style:italic; font-family:'Alex Brush'">Bayesian Basics</span>
+title: Bayesian Basics
 author:  |
   <div class="title"><span style="font-size:150%; font-variant:small-caps; font-style:normal;  font-family:'Roboto'">Michael Clark</span><br><br>
-  <img src="img/signature-acronym.png" style="width:30%; padding:10px 0;"> <br>
-  <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0;"> </div>
+  <img src="img/signature-acronym.png" style="width:30%; padding:10px 0; margin:0"> <br>
+  <img src="img/ARC-acronym-signature.png" style="width:21%; padding:10px 0; margin:0"> </div>
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 output:
-    bookdown::gitbook:
-      css: [css/book.css, css/standard_html.css]
-      highlight: pygments
-      number_sections: no
-      # toolbar:
-      #   position: fixed
-       # address for before img should be relative to where image is on actual website; may be blank for local viewing
-      config:
-        toc:
-          collapse: section
-          toc_depth: 3
-          scroll_highlight: yes
-          before: |
-            <li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
-          after: |
-            <li class='after'><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
-            <li class='after'><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa.png" /></a></li>
-          edit:
-            link: https://github.com/rstudio/bookdown-demo/edit/master/%s
-        download : null
-        search: yes
-        sharing:
-          facebook: yes
-          twitter: yes
-          google: no
-          weibo: no
-          instapper: no
-          vk: no
-          epub: yes
-          all: ['facebook', 'google', 'twitter', 'weibo', 'instapaper']
-    # bookdown::tufte_html_book: 
-    #   toc: yes
-    #   number_sections: false
-    #   css: [toc.css, ../css/tufte_bookdown/mytufte.css]
-    #   split_by: rmd
-    #   config:
-    # bookdown::epub_book:  # note it's not clear whether this works or not but seems to stop their rendering via error if nothing else (for tufte)
-    #   stylesheet: [css/book.css, css/standard_html.css]
-    # bookdown::pdf_book: no
+    bookdown::gitbook
 always_allow_html: yes
 documentclass: book
 bibliography: ['packages.bib', 'BayesBasics.bib']
@@ -72,19 +34,17 @@ knitr::write_bib(c(.packages(), 'bookdown', 'knitr', 'rmarkdown'), 'packages.bib
 ```
 
 ```{r load_packages, echo=FALSE, cache=FALSE}
-library(tidyverse); library(lazerhawk); library(pander); library(visibly)
+library(tidyverse); library(lazerhawk); library(pander); library(visibly); library(kableExtra)
 ```
 
 
-#  
+##### {-}
 
-```{r logo, fig.align='center', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html')}
-knitr::include_graphics('img/nineteeneightyR.png', dpi = NA)
-
+```{r rimg, fig.align='center',  out.width=200, echo=FALSE, cache=FALSE}
+knitr::include_graphics('img/198R.png', dpi = NA)
 ```
 
-```{r ccimg, fig.align='center',  out.width=0, fig.show='hide', echo=FALSE, include=identical(knitr:::pandoc_to(), 'html')}
-knitr::include_graphics('img/r_and_stan.png', dpi = NA)
-knitr::include_graphics('img/ccbysa.png', dpi = NA)
-knitr::include_graphics('img/mc.png', dpi = NA)
+```{r ccimg, fig.align='center', out.width=0, fig.show='hide', echo=FALSE}
+knitr::include_graphics('img/mc_logo.png', dpi = NA)
+knitr::include_graphics('img/mc_sunset_2.png', dpi = NA)
 ```

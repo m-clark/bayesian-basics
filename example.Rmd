@@ -120,12 +120,10 @@ Now let's examine what all we've got.
 ```{r binomGoalResult, echo=F}
 out = data.frame(theta, prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaGivenData)
 
-DT::datatable(format(round(out, 3), nsmall = 3), width='50%',
-              rownames=F,
-              options=list(ordering=F, paging=F, searching=F, info=F, autowidth=F,
-                           columnDefs = list(list(className = 'dt-center', targets = 0:3))))
-
-# pander::pander(format(round(out, 3), nsmall = 3), width='250px')
+out %>% 
+  kable(align = 'cccc', digits = 3) %>% 
+  kable_styling(full_width = F) %>% 
+  column_spec(column=1:ncol(out), width='100px', monospace = T,extra_css = 'font-size: 90%')
 ```
 
 Starting with the *prior* column, we can see that with the triangular distribution, we've given most of our prior probability to the middle values with probability tapering off somewhat slowly towards either extreme.  The likelihood, on the other hand, suggests the data is most likely for $\theta$ values .55-.64, though we know the specific maximum likelihood estimate for $\theta$ is the proportion for the sample, or .6.  Our posterior estimate will therefore fall somewhere between the prior and likelihood estimates, and we can see it has shifted the bulk of the probability slightly away from the most likely values suggested by the prior distribution, and towards a $\theta$ value suggested by the data of .6.
@@ -281,7 +279,7 @@ However, there is yet another distribution of interest to us- the <span class="e
 
 We can implement the simulation process with the data and model at hand, given a sample of values of $\theta$ drawn from the posterior. I provide the results of such a process with the following graph. Each bar graph of frequencies represents a replication of the 10 shots taken, i.e. $y^{\textrm{Rep}}$, given an estimate of $\theta$ from the posterior distribution (16 total).  These are plausible sets of 10 makes and misses, given $\theta$.
 
-<img src="img/histofyrepBinom.svg" style="display:block; margin: 0 auto;" width=50%></span>
+<img class='zoom' src="img/histofyrepBinom.svg" style="display:block; margin: 0 auto;" width=50%></span>
 
 ```{r binomPostPred, eval=FALSE, echo=FALSE}
 ## Do keep <img> so you don't have to run rstanarm
@@ -426,7 +424,7 @@ ggsave('figure/priorlikepost3.png', width=8, height=8, bg = "transparent") # png
 
 [^binomll]: See for yourself in the [binmoial likelihood][Binomial Likelihood Example] section in the appendix.
 
-[^postpred]: Mathematically represented as: $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$ <br><br> We can get a sense of the structure of this process via the following table, taken from Gelman: <br><br> <img src="img/gelmanTable.png" style="display:block; margin: 0 auto;" width='50%'>
+[^postpred]: Mathematically represented as: $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$ <br><br> We can get a sense of the structure of this process via the following table, taken from Gelman: <br><br> <img class='zoom' src="img/gelmanTable.png" style="display:block; margin: 0 auto;" width='50%'>
 
 [^chooseprior]: Choose the prior that makes most sense to you.  If I were thinking logically, I might choose a prior that reflects that all advantage is to a person that spends their entire life kicking a ball, rather than the person who is required by the rules to stand still.  If the penalty taker can simply kick to the upper right or left of the goal, even with only moderate pace, they could point it out like Babe Ruth every time, and simple physics, i.e. that the goalie can never reach the ball given that he has to start in the middle, would mean they score 95% of the time under perfect conditions. We might revise it downward to account for unspecified things, e.g. how tired they are, weather etc. A prior based on a beta distribution `beta(9,1)`, with a mean of .90, would perhaps be about right.  Of course, the *data* would eventually suggest something much lower, perhaps because soccer players aren't that bright and don't listen to their team statistician, or perhaps the games are rigged, but it's chalked up to drama and mind games because that's what the fans want to believe (and, more importantly, will pay for).  I'll let you decide that binomial outcome.
 

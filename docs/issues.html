@@ -24,15 +24,15 @@
 
 
 
-<meta name="date" content="2018-07-16">
+<meta name="date" content="2018-07-29">
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="model-enhancements.html">
-<link rel="next" href="final-thoughts.html">
+<link rel="prev" href="enhancements.html">
+<link rel="next" href="packages.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -46,11 +46,11 @@
 
 
 
-<script src="libs/htmlwidgets-1.0/htmlwidgets.js"></script>
-<script src="libs/datatables-binding-0.2/datatables.js"></script>
-<link href="libs/dt-core-1.10.12/css/jquery.dataTables.min.css" rel="stylesheet" />
-<link href="libs/dt-core-1.10.12/css/jquery.dataTables.extra.css" rel="stylesheet" />
-<script src="libs/dt-core-1.10.12/js/jquery.dataTables.min.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<script src="libs/htmlwidgets-1.2/htmlwidgets.js"></script>
+<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
+<script src="libs/vis-4.20.1/vis.min.js"></script>
+<script src="libs/visNetwork-binding-2.0.4/visNetwork.js"></script>
 <script src="libs/plotly-binding-4.7.1/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
 <link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
@@ -126,7 +126,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </style>
 
 <link rel="stylesheet" href="css/book.css" type="text/css" />
-<link rel="stylesheet" href="css/standard_html.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" type="text/css" />
 </head>
 
 <body>
@@ -139,51 +139,50 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <nav role="navigation">
 
 <ul class="summary">
-<li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li> 
+<li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li>
 
 <li class="divider"></li>
-<li><a href="index.html#section"></a></li>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#note"><i class="fa fa-check"></i>Note</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html"><i class="fa fa-check"></i>Introduction</a><ul>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a><ul>
-<li class="chapter" data-level="" data-path="introduction.html"><a href="introduction.html#conditional-probability-bayes-theorem"><i class="fa fa-check"></i>Conditional probability &amp; Bayes theorem</a></li>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a><ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a><ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#conditional-probability-bayes-theorem"><i class="fa fa-check"></i>Conditional probability &amp; Bayes theorem</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html"><i class="fa fa-check"></i>A Hands-on Example</a><ul>
-<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#prior-likelihood-posterior-distributions"><i class="fa fa-check"></i>Prior, likelihood, &amp; posterior distributions</a></li>
-<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#prior"><i class="fa fa-check"></i>Prior</a></li>
-<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#likelihood"><i class="fa fa-check"></i>Likelihood</a></li>
-<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#posterior"><i class="fa fa-check"></i>Posterior</a></li>
-<li class="chapter" data-level="" data-path="a-hands-on-example.html"><a href="a-hands-on-example.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
+<li class="chapter" data-level="" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i>A Hands-on Example</a><ul>
+<li class="chapter" data-level="" data-path="example.html"><a href="example.html#prior-likelihood-posterior-distributions"><i class="fa fa-check"></i>Prior, likelihood, &amp; posterior distributions</a></li>
+<li class="chapter" data-level="" data-path="example.html"><a href="example.html#prior"><i class="fa fa-check"></i>Prior</a></li>
+<li class="chapter" data-level="" data-path="example.html"><a href="example.html#likelihood"><i class="fa fa-check"></i>Likelihood</a></li>
+<li class="chapter" data-level="" data-path="example.html"><a href="example.html#posterior"><i class="fa fa-check"></i>Posterior</a></li>
+<li class="chapter" data-level="" data-path="example.html"><a href="example.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html"><i class="fa fa-check"></i>Regression Models</a><ul>
-<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a><ul>
-<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#setup"><i class="fa fa-check"></i>Setup</a></li>
-<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#stan-code"><i class="fa fa-check"></i>Stan Code</a></li>
-<li class="chapter" data-level="" data-path="regression-models.html"><a href="regression-models.html#running-the-model"><i class="fa fa-check"></i>Running the Model</a></li>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i>Regression Models</a><ul>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a><ul>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html#setup"><i class="fa fa-check"></i>Setup</a></li>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html#stan-code"><i class="fa fa-check"></i>Stan Code</a></li>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html#running-the-model"><i class="fa fa-check"></i>Running the Model</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html"><i class="fa fa-check"></i>Model Exploration</a><ul>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a><ul>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#visual-inspection-traceplot-densities"><i class="fa fa-check"></i>Visual Inspection: Traceplot &amp; Densities</a></li>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#statistical-measures"><i class="fa fa-check"></i>Statistical Measures</a></li>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#autocorrelation"><i class="fa fa-check"></i>Autocorrelation</a></li>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html"><i class="fa fa-check"></i>Model Exploration</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#visual-inspection-traceplot-densities"><i class="fa fa-check"></i>Visual Inspection: Traceplot &amp; Densities</a></li>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#statistical-measures"><i class="fa fa-check"></i>Statistical Measures</a></li>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#autocorrelation"><i class="fa fa-check"></i>Autocorrelation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#model-checking"><i class="fa fa-check"></i>Model Checking</a><ul>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#sensitivity-analysis"><i class="fa fa-check"></i>Sensitivity Analysis</a></li>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#predictive-accuracy-model-comparison"><i class="fa fa-check"></i>Predictive Accuracy &amp; Model Comparison</a></li>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#posterior-predictive-checking-statistical"><i class="fa fa-check"></i>Posterior Predictive Checking: Statistical</a></li>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#posterior-predictive-checking-graphical"><i class="fa fa-check"></i>Posterior Predictive Checking: Graphical</a></li>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#model-checking"><i class="fa fa-check"></i>Model Checking</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#sensitivity-analysis"><i class="fa fa-check"></i>Sensitivity Analysis</a></li>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#predictive-accuracy-model-comparison"><i class="fa fa-check"></i>Predictive Accuracy &amp; Model Comparison</a></li>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#posterior-predictive-checking-statistical"><i class="fa fa-check"></i>Posterior Predictive Checking: Statistical</a></li>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#posterior-predictive-checking-graphical"><i class="fa fa-check"></i>Posterior Predictive Checking: Graphical</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="model-exploration.html"><a href="model-exploration.html#summary"><i class="fa fa-check"></i>Summary</a></li>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#summary"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a><ul>
-<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html#generating-new-variables-of-interest"><i class="fa fa-check"></i>Generating New Variables of Interest</a></li>
-<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html#robust-regression"><i class="fa fa-check"></i>Robust Regression</a></li>
-<li class="chapter" data-level="" data-path="model-enhancements.html"><a href="model-enhancements.html#generalized-linear-model"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
+<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a><ul>
+<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#generating-new-variables-of-interest"><i class="fa fa-check"></i>Generating New Variables of Interest</a></li>
+<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#robust-regression"><i class="fa fa-check"></i>Robust Regression</a></li>
+<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#generalized-linear-model"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a><ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#debugging"><i class="fa fa-check"></i>Debugging</a></li>
@@ -203,7 +202,15 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#number-of-draws-thinning-warm-up"><i class="fa fa-check"></i>Number of draws, thinning, warm-up</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#model-complexity"><i class="fa fa-check"></i>Model Complexity</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="final-thoughts.html"><a href="final-thoughts.html"><i class="fa fa-check"></i>Final Thoughts</a></li>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i>R Packages</a><ul>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#standard-regression-and-glm"><i class="fa fa-check"></i>Standard Regression and GLM</a></li>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#categorical-models"><i class="fa fa-check"></i>Categorical models</a></li>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#extended-count-models"><i class="fa fa-check"></i>Extended count models</a></li>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#mixed-models"><i class="fa fa-check"></i>Mixed models</a></li>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#other-models-and-related"><i class="fa fa-check"></i>Other models and related</a></li>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#even-more-packages"><i class="fa fa-check"></i>Even more packages</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i>Final Thoughts</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a><ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#example"><i class="fa fa-check"></i>Example</a></li>
@@ -231,8 +238,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 <li class="divider"></li>
-<li class='after'><a href="https://m-clark.github.io/"><img src="img/mc.png" style="width:50%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo"></a></li>
-<li class='after'><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Creative Commons License" style="width:50%; border-width:0; display:block; margin: 0 auto;" src="img/ccbysa.png" /></a></li>
+<li class='after'">
+   <a href="https://m-clark.github.io/">
+      <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+   </a>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a href="https://github.com/m-clark/">
+         <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+      </a>
+   </div>
+</li>
+<li class='after'">
+   <div style='text-align:center'>
+      <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+         <i class="fab fa-creative-commons fa-lg"></i>
+         <i class="fab fa-creative-commons-by fa-lg"></i>
+         <i class="fab fa-creative-commons-sa fa-lg"></i>
+      </a>
+   </div>
+</li>
 
 </ul>
 
@@ -243,7 +269,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./"><span style="font-size:250%; font-style:italic; font-family:&#39;Alex Brush&#39;">Bayesian Basics</span></a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Bayesian Basics</a>
           </h1>
         </div>
 
@@ -269,7 +295,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>We can begin with <span class="emph">noninformative priors</span>, which might also be referred to as <em>vague</em>, <em>flat</em>, <em>reference</em>, <em>objective</em>, or <em>diffuse</em> depending on the context. The idea is to use something that allows for Bayesian inference but puts all the premium on the data, and/or soi-disant <em>objectivity</em>, though the fact that there is still choice here should make clear that these are not entirely noninformative or objective. As we have alluded to elsewhere, if we put a prior uniform distribution on the regression coefficients (and e.g. the log of <span class="math inline">\(\sigma\)</span>), this would be a noninformative approach that would essentially be akin to maximum likelihood estimation. One might wonder at this point why we wouldn’t just use vague priors all the time and not worry about overly influencing the analysis by the choice of prior.</p>
 <p>As an example, let’s assume a uniform distribution <span class="math inline">\((-\infty,\infty)\)</span> for some parameter <span class="math inline">\(\theta\)</span>. Without bounds, this prior is <em>improper</em>, i.e. the probability distribution does not integrate to 1. While the posterior distribution may be proper, it may not be, and it is left the researcher to determine this. One also has to choose a suitable range, something which may not be easy to ascertain. In addition, the distribution may not be uniform on some transformation of the parameter, say <span class="math inline">\(\theta^2\)</span>. A <em>Jeffreys’ prior</em> could be used to overcome this particular issue, but is more difficult for multiparameter settings.</p>
 <p>In general, there are several issues with using a noninformative or reference prior. For many models, there may be no clear choice of what to use. In any case, if the data are sufficient, the prior won’t matter as much, so establishing some reference to be used automatically isn’t exactly in keeping with Bayesian thinking. In addition, such choices can still have unintended effects on the results. Furthermore, if you had clear prior information, e.g. from previous research, one should use it.</p>
-<p>In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague. As an example, consider our earlier <a href="a-hands-on-example.html#prior">binomial distribution example</a>. Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80% of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a <span class="math inline">\(\mathcal{B}(9,3)\)</span> would probably be a good way to proceed. One can examine such a distribution in the subsequent density plot.</p>
+<p>In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague. As an example, consider our earlier <a href="example.html#prior">binomial distribution example</a>. Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80% of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a <span class="math inline">\(\mathcal{B}(9,3)\)</span> would probably be a good way to proceed. One can examine such a distribution in the subsequent density plot.</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw">diff</span>(<span class="kw">pbeta</span>(<span class="kw">c</span>(.<span class="dv">6</span>, <span class="fl">.9</span>), <span class="dv">3</span>, <span class="dv">1</span>))</a>
 <a class="sourceLine" id="cb40-2" data-line-number="2"><span class="kw">diff</span>(<span class="kw">pbeta</span>(<span class="kw">c</span>(.<span class="dv">6</span>, <span class="fl">.9</span>), <span class="dv">8</span>, <span class="dv">3</span>))</a>
 <a class="sourceLine" id="cb40-3" data-line-number="3"><span class="kw">diff</span>(<span class="kw">pbeta</span>(<span class="kw">c</span>(.<span class="dv">6</span>, <span class="fl">.9</span>), <span class="dv">9</span>, <span class="dv">3</span>))</a></code></pre></div>
@@ -297,7 +323,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="sensitivity-analysis-revisited" class="section level3">
 <h3>Sensitivity Analysis Revisited</h3>
-<p>As a reminder, we pointed out in the <a href="model-exploration.html#sensitivity-analysis">sensitivity analysis</a> section of the discussion on model checking, one may perform checks on settings for the model to see if changes to them results in gross changes of inference from the posterior. Part of that check should include the choice of prior, whether different parameter values for the same distribution, or different distributions altogether. Doing such a check will give you more confidence in the final selection.</p>
+<p>As a reminder, we pointed out in the <a href="diagnostics.html#sensitivity-analysis">sensitivity analysis</a> section of the discussion on model checking, one may perform checks on settings for the model to see if changes to them results in gross changes of inference from the posterior. Part of that check should include the choice of prior, whether different parameter values for the same distribution, or different distributions altogether. Doing such a check will give you more confidence in the final selection.</p>
 </div>
 <div id="summary-1" class="section level3">
 <h3>Summary</h3>
@@ -401,8 +427,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           </div>
         </div>
       </div>
-<a href="model-enhancements.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-<a href="final-thoughts.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+<a href="enhancements.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="packages.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
@@ -417,34 +443,29 @@ gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
 "sharing": {
 "github": false,
-"facebook": true,
-"twitter": true,
+"facebook": false,
+"twitter": false,
 "google": false,
 "linkedin": false,
 "weibo": false,
 "instapper": false,
 "vk": false,
-"all": ["facebook", "google", "twitter", "weibo", "instapaper"],
-"epub": true
+"all": ["twitter", "facebook", "google", "weibo", "instapaper"]
 },
 "fontsettings": {
 "theme": "white",
 "family": "sans",
 "size": 2
 },
-"edit": {
-"link": null,
-"text": null
-},
+"edit": null,
 "download": ["Bayesian-Basics.epub"],
 "toc": {
 "collapse": "section",
-"toc_depth": 3,
-"scroll_highlight": true,
-"edit": {
-"link": "https://github.com/rstudio/bookdown-demo/edit/master/%s"
-}
+"depth": 2,
+"scroll_highlight": true
 },
+"df_print": "kable",
+"highlight": "pygments",
 "search": true
 });
 });

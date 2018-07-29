@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="appendix.html">
-
+<link rel="prev" href="packages.html">
+<link rel="next" href="appendix.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -277,152 +277,36 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="texts-for-your-shelf" class="section level2">
-<h2>Texts for Your Shelf</h2>
-<p>The following are three texts I recommend in my consulting to folks who are interested in doing Bayesian data analyis. They can be seen as introduction, intermediate, and advanced respectively.</p>
-<p>Kruschke, J. (2014) <em>Doing Bayesian Data Analysis</em>. A very introductory text, but might be good for those not too confident in statistics generally speaking. And who doesn’t like puppies? Second edition has Stan examples.</p>
-<p>McElreath, R. (2015). <em>Statistical Rethinking</em>. A good modeling book in general, by one who has contributed a lot to helping others learn Stan. Comes with its own R package too.</p>
-<p>Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). <em>Bayesian Data Analysis</em>.</p>
+<div id="final-thoughts" class="section level1">
+<h1>Final Thoughts</h1>
+<p>We begin our wrap-up with a list of advantages of taking the Bayesian approach:</p>
+<ul>
+<li>Use of prior information</li>
+<li>Probability values and intervals have intuitive interpretation</li>
+<li>More useful and unbiased with small samples</li>
+<li>While not immune to overfitting, at least has built in regularization</li>
+<li>Can estimate complicated models that traditional approaches cannot</li>
+<li>Does not rely on hypothetical data for inference</li>
+<li>Accounts for uncertainty in parameters, leading to more accurate prediction</li>
+</ul>
+<p>And there are many others. Traditional approaches may be easier, but that definitely does not mean better, and being easier often instills false confidence in problematic results. This is not a good thing. For the same models, traditional approaches will run faster, but for common, even complicated models we might be talking about time frames on the order of seconds, possibly undetectable if approximation methods are used. In short, there is little reason not to use Bayesian methods for most situations.</p>
+<p>Hopefully this document has provided a path toward easing into Bayesian analysis for those that are interested but might not have had the confidence or particular skill set that many texts and courses assume. Conceptually, Bayesian inference can be fairly straightforward, and inferentially is more akin to the ways people naturally think about probability. Many of the steps taken in classical statistical analysis are still present, but have been enriched via the incorporation of prior information, a more flexible modeling scheme, and the ability to enhance even standard analyses with new means of investigation.</p>
+<p>Of course, it will not necessarily be easy, particularly for complex models, though such models might actually be relatively easier compared to the classical framework. While not necessary for all models, oftentimes the process will involve a more hands-on approach. However, this allows for more understanding of the model and its results, and gets easier with practice just like anything else.</p>
+<p>You certainly don’t have to abandon classical and other methods either. Scientific research involves applying the best tool for the job, and in some cases the Bayesian approach may not be the best fit for a particular problem. But when it is, it’s hoped you’ll be willing to take the plunge, and know there are many tools and a great community of people to help you along the way.</p>
+<p><br></p>
+<p><img class='zoom' src="img/mc_sunset_2.png" style="display:block; margin: 0 auto;"></p>
+<p style="text-align:center; font-family:'Alex Brush'; font-size:200%">
+… infinite skills create miracles…
+</p>
+
 </div>
-<div id="stan-specific-resources" class="section level2">
-<h2>Stan Specific Resources</h2>
-<p><a href="http://mc-stan.org/">Main website</a></p>
-<p><a href="http://discourse.mc-stan.org/">Stan Users Group</a></p>
-<p><a href="https://github.com/stan-dev/stan/wiki/Stan-Best-Practices">Stan Best Practices</a></p>
-<p><a href="https://github.com/stan-dev/example-models/wiki">Example Models</a></p>
-<p>More resources <a href="http://mc-stan.org/documentation/">here</a></p>
-</div>
-<div id="other" class="section level2">
-<h2>Other</h2>
-<p>Statisticat, LLC. <a href="https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf"><em>Bayesian Inference</em></a>. A quick overview from the original author of the <span class="pack">LaplacesDemon</span> package.</p>
-</div>
-<div id="works-citedused" class="section level2">
-<h2>Works Cited/Used</h2>
-
-<div id="refs" class="references">
-<div>
-<p>Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed.</p>
-</div>
-<div>
-<p>Gelman, Andrew, and Jennifer Hill. 2006. <em>Data Analysis Using Regression and Multilevel/Hierarchical Models</em>. Cambridge University Press.</p>
-</div>
-<div>
-<p>Gelman, Andrew, Jessica Hwang, and Aki Vehtari. 2014. “Understanding Predictive Information Criteria for Bayesian Models.” <em>Statistics and Computing</em> 24 (6). Springer: 997–1016.</p>
-</div>
-<div>
-<p>Gelman, Andrew, and Iain Pardoe. 2006. “Bayesian Measures of Explained Variance and Pooling in Multilevel (Hierarchical) Models.” <em>Technometrics</em> 48 (2). Taylor &amp; Francis: 241–51.</p>
-</div>
-<div>
-<p>Gill, Jeff. 2008. <em>Bayesian Methods : A Social and Behavioral Sciences Approach</em>. Second. Boca Raton: Chapman &amp; Hall/CRC.</p>
-</div>
-<div>
-<p>Jackman, Simon. 2009. <em>Bayesian Analysis for the Social Sciences</em>. Chichester, UK: Wiley.</p>
-</div>
-<div>
-<p>Kruschke, John. 2010. <em>Doing Bayesian Data Analysis: A Tutorial Introduction with R</em>. Academic Press.</p>
-</div>
-<div>
-<p>Lunn, David, Chris Jackson, Nicky Best, Andrew Thomas, and David Spiegelhalter. 2012. <em>The BUGS Book: A Practical Introduction to Bayesian Analysis</em>. Boca Raton, FL: Chapman; Hall/CRC.</p>
-</div>
-<div>
-<p>Lynch, Scott M. 2007. <em>Introduction to Applied Bayesian Statistics and Estimation for Social Scientists</em>. New York: Springer.</p>
-</div>
-<div>
-<p>McElreath, Richard. 2016. <em>Statistical Rethinking: A Bayesian Course with Examples in R and Stan</em>. Vol. 122. CRC Press.</p>
-</div>
-<div>
-<p>McGrayne, Sharon Bertsch. 2012. <em>The Theory That Would Not Die: How Bayes’ Rule Cracked the Enigma Code, Hunted down Russian Submarines, and Emerged Triumphant from Two Centuries of Controversy</em>. Reprint. New Haven Conn.: Yale University Press.</p>
-</div>
-<div>
-<p>Vehtari, Aki, and Andrew Gelman. 2014. “WAIC and Cross-Validation in Stan.”</p>
-</div>
-</div>
-</div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </section>
 
           </div>
         </div>
       </div>
-<a href="appendix.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="packages.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="appendix.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

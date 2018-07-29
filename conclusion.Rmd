@@ -20,4 +20,6 @@ You certainly don't have to abandon classical and other methods either.  Scienti
 
 <br>
 
-<p style="text-align:center; font-family:'Alex Brush'; font-size:200%">Best of luck with your research! $\qquad\sim \mathbb{M}$</p> 
+<img class='zoom' src="img/mc_sunset_2.png" style="display:block; margin: 0 auto;">
+
+<p style="text-align:center; font-family:'Alex Brush'; font-size:200%">... infinite skills create miracles... </p> 

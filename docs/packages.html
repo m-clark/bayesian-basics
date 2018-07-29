@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="appendix.html">
-
+<link rel="prev" href="issues.html">
+<link rel="next" href="conclusion.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -277,152 +277,227 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="texts-for-your-shelf" class="section level2">
-<h2>Texts for Your Shelf</h2>
-<p>The following are three texts I recommend in my consulting to folks who are interested in doing Bayesian data analyis. They can be seen as introduction, intermediate, and advanced respectively.</p>
-<p>Kruschke, J. (2014) <em>Doing Bayesian Data Analysis</em>. A very introductory text, but might be good for those not too confident in statistics generally speaking. And who doesn’t like puppies? Second edition has Stan examples.</p>
-<p>McElreath, R. (2015). <em>Statistical Rethinking</em>. A good modeling book in general, by one who has contributed a lot to helping others learn Stan. Comes with its own R package too.</p>
-<p>Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). <em>Bayesian Data Analysis</em>.</p>
+<div id="r-packages" class="section level1">
+<h1>R Packages</h1>
+<p>Here I will go into a bit of detail regarding <span class="pack">rstanarm</span> and <span class="pack">brms</span>. For standard models, these should be your first choice, rather than using Stan directly. Why? For one, the underlying code that is used will be more optimized and efficient than what you come up with, and has had multiple individuals developing that code and hundreds actually using it. Furthermore, you can still, and probably should, set your priors as you wish.</p>
+<p>The nice thing about both is that you use the same syntax that you do for <a href="https://m-clark.github.io/R-models/">R modeling</a> in general. Here is a a basic GLM in both.</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="kw">stan_glm</span>(y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span>z, <span class="dt">data=</span>d)</a>
+<a class="sourceLine" id="cb44-2" data-line-number="2"><span class="kw">brm</span>(y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span>z, <span class="dt">data=</span>d)</a></code></pre></div>
+<p>And here are a couple complexities thrown in to show some minor differences. For example, the priors are specified a bit differently, and you may have options for one that you won’t have in the other, but both will allow passing standard arguments, like cores, chains, etc. to <span class="pack">rstan</span>.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="kw">stan_glm</span>(y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span>z <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>g), </a>
+<a class="sourceLine" id="cb45-2" data-line-number="2">         <span class="dt">data=</span>d, </a>
+<a class="sourceLine" id="cb45-3" data-line-number="3">         <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>), </a>
+<a class="sourceLine" id="cb45-4" data-line-number="4">         <span class="dt">prior =</span> <span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>),</a>
+<a class="sourceLine" id="cb45-5" data-line-number="5">         <span class="dt">prior_covariance =</span> <span class="kw">decov</span>(<span class="dt">regularization =</span> <span class="dv">1</span>, <span class="dt">concentration =</span> <span class="fl">.5</span>),</a>
+<a class="sourceLine" id="cb45-6" data-line-number="6">         <span class="dt">QR =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb45-7" data-line-number="7">         <span class="dt">chains =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb45-8" data-line-number="8">         <span class="dt">cores =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb45-9" data-line-number="9">         <span class="dt">iter =</span> <span class="dv">2000</span>)</a>
+<a class="sourceLine" id="cb45-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb45-11" data-line-number="11"><span class="kw">brm</span>(y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span>z <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>g), </a>
+<a class="sourceLine" id="cb45-12" data-line-number="12">    <span class="dt">data=</span>d, </a>
+<a class="sourceLine" id="cb45-13" data-line-number="13">    <span class="dt">family =</span> <span class="kw">bernoulli</span>(<span class="dt">link =</span> <span class="st">&#39;logit&#39;</span>), </a>
+<a class="sourceLine" id="cb45-14" data-line-number="14">    <span class="dt">chains =</span> <span class="dv">2</span>,</a>
+<a class="sourceLine" id="cb45-15" data-line-number="15">    <span class="dt">cores =</span> <span class="dv">2</span>, </a>
+<a class="sourceLine" id="cb45-16" data-line-number="16">    <span class="dt">prior =</span> <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> b),</a>
+<a class="sourceLine" id="cb45-17" data-line-number="17">                  <span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="dt">class =</span> sd)<span class="er">)</span>,</a>
+<a class="sourceLine" id="cb45-18" data-line-number="18">    iter =<span class="st"> </span><span class="dv">2000</span><span class="er">)</span></a></code></pre></div>
+<p>So the syntax is easy to use for both of them, and to a point identical to standard R modeling syntax, and both have the same <span class="pack">rstan</span> arguments. However, you’ll need to know what’s available to tweak and how to do so specifically for each package.</p>
+<div id="standard-regression-and-glm" class="section level2">
+<h2>Standard Regression and GLM</h2>
+<p>A good starting point for getting more comfortable with Bayesian analysis is to use it on what you’re already more comfortable with, e.g. the standard linear or generalized linear model, and <span class="pack">rstanarm</span> and <span class="pack">brms</span> both will do this for you. In general, for these models I would suggest <span class="pack">rstanarm</span>, as it will run much faster and is optimized for them.</p>
+<p>It’s not a good thing that for the most common linear models R has multiple functions and even an additional packages. So we have the following for standard linear, glm, and categorical models:</p>
+<ul>
+<li><span class="func">aov</span>: ANOVA</li>
+<li><span class="func">lm</span>: standard regression (linear model)</li>
+<li><span class="func">glm</span>: generalized linear model</li>
+<li><span class="pack">MASS</span>::<span class="func">glm.nb</span>: negative binomial for count data</li>
+<li><span class="pack">MASS</span>::<span class="func">polr</span>: ordinal regression model</li>
+<li><span class="pack">nnet</span>::<span class="func">nnet</span>: multinomial regression model</li>
+<li><span class="pack">biglm</span>::<span class="func">biglm</span>: big data lm</li>
+</ul>
+<p><span class="pack">rstanarm</span> keeps this nomenclature unfortunately, and currently doesn’t offer anything for multinomial that I’m aware of. Thus we have:</p>
+<ul>
+<li><span class="func">stan_aov</span>: ANOVA</li>
+<li><span class="func">stan_lm</span>: standard regression (linear model)</li>
+<li><span class="func">stan_glm</span>: generalized linear model</li>
+<li><span class="func">stan_glm.nb</span>: negative binomial for count data or neg_binomial_2 family for <span class="func">stan_glm</span></li>
+<li><span class="func">stan_polr</span>: ordinal regression model</li>
+<li><span class="func">stan_biglm</span>: big data lm</li>
+</ul>
+<p>Contrast this with <span class="pack">brms</span>, which only requires the <span class="func">brm</span> function and appropriate family, e.g. ‘poisson’ or ‘categorical’, and which can do multinomial models also.</p>
+<p>However, if you want to do a standard linear regression, I would not recommend using stan_lm, as it requires a prior for the <span class="math inline">\(R^2\)</span>, which is unfamiliar and only explained in technical ways that are likely going to be lost on those less comfortable with or new to statistical or Bayesian analysis<a href="#fn54" class="footnote-ref" id="fnref54"><sup>54</sup></a>. The good news is that you can simply run stan_glm instead, and work with the prior on the regression coefficients as we have discussed, and you can use <span class="func">bayes_R2</span> to get the <span class="math inline">\(R^2\)</span>.</p>
+<p>You can certainly use <span class="pack">brms</span> for GLM, but it would have to compile the code and so will always be notably slower. For LM with interactions or GLM generally, you may prefer it for the marginal effects plots.</p>
 </div>
-<div id="stan-specific-resources" class="section level2">
-<h2>Stan Specific Resources</h2>
-<p><a href="http://mc-stan.org/">Main website</a></p>
-<p><a href="http://discourse.mc-stan.org/">Stan Users Group</a></p>
-<p><a href="https://github.com/stan-dev/stan/wiki/Stan-Best-Practices">Stan Best Practices</a></p>
-<p><a href="https://github.com/stan-dev/example-models/wiki">Example Models</a></p>
-<p>More resources <a href="http://mc-stan.org/documentation/">here</a></p>
+<div id="categorical-models" class="section level2">
+<h2>Categorical models</h2>
+<p>If you’re just doing a standard logistic regression, I’d suggest stan_glm, again, for the speed. In addition, it has a specific model function for conditional logistic regression. For ordinal regression, stan_polr goes back to requiring a prior for <span class="math inline">\(R^2\)</span>, which is now the <span class="math inline">\(R^2\)</span> for the underlying latent variable of the ordinal outcome<a href="#fn55" class="footnote-ref" id="fnref55"><sup>55</sup></a>. Furthermore, <span class="pack">brms</span> has some ordinal-specific plots, as well as other types of ordinal regression (e.g. adjacent category) that allow the proportional odds assumption to be relaxed. It also can do multinomial models.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1"><span class="kw">brm</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">family=</span><span class="st">&#39;categorical&#39;</span>)  <span class="co"># multinomial</span></a>
+<a class="sourceLine" id="cb46-2" data-line-number="2"><span class="kw">brm</span>(y <span class="op">~</span><span class="st"> </span><span class="kw">cs</span>(x), <span class="dt">family=</span><span class="st">&#39;acat&#39;</span>)     <span class="co"># category-specific effects for x</span></a></code></pre></div>
+<p><span class="pack">brms</span> families for categorical:</p>
+<ul>
+<li><span class="func">bernoulli</span>: binary outcome</li>
+<li><span class="func">categorical</span>: multi-category nominal outcome</li>
+<li><span class="func">cumulative</span>, sratio, cratio, and acat: ordinal outcome (cumulative, stopping ratio, continuation-ratio, adjacent category)</li>
+</ul>
 </div>
-<div id="other" class="section level2">
-<h2>Other</h2>
-<p>Statisticat, LLC. <a href="https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf"><em>Bayesian Inference</em></a>. A quick overview from the original author of the <span class="pack">LaplacesDemon</span> package.</p>
+<div id="extended-count-models" class="section level2">
+<h2>Extended count models</h2>
+<p>For going beyond binomial, poisson, and negative binomial distributions for count data, <span class="pack">brms</span> has a lot more for common extensions to those models. It also has zero-altered counterparts to continuous outcomes (e.g. <span class="func">hurdle_gamma</span>).</p>
+<ul>
+<li><span class="func">hurdle_poisson</span></li>
+<li><span class="func">hurdle_negbinomial</span></li>
+<li><span class="func">hurdle_gamma</span></li>
+<li><span class="func">hurdle_lognormal</span></li>
+<li><span class="func">zero_inflated_poisson</span></li>
+<li><span class="func">zero_inflated_negbinomial</span></li>
+<li><span class="func">zero_inflated_binomial</span></li>
+<li><span class="func">zero_inflated_beta</span></li>
+<li><span class="func">zero_one_inflated_beta</span></li>
+</ul>
 </div>
-<div id="works-citedused" class="section level2">
-<h2>Works Cited/Used</h2>
-
-<div id="refs" class="references">
-<div>
-<p>Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed.</p>
+<div id="mixed-models" class="section level2">
+<h2>Mixed models</h2>
+<p>The Bayesian approach really shines for mixed models in my opinion, where the random effects are estimated like other parameters, and so complicated structures are notably easier to deal with, and extending such models to other distribution families is straightforward. For the usual speed boost you can use <span class="pack">rstanarm</span>:</p>
+<ul>
+<li><span class="func">stan_lmer</span>: standard <span class="pack">lme4</span> style mixed model</li>
+<li><span class="func">stan_glmer</span>: glmm</li>
+<li><span class="func">stan_glmer.nb</span>: for negative binomial</li>
+<li><span class="func">stan_nlmer</span>: <span class="pack">nlme</span> (but see stan_gamm4)</li>
+<li><span class="func">stan_mvmer</span>: multivariate outcome</li>
+<li><span class="func">stan_gamm4</span>: generalized additive mixed model in <span class="pack">lme4</span> style</li>
+</ul>
+<p>I would probably just recommend <span class="pack">rstanarm</span> for stan_lmer and stan_glmer, as <span class="pack">brms</span> has more flexibility, and even would be recommended for the standard models if you want to estimate residual (co-)variance structure, e.g. autocorrelation. It also will do multivariate models, and one can use <span class="pack">mgcv</span>::<span class="func">s</span> for smooth terms in <em>any</em> <span class="pack">brms</span> model.</p>
 </div>
-<div>
-<p>Gelman, Andrew, and Jennifer Hill. 2006. <em>Data Analysis Using Regression and Multilevel/Hierarchical Models</em>. Cambridge University Press.</p>
+<div id="other-models-and-related" class="section level2">
+<h2>Other models and related</h2>
+<p>Along with all those <span class="pack">rstanarm</span> has specific functions for <a href="http://mc-stan.org/%3Cspan%20class=%22pack%22%3Erstanarm%3C/span%3E/articles/betareg.html">beta regression</a>, <a href="http://mc-stan.org/%3Cspan%20class=%22pack%22%3Erstanarm%3C/span%3E/articles/jm.html">joint mixed/survival models</a>, and <a href="http://mc-stan.org/%3Cspan%20class=%22pack%22%3Erstanarm%3C/span%3E/articles/lm.html">regularized linear regression</a>. <span class="pack">brms</span> has many more distributional families, can do hypothesis testing[^], has marginal effects plots, and more. Both have plenty of tools for diagnostics, posterior predictive checks, and more of what has been discussed previously.</p>
+<p>In general, <span class="pack">rstanarm</span> is a great tool for translating your standard models into Bayesian ones in an efficient fashion. On the other hand, <span class="pack">brms</span> uses a simplified syntax and is notably more flexible. Here is a brief summary of my recommend use.</p>
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Analysis
+</th>
+<th style="text-align:center;">
+rstanarm
+</th>
+<th style="text-align:center;">
+brms
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+lm
+</td>
+<td style="text-align:center;">
+√
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+glm
+</td>
+<td style="text-align:center;">
+√
+</td>
+<td style="text-align:center;">
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+multinomial
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+√
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+ordinal
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+√
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+mixed
+</td>
+<td style="text-align:center;">
+√
+</td>
+<td style="text-align:center;">
+√
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+additive
+</td>
+<td style="text-align:center;">
+√
+</td>
+<td style="text-align:center;">
+√
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+regularized
+</td>
+<td style="text-align:center;">
+√
+</td>
+<td style="text-align:center;">
+√
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+beyond
+</td>
+<td style="text-align:center;">
+</td>
+<td style="text-align:center;">
+√
+</td>
+</tr>
+</tbody>
+</table>
+<p>Besides that, if you still need to model complexity not found within those, you can <em>still</em> use them to generate some highly optimized starter code, as they have functions for solely generating the underlying Stan code.</p>
 </div>
-<div>
-<p>Gelman, Andrew, Jessica Hwang, and Aki Vehtari. 2014. “Understanding Predictive Information Criteria for Bayesian Models.” <em>Statistics and Computing</em> 24 (6). Springer: 997–1016.</p>
-</div>
-<div>
-<p>Gelman, Andrew, and Iain Pardoe. 2006. “Bayesian Measures of Explained Variance and Pooling in Multilevel (Hierarchical) Models.” <em>Technometrics</em> 48 (2). Taylor &amp; Francis: 241–51.</p>
-</div>
-<div>
-<p>Gill, Jeff. 2008. <em>Bayesian Methods : A Social and Behavioral Sciences Approach</em>. Second. Boca Raton: Chapman &amp; Hall/CRC.</p>
-</div>
-<div>
-<p>Jackman, Simon. 2009. <em>Bayesian Analysis for the Social Sciences</em>. Chichester, UK: Wiley.</p>
-</div>
-<div>
-<p>Kruschke, John. 2010. <em>Doing Bayesian Data Analysis: A Tutorial Introduction with R</em>. Academic Press.</p>
-</div>
-<div>
-<p>Lunn, David, Chris Jackson, Nicky Best, Andrew Thomas, and David Spiegelhalter. 2012. <em>The BUGS Book: A Practical Introduction to Bayesian Analysis</em>. Boca Raton, FL: Chapman; Hall/CRC.</p>
-</div>
-<div>
-<p>Lynch, Scott M. 2007. <em>Introduction to Applied Bayesian Statistics and Estimation for Social Scientists</em>. New York: Springer.</p>
-</div>
-<div>
-<p>McElreath, Richard. 2016. <em>Statistical Rethinking: A Bayesian Course with Examples in R and Stan</em>. Vol. 122. CRC Press.</p>
-</div>
-<div>
-<p>McGrayne, Sharon Bertsch. 2012. <em>The Theory That Would Not Die: How Bayes’ Rule Cracked the Enigma Code, Hunted down Russian Submarines, and Emerged Triumphant from Two Centuries of Controversy</em>. Reprint. New Haven Conn.: Yale University Press.</p>
-</div>
-<div>
-<p>Vehtari, Aki, and Andrew Gelman. 2014. “WAIC and Cross-Validation in Stan.”</p>
+<div id="even-more-packages" class="section level2">
+<h2>Even more packages</h2>
+<p>I’ve focused on the two widely-used general-purpose packages. But nothing can stop Stan at this point. Here is a visualization of the current <span class="pack">rstan</span> ecosystem.</p>
+<div id="htmlwidget-a3f43d062061f3958749" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-a3f43d062061f3958749">{"x":{"nodes":{"id":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57],"label":["rstan","broom","brms","lsmeans","prophet","bayesplot","rstanarm","sjstats","shinystan","nimble","rstantools","ggmcmc","bmlm","ctsem","loo","bridgesampling","MCMCvis","finalfit","dfpk","beanz","hBayesDM","JMbayes","eggCounts","dgo","CopulaDTA","BANOVA","blavaan","DeLorean","RBesT","edstan","raw","idem","clinDR","breathteststan","ggfan","evidence","survHE","walker","dfped","bayesLopod","projpred","DrBats","bayesImageS","treatSens","varian","adnuts","themetagenomics","glmmfields","MADPop","idealstan","MIXFIM","gastempt","tmbstan","trialr","nauf","tidybayes","mlmm","rethinking"],"group":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57],"value":[100,0,30,0,0,30,30,0,30,0,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,0,30]},"edges":{"from":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57],"to":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"value":[10,30,10,10,30,30,10,30,10,10,10,10,10,30,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,30,10,30],"length":[250,0,250,250,0,0,250,0,250,250,250,250,250,0,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,0,250,0]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"edges":{"physics":true,"color":{"opacity":0.1}}},"groups":["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57"],"width":null,"height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
+<p>At this point there are already a couple dozen packages working with Stan under the hood. Odds are good you’ll find one to suit your needs.</p>
+
 </div>
 </div>
+<div class="footnotes">
+<hr />
+<ol start="54">
+<li id="fn54"><p>The developers note in their vignette for <span class="func">stan_aov</span>:<br><br>‘but it is reasonable to expect a researcher to have a plausible guess for R2 before conducting an ANOVA.’<br><br> Actually, it’s not. I see many, many researchers of varying levels of expertise, and I don’t think any of them would be able to hazard much of a guess about <span class="math inline">\(R^2\)</span> before running a model, unless they’re essentially duplicating previous work. I also haven’t come across an explanation in the documentation (which is otherwise great) of how to do specify it that would be very helpful to people just starting out with Bayesian analysis or even statistics in general. If the result is that one then has to try a bunch of different priors, then that becomes a focus of the analytical effort, and all just for one of the simplest models there is.<a href="packages.html#fnref54" class="footnote-back">↩</a></p></li>
+<li id="fn55"><p>If someone tells me they know what the prior should be for that, I probably would not believe them.<a href="packages.html#fnref55" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </section>
 
           </div>
         </div>
       </div>
-<a href="appendix.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="issues.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="conclusion.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="appendix.html">
-
+<link rel="prev" href="diagnostics.html">
+<link rel="next" href="issues.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -277,152 +277,130 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="texts-for-your-shelf" class="section level2">
-<h2>Texts for Your Shelf</h2>
-<p>The following are three texts I recommend in my consulting to folks who are interested in doing Bayesian data analyis. They can be seen as introduction, intermediate, and advanced respectively.</p>
-<p>Kruschke, J. (2014) <em>Doing Bayesian Data Analysis</em>. A very introductory text, but might be good for those not too confident in statistics generally speaking. And who doesn’t like puppies? Second edition has Stan examples.</p>
-<p>McElreath, R. (2015). <em>Statistical Rethinking</em>. A good modeling book in general, by one who has contributed a lot to helping others learn Stan. Comes with its own R package too.</p>
-<p>Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). <em>Bayesian Data Analysis</em>.</p>
+<div id="model-enhancements" class="section level1">
+<h1>Model Enhancements</h1>
+<p>Enhancing and making adjustments to a model can often be straightforward in the Bayesian context, depending on what one wants to accomplish. In other cases, some things may be possible that aren’t readily available with standard approaches in the traditional setting. The following shows a few brief examples to give an idea of the possibilities.</p>
+<div id="generating-new-variables-of-interest" class="section level2">
+<h2>Generating New Variables of Interest</h2>
+<p>We have already seen one way to get at new statistics of interest in the predictive model checking section. I next show how to do so as part of the modeling process itself. In Stan, we can accomplish this via the generated quantities section.</p>
+<p>A typical part of linear regression output is <span class="math inline">\(R^2\)</span>, the amount of variance accounted for by the model. To get this in Stan we just have to create the code necessary for the calculations, and place it within the generated quantities section. I only show this part of the model code; everything we had before would remain the same. I show the corresponding <span class="func">lm</span> results from R for comparison. There are a couple of ways to go about this, and I use some of Stan’s matrix operations as one approach.</p>
+<!-- You ran this and saved the image as data/mainModelDatawithRsq.RData -->
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb30-1" data-line-number="1">.</a>
+<a class="sourceLine" id="cb30-2" data-line-number="2">.</a>
+<a class="sourceLine" id="cb30-3" data-line-number="3">.</a>
+<a class="sourceLine" id="cb30-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb30-5" data-line-number="5">generated quantities {</a>
+<a class="sourceLine" id="cb30-6" data-line-number="6">  real rss;                </a>
+<a class="sourceLine" id="cb30-7" data-line-number="7">  real totalss;</a>
+<a class="sourceLine" id="cb30-8" data-line-number="8">  real<span class="op">&lt;</span>lower=<span class="dv">0</span>, upper=<span class="dv">1</span><span class="op">&gt;</span><span class="st"> </span>R2;                 </a>
+<a class="sourceLine" id="cb30-9" data-line-number="9">  vector[N] mu;</a>
+<a class="sourceLine" id="cb30-10" data-line-number="10">  </a>
+<a class="sourceLine" id="cb30-11" data-line-number="11">  mu &lt;-<span class="st"> </span>X <span class="op">*</span><span class="st"> </span>beta;</a>
+<a class="sourceLine" id="cb30-12" data-line-number="12">  rss &lt;-<span class="st"> </span><span class="kw">dot_self</span>(y<span class="op">-</span>mu);</a>
+<a class="sourceLine" id="cb30-13" data-line-number="13">  totalss &lt;-<span class="st"> </span><span class="kw">dot_self</span>(y<span class="op">-</span><span class="kw">mean</span>(y));</a>
+<a class="sourceLine" id="cb30-14" data-line-number="14">  R2 &lt;-<span class="st"> </span><span class="dv">1</span> <span class="op">-</span><span class="st"> </span>rss<span class="op">/</span>totalss;</a>
+<a class="sourceLine" id="cb30-15" data-line-number="15">}</a></code></pre></div>
+<p>Using the results from the model using <span class="func">lm</span>, we do the same calculations for <code>rss</code> and <code>totalss</code>, and note the result is identical to what you’d see in the summary of the model.</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb31-1" data-line-number="1">rss =<span class="st"> </span><span class="kw">crossprod</span>(<span class="kw">resid</span>(modlm))</a>
+<a class="sourceLine" id="cb31-2" data-line-number="2">totalss =<span class="st"> </span><span class="kw">crossprod</span>(y<span class="op">-</span><span class="kw">mean</span>(y))</a>
+<a class="sourceLine" id="cb31-3" data-line-number="3">rss =<span class="st"> </span>rss[<span class="dv">1</span>]; totalss =<span class="st"> </span>totalss[<span class="dv">1</span>] <span class="co"># for alignment, remove matrix</span></a>
+<a class="sourceLine" id="cb31-4" data-line-number="4"><span class="dv">1</span><span class="op">-</span>rss<span class="op">/</span>totalss; <span class="kw">summary</span>(modlm)<span class="op">$</span>r.squared</a></code></pre></div>
+<pre><code>[1] 0.4524289</code></pre>
+<pre><code>[1] 0.4524289</code></pre>
+<p>Now we can run the model with added <span class="math inline">\(R^2\)</span> <a href="#fn42" class="footnote-ref" id="fnref42"><sup>42</sup></a>. Note that as before we do not just get a point estimate, but a whole distribution of simulated values for <span class="math inline">\(R^2\)</span>. First the results.</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb34-1" data-line-number="1"><span class="kw">print</span>(fitRsq, <span class="dt">digits=</span><span class="dv">3</span>, <span class="dt">par=</span><span class="kw">c</span>(<span class="st">&#39;beta&#39;</span>,<span class="st">&#39;sigma&#39;</span>,<span class="st">&#39;R2&#39;</span>), <span class="dt">prob=</span><span class="kw">c</span>(.<span class="dv">025</span>,.<span class="dv">5</span>,.<span class="dv">975</span>))</a></code></pre></div>
+<pre><code>Inference for Stan model: stanmodelcodeRsq.
+3 chains, each with iter=12000; warmup=2000; thin=10; 
+post-warmup draws per chain=1000, total post-warmup draws=3000.
+
+          mean se_mean    sd   2.5%    50%  97.5% n_eff  Rhat
+beta[1]  4.895   0.002 0.129  4.639  4.897  5.144  3000 1.000
+beta[2]  0.087   0.003 0.131 -0.169  0.086  0.342  2751 1.000
+beta[3] -1.466   0.002 0.125 -1.712 -1.469 -1.219  2826 0.999
+beta[4]  0.821   0.002 0.123  0.584  0.820  1.063  3000 0.999
+sigma    2.028   0.002 0.091  1.858  2.025  2.212  2945 1.000
+R2       0.443   0.000 0.006  0.427  0.445  0.451  2932 1.000
+
+Samples were drawn using NUTS(diag_e) at Sat May 24 13:10:08 2014.
+For each parameter, n_eff is a crude measure of effective sample size,
+and Rhat is the potential scale reduction factor on split chains (at 
+convergence, Rhat=1).</code></pre>
+<p>The nice thing here is that our <span class="math inline">\(R^2\)</span> incorporates the additional uncertainty in estimating the model parameters, and thus acts like an <em>adjusted</em> <span class="math inline">\(R^2\)</span> <a href="#fn43" class="footnote-ref" id="fnref43"><sup>43</sup></a>. The following is the classical regression adjusted <span class="math inline">\(R^2\)</span>.</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb36-1" data-line-number="1"><span class="kw">summary</span>(modlm)<span class="op">$</span>adj</a></code></pre></div>
+<pre><code>[1] 0.4457512</code></pre>
+<p>Furthermore, in the Bayesian context we get an interval estimate and everything else we typically get as with other quantities of interest, and the same would be true for anything else we want to calculate (e.g. predictions). In addition, it would be trivial to calculate something like the actual adjusted <span class="math inline">\(R^2\)</span>, the probability that the value is greater than .5, and other things of that nature.</p>
 </div>
-<div id="stan-specific-resources" class="section level2">
-<h2>Stan Specific Resources</h2>
-<p><a href="http://mc-stan.org/">Main website</a></p>
-<p><a href="http://discourse.mc-stan.org/">Stan Users Group</a></p>
-<p><a href="https://github.com/stan-dev/stan/wiki/Stan-Best-Practices">Stan Best Practices</a></p>
-<p><a href="https://github.com/stan-dev/example-models/wiki">Example Models</a></p>
-<p>More resources <a href="http://mc-stan.org/documentation/">here</a></p>
+<div id="robust-regression" class="section level2">
+<h2>Robust Regression</h2>
+<p>If we were concerned that extreme observations exist that our current model is not able to capture well, we could change the sampling distribution to one that had a little more probability in the tails. This is very easy to do in this situation, as we just change likelihood portion of our code to employ say, a t-distribution<a href="#fn44" class="footnote-ref" id="fnref44"><sup>44</sup></a>. In Stan, the t-distribution has parameters mean and sigma as with the normal distribution, but we also have the added parameter for degrees of freedom. Thus, our code might look like the following:</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb38-1" data-line-number="1">stanmodelcodeT =<span class="st"> &quot;</span></a>
+<a class="sourceLine" id="cb38-2" data-line-number="2"><span class="st">.</span></a>
+<a class="sourceLine" id="cb38-3" data-line-number="3"><span class="st">.</span></a>
+<a class="sourceLine" id="cb38-4" data-line-number="4"><span class="st">.</span></a>
+<a class="sourceLine" id="cb38-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb38-6" data-line-number="6"><span class="st">model {                     </span></a>
+<a class="sourceLine" id="cb38-7" data-line-number="7"><span class="st">  vector[N] mu;</span></a>
+<a class="sourceLine" id="cb38-8" data-line-number="8"><span class="st">  mu &lt;- X * beta;           </span></a>
+<a class="sourceLine" id="cb38-9" data-line-number="9"><span class="st">  </span></a>
+<a class="sourceLine" id="cb38-10" data-line-number="10"><span class="st">  // priors</span></a>
+<a class="sourceLine" id="cb38-11" data-line-number="11"><span class="st">  beta ~ normal(0, 10);</span></a>
+<a class="sourceLine" id="cb38-12" data-line-number="12"><span class="st">  sigma ~ cauchy(0, 5);     </span></a>
+<a class="sourceLine" id="cb38-13" data-line-number="13"><span class="st">  </span></a>
+<a class="sourceLine" id="cb38-14" data-line-number="14"><span class="st">  // likelihood</span></a>
+<a class="sourceLine" id="cb38-15" data-line-number="15"><span class="st">  // y ~ normal(mu, sigma);            // previously used normal </span></a>
+<a class="sourceLine" id="cb38-16" data-line-number="16"><span class="st">  y ~ student_t(10, mu, sigma)         // t with df=10</span></a>
+<a class="sourceLine" id="cb38-17" data-line-number="17"><span class="st">}</span></a>
+<a class="sourceLine" id="cb38-18" data-line-number="18"><span class="st">&quot;</span></a></code></pre></div>
+<p>In this case we set the degrees of freedom at 10<a href="#fn45" class="footnote-ref" id="fnref45"><sup>45</sup></a>, but how would you know in advance what to set it as? It might be better to place a prior (with lower bound of one) for that value and estimate it as part of the modeling process. One should note that there are many distributions available in Stan (e.g. others might be useful for skewed data, truncated etc.), and more will be added in the future.</p>
 </div>
-<div id="other" class="section level2">
-<h2>Other</h2>
-<p>Statisticat, LLC. <a href="https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf"><em>Bayesian Inference</em></a>. A quick overview from the original author of the <span class="pack">LaplacesDemon</span> package.</p>
-</div>
-<div id="works-citedused" class="section level2">
-<h2>Works Cited/Used</h2>
+<div id="generalized-linear-model" class="section level2">
+<h2>Generalized Linear Model</h2>
+<p>Expanding from standard linear model, we can move very easily to generalized linear models, of which the standard regression is a special case. The key components are use of a link function that links the linear predictor to the target variable, and an appropriate sampling distribution for the likelihood.</p>
+<p>Let’s consider a count model using the Poisson distribution. We can specify the model as follows:</p>
+<p><span class="math display">\[y \sim Pois(\lambda)\]</span></p>
+<p><span class="math display">\[g(\lambda) = X\beta\]</span></p>
+<p>where <span class="math inline">\(g(.)\)</span> is the link function, the canonical link function for Poisson being the natural logarithm. In Stan, this can be expressed via the inverse link function, where we exponentiate the linear predictor<a href="#fn46" class="footnote-ref" id="fnref46"><sup>46</sup></a>. Aside from that we simply specify <span class="math inline">\(y\)</span> as distributed Poisson in the same way we used the normal and t-distribution in earlier efforts.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" data-line-number="1">stanmodelcodePoisson =<span class="st"> &quot;</span></a>
+<a class="sourceLine" id="cb39-2" data-line-number="2"><span class="st">.</span></a>
+<a class="sourceLine" id="cb39-3" data-line-number="3"><span class="st">.</span></a>
+<a class="sourceLine" id="cb39-4" data-line-number="4"><span class="st">.</span></a>
+<a class="sourceLine" id="cb39-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb39-6" data-line-number="6"><span class="st">model {                     </span></a>
+<a class="sourceLine" id="cb39-7" data-line-number="7"><span class="st">  vector[N] lambda;</span></a>
+<a class="sourceLine" id="cb39-8" data-line-number="8"><span class="st">  vector[N] eta;</span></a>
+<a class="sourceLine" id="cb39-9" data-line-number="9"></a>
+<a class="sourceLine" id="cb39-10" data-line-number="10"><span class="st">  eta &lt;- X * beta;</span></a>
+<a class="sourceLine" id="cb39-11" data-line-number="11"><span class="st">  lambda &lt;- exp(eta)</span></a>
+<a class="sourceLine" id="cb39-12" data-line-number="12"><span class="st">   </span></a>
+<a class="sourceLine" id="cb39-13" data-line-number="13"><span class="st">  // priors</span></a>
+<a class="sourceLine" id="cb39-14" data-line-number="14"><span class="st">  beta ~ normal(0, 10);</span></a>
+<a class="sourceLine" id="cb39-15" data-line-number="15"></a>
+<a class="sourceLine" id="cb39-16" data-line-number="16"><span class="st">  // likelihood</span></a>
+<a class="sourceLine" id="cb39-17" data-line-number="17"><span class="st">  y ~ poisson(lambda)</span></a>
+<a class="sourceLine" id="cb39-18" data-line-number="18"><span class="st">}</span></a>
+<a class="sourceLine" id="cb39-19" data-line-number="19"><span class="st">&quot;</span></a></code></pre></div>
+<p>And that’s all there is to that<a href="#fn47" class="footnote-ref" id="fnref47"><sup>47</sup></a>. We just saw that we are not limited to the exponential family distributions of GLM(s), though that covers a lot of ground, and so at this point you have a lot of the tools covered in standard applied statistics course, and a few beyond.</p>
 
-<div id="refs" class="references">
-<div>
-<p>Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed.</p>
-</div>
-<div>
-<p>Gelman, Andrew, and Jennifer Hill. 2006. <em>Data Analysis Using Regression and Multilevel/Hierarchical Models</em>. Cambridge University Press.</p>
-</div>
-<div>
-<p>Gelman, Andrew, Jessica Hwang, and Aki Vehtari. 2014. “Understanding Predictive Information Criteria for Bayesian Models.” <em>Statistics and Computing</em> 24 (6). Springer: 997–1016.</p>
-</div>
-<div>
-<p>Gelman, Andrew, and Iain Pardoe. 2006. “Bayesian Measures of Explained Variance and Pooling in Multilevel (Hierarchical) Models.” <em>Technometrics</em> 48 (2). Taylor &amp; Francis: 241–51.</p>
-</div>
-<div>
-<p>Gill, Jeff. 2008. <em>Bayesian Methods : A Social and Behavioral Sciences Approach</em>. Second. Boca Raton: Chapman &amp; Hall/CRC.</p>
-</div>
-<div>
-<p>Jackman, Simon. 2009. <em>Bayesian Analysis for the Social Sciences</em>. Chichester, UK: Wiley.</p>
-</div>
-<div>
-<p>Kruschke, John. 2010. <em>Doing Bayesian Data Analysis: A Tutorial Introduction with R</em>. Academic Press.</p>
-</div>
-<div>
-<p>Lunn, David, Chris Jackson, Nicky Best, Andrew Thomas, and David Spiegelhalter. 2012. <em>The BUGS Book: A Practical Introduction to Bayesian Analysis</em>. Boca Raton, FL: Chapman; Hall/CRC.</p>
-</div>
-<div>
-<p>Lynch, Scott M. 2007. <em>Introduction to Applied Bayesian Statistics and Estimation for Social Scientists</em>. New York: Springer.</p>
-</div>
-<div>
-<p>McElreath, Richard. 2016. <em>Statistical Rethinking: A Bayesian Course with Examples in R and Stan</em>. Vol. 122. CRC Press.</p>
-</div>
-<div>
-<p>McGrayne, Sharon Bertsch. 2012. <em>The Theory That Would Not Die: How Bayes’ Rule Cracked the Enigma Code, Hunted down Russian Submarines, and Emerged Triumphant from Two Centuries of Controversy</em>. Reprint. New Haven Conn.: Yale University Press.</p>
-</div>
-<div>
-<p>Vehtari, Aki, and Andrew Gelman. 2014. “WAIC and Cross-Validation in Stan.”</p>
-</div>
-</div>
 </div>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<div class="footnotes">
+<hr />
+<ol start="42">
+<li id="fn42"><p>With the <span class="pack">rstanarm</span> package, R<sup>2</sup> is automatically calculated and provided with the <span class="func">stan_lm</span> function. It is also available in <span class="pack">rstanarm</span> and <span class="pack">brms</span> via the <span class="func">bayes_R2</span> function.<a href="enhancements.html#fnref42" class="footnote-back">↩</a></p></li>
+<li id="fn43"><p>See <a href="http://www.stat.columbia.edu/~gelman/research/published/rsquared.pdf">Gelman &amp; Pardoe (2006)</a>, Bayesian Measures of Explained Variance.<a href="enhancements.html#fnref43" class="footnote-back">↩</a></p></li>
+<li id="fn44"><p>Note that with the <span class="pack">brms</span> package all one would have to do is change the <code>family</code> argument in the model function.<a href="enhancements.html#fnref44" class="footnote-back">↩</a></p></li>
+<li id="fn45"><p>Alternatively, we could add a value ‘df’ to the data list and data block.<a href="enhancements.html#fnref45" class="footnote-back">↩</a></p></li>
+<li id="fn46"><p>You can also forgo the exponentiation and instead use the <span class="func">poisson_log</span> function in your sampling statement (slightly faster too).<a href="enhancements.html#fnref46" class="footnote-back">↩</a></p></li>
+<li id="fn47"><p>Note that some link/inverse-link functions in Stan cannot be applied to vectors, only scalars. As such you would have to loop over the values of <span class="math inline">\(y\)</span>,<br> <code>for(n in 1:N) ...</code><a href="enhancements.html#fnref47" class="footnote-back">↩</a></p></li>
+</ol>
+</div>
             </section>
 
           </div>
         </div>
       </div>
-<a href="appendix.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="diagnostics.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="issues.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

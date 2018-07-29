@@ -31,8 +31,8 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
   
   
-<link rel="prev" href="appendix.html">
-
+<link rel="prev" href="preface.html">
+<link rel="next" href="example.html">
 <script src="libs/jquery-2.2.3/jquery.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -277,152 +277,52 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
           <div class="page-inner">
 
             <section class="normal" id="section-">
-<div id="references" class="section level1 unnumbered">
-<h1>References</h1>
-<div id="texts-for-your-shelf" class="section level2">
-<h2>Texts for Your Shelf</h2>
-<p>The following are three texts I recommend in my consulting to folks who are interested in doing Bayesian data analyis. They can be seen as introduction, intermediate, and advanced respectively.</p>
-<p>Kruschke, J. (2014) <em>Doing Bayesian Data Analysis</em>. A very introductory text, but might be good for those not too confident in statistics generally speaking. And who doesn’t like puppies? Second edition has Stan examples.</p>
-<p>McElreath, R. (2015). <em>Statistical Rethinking</em>. A good modeling book in general, by one who has contributed a lot to helping others learn Stan. Comes with its own R package too.</p>
-<p>Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). <em>Bayesian Data Analysis</em>.</p>
-</div>
-<div id="stan-specific-resources" class="section level2">
-<h2>Stan Specific Resources</h2>
-<p><a href="http://mc-stan.org/">Main website</a></p>
-<p><a href="http://discourse.mc-stan.org/">Stan Users Group</a></p>
-<p><a href="https://github.com/stan-dev/stan/wiki/Stan-Best-Practices">Stan Best Practices</a></p>
-<p><a href="https://github.com/stan-dev/example-models/wiki">Example Models</a></p>
-<p>More resources <a href="http://mc-stan.org/documentation/">here</a></p>
-</div>
-<div id="other" class="section level2">
-<h2>Other</h2>
-<p>Statisticat, LLC. <a href="https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf"><em>Bayesian Inference</em></a>. A quick overview from the original author of the <span class="pack">LaplacesDemon</span> package.</p>
-</div>
-<div id="works-citedused" class="section level2">
-<h2>Works Cited/Used</h2>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Bayesian analysis is now fairly common in applied work. It is no longer a surprising thing to see it utilized in non-statistical journals, though it is still fresh enough that many researchers feel they have to put ‘Bayesian’ in the title of their papers when they implement it. However, to be clear, one doesn’t conduct a Bayesian analysis per se. A Bayesian logistic regression is still just logistic regression. The <em>Bayesian</em> part comes into play with the perspective on probability that one uses to interpret the results, and in how the estimates are arrived at.</p>
+<p>The Bayesian approach itself is very old at this point. Bayes and Laplace started the whole shebang in the 18<sup>th</sup> and 19<sup>th</sup> centuries<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>, and even the modern implementation of it has its foundations in the 30s, 40s and 50s of last century<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. So while it may still seem somewhat newer to applied researchers, much of the groundwork has long since been hashed out, and there is no more need to justify a Bayesian analysis any more than there is to use the standard maximum likelihood approach<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>. While there are perhaps many reasons why the Bayesian approach to analysis did not catch on until relatively recently, perhaps the biggest is simply computational power. Bayesian analysis requires an iterative and time-consuming approach that simply wasn’t viable for most applied researchers until modern computers. But nowadays, one can conduct such analysis even on their laptop very easily.</p>
+<p>The Bayesian approach to data analysis requires a different way of thinking about things, but its implementation can be seen as an extension of traditional approaches. In fact, as we will see later, it incorporates the very likelihood one uses in standard statistical techniques. The key difference regards the notion of probability, which, while different than Fisherian or frequentist statistics, is actually more akin to how the average Joe thinks about probability. Furthermore, p-values and intervals will have the interpretation that many applied researchers incorrectly think their current methods provide. On top of this, one gets a very flexible toolbox that can handle many complex analyses. In short, the reason to engage in Bayesian analysis is that it has a lot to offer and can potentially handle whatever you throw at it.</p>
+<p>As we will see shortly, one must also get used to thinking about distributions rather than fixed points. With Bayesian analysis, we are not so much as making guesses about specific values as in the traditional setting, but more so understanding the limits of our knowledge and getting a healthy sense of the uncertainty of those guesses.</p>
+<div id="bayesian-probability" class="section level2">
+<h2>Bayesian Probability</h2>
+<p>This section will probably be about as formal as this document gets, and will be very minimal even then. The focus still will be on the conceptual understanding though, and subsequently illustrated with a by-hand example in the next section.</p>
+<div id="conditional-probability-bayes-theorem" class="section level3">
+<h3>Conditional probability &amp; Bayes theorem</h3>
+<p>Bayes theorem is illustrated in terms of probability as follows:</p>
+<p><span class="math display">\[p(\mathcal{A}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A})p(\mathcal{A})}{p(\mathcal{B})}\]</span></p>
+<p>In short, we are attempting to ascertain the conditional probability of <span class="math inline">\(\mathcal{A}\)</span> given <span class="math inline">\(\mathcal{B}\)</span> based on the conditional probability of <span class="math inline">\(\mathcal{B}\)</span> given <span class="math inline">\(\mathcal{A}\)</span> and the respective probabilities of <span class="math inline">\(\mathcal{A}\)</span> and <span class="math inline">\(\mathcal{B}\)</span>. This is perhaps not altogether enlightening in and of itself, so we will frame it in other ways, and for the upcoming depictions we will ignore the denominator<a href="#fn4" class="footnote-ref" id="fnref4"><sup>4</sup></a>.</p>
+<p><span class="math display">\[p(hypothesis|data) \propto p(data|hypothesis)p(hypothesis)\]</span></p>
+<p>In the above formulation<a href="#fn5" class="footnote-ref" id="fnref5"><sup>5</sup></a>, we are trying to obtain the probability of a hypothesis given the evidence at hand (data) and our initial (prior) beliefs regarding that hypothesis. Here we are already able to see at least one key difference between Bayesian and classical statistics. The Bayesian approach provides a probability of the hypothesis given the data, which is something generally highly desirable from a scientific perspective.</p>
+<p>Here is yet another way to consider this:</p>
+<p><span class="math display">\[posterior \propto likelihood * prior\]</span></p>
+<p>For this depiction let us consider a standard regression coefficient <span class="math inline">\(b\)</span><a href="#fn6" class="footnote-ref" id="fnref6"><sup>6</sup></a>. Here we have a prior belief about <span class="math inline">\(b\)</span> expressed as a probability distribution. As a preliminary example, we will assume perhaps that the distribution is normal, and is centered on some value <span class="math inline">\(\mu_b\)</span>, and with some variance <span class="math inline">\(\sigma_b^2\)</span>. The likelihood here is the exact same one used in classical statistics- if <span class="math inline">\(y\)</span> is our variable of interest, then the likelihood is <span class="math inline">\(p(y|b)\)</span> as in the standard regression approach using maximum likelihood estimation. What we end up with in the Bayesian context however is not a specific value of <span class="math inline">\(b\)</span> that would make the data most likely, but a probability distribution for <span class="math inline">\(b\)</span> that serves as a weighted combination of the likelihood and prior. Given that <span class="emph">posterior distribution</span> for <span class="math inline">\(b\)</span>, we can then get the mean, median, 95% <span class="emph">credible interval</span><a href="#fn7" class="footnote-ref" id="fnref7"><sup>7</sup></a>, and a whole host of other statistics that might be of interest to us.</p>
+<p>To summarize conceptually, we have some belief about the state of the world, expressed as a mathematical model (such as the linear model used in regression). The Bayesian approach provides an updated belief as a weighted combination of prior beliefs regarding that state and the currently available evidence, with the possibility of the current evidence overwhelming prior beliefs, or prior beliefs remaining largely intact in the face of scant evidence.</p>
+<p><span class="math display">\[\text{updated belief} = \text{current evidence} * \text{prior belief or evidence}\]</span></p>
+<p>We will make these concepts more concrete in the next section.</p>
 
-<div id="refs" class="references">
-<div>
-<p>Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed.</p>
-</div>
-<div>
-<p>Gelman, Andrew, and Jennifer Hill. 2006. <em>Data Analysis Using Regression and Multilevel/Hierarchical Models</em>. Cambridge University Press.</p>
-</div>
-<div>
-<p>Gelman, Andrew, Jessica Hwang, and Aki Vehtari. 2014. “Understanding Predictive Information Criteria for Bayesian Models.” <em>Statistics and Computing</em> 24 (6). Springer: 997–1016.</p>
-</div>
-<div>
-<p>Gelman, Andrew, and Iain Pardoe. 2006. “Bayesian Measures of Explained Variance and Pooling in Multilevel (Hierarchical) Models.” <em>Technometrics</em> 48 (2). Taylor &amp; Francis: 241–51.</p>
-</div>
-<div>
-<p>Gill, Jeff. 2008. <em>Bayesian Methods : A Social and Behavioral Sciences Approach</em>. Second. Boca Raton: Chapman &amp; Hall/CRC.</p>
-</div>
-<div>
-<p>Jackman, Simon. 2009. <em>Bayesian Analysis for the Social Sciences</em>. Chichester, UK: Wiley.</p>
-</div>
-<div>
-<p>Kruschke, John. 2010. <em>Doing Bayesian Data Analysis: A Tutorial Introduction with R</em>. Academic Press.</p>
-</div>
-<div>
-<p>Lunn, David, Chris Jackson, Nicky Best, Andrew Thomas, and David Spiegelhalter. 2012. <em>The BUGS Book: A Practical Introduction to Bayesian Analysis</em>. Boca Raton, FL: Chapman; Hall/CRC.</p>
-</div>
-<div>
-<p>Lynch, Scott M. 2007. <em>Introduction to Applied Bayesian Statistics and Estimation for Social Scientists</em>. New York: Springer.</p>
-</div>
-<div>
-<p>McElreath, Richard. 2016. <em>Statistical Rethinking: A Bayesian Course with Examples in R and Stan</em>. Vol. 122. CRC Press.</p>
-</div>
-<div>
-<p>McGrayne, Sharon Bertsch. 2012. <em>The Theory That Would Not Die: How Bayes’ Rule Cracked the Enigma Code, Hunted down Russian Submarines, and Emerged Triumphant from Two Centuries of Controversy</em>. Reprint. New Haven Conn.: Yale University Press.</p>
-</div>
-<div>
-<p>Vehtari, Aki, and Andrew Gelman. 2014. “WAIC and Cross-Validation in Stan.”</p>
 </div>
 </div>
 </div>
+<div class="footnotes">
+<hr />
+<ol start="1">
+<li id="fn1"><p>Bayes theorem possibly <a href="https://en.wikipedia.org/wiki/Nicholas_Saunderson">predates</a> Bayes himself by some accounts.<a href="intro.html#fnref1" class="footnote-back">↩</a></p></li>
+<li id="fn2"><p>Jeffreys, Metropolis etc.<a href="intro.html#fnref2" class="footnote-back">↩</a></p></li>
+<li id="fn3"><p>Though some might suggest that the typical practice of hypothesis testing that comes with standard methods would need <em>more</em>.<a href="intro.html#fnref3" class="footnote-back">↩</a></p></li>
+<li id="fn4"><p>The denominator reflects the sum of the numerator for <em>all</em> values <span class="math inline">\(\mathcal{A}\)</span> might take on. For example:
+<span class="math display">\[p(\mathcal{A_i}|\mathcal{B}) = \frac{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i})}{p(\mathcal{B}|\mathcal{A_i})p(\mathcal{A_i}) + \dots + p(\mathcal{B}|\mathcal{A_n})p(\mathcal{A_n})}\]</span><a href="intro.html#fnref4" class="footnote-back">↩</a></p></li>
+<li id="fn5"><p>The <span class="math inline">\(\propto\)</span> means ‘proportional to’.<a href="intro.html#fnref5" class="footnote-back">↩</a></p></li>
+<li id="fn6"><p>If we think of y as our outcome and <span class="math inline">\(\Theta\)</span> as our <em>set</em> of coefficients that include all the regression coefficients <span class="math inline">\(b\)</span> and <span class="math inline">\(\sigma^2\)</span> variance, i.e. all parameters we need to estimate for the model: <span class="math display">\[p(\mathcal{\Theta}|\mathcal{y}) = \frac{p(\mathcal{y}|\mathcal{\Theta})p(\mathcal{\Theta})}{p(\mathcal{y})}\]</span><a href="intro.html#fnref6" class="footnote-back">↩</a></p></li>
+<li id="fn7"><p>More on this later.<a href="intro.html#fnref7" class="footnote-back">↩</a></p></li>
+</ol>
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </section>
 
           </div>
         </div>
       </div>
-<a href="appendix.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
-
+<a href="preface.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="example.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>

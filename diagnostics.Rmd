@@ -11,14 +11,14 @@ There are various ways to assess whether or not the model has converged to a tar
 
 In the previous model we noted the traceplot for a single parameter, and a visual approach to monitoring convergence is certainly one good method.  In general, we look for a plot that shows random scatter around a mean value, and our model results suggest that the chains mixed well and the traceplot looked satisfactory.
 
-<img src="img/badchains.svg" style="display:block; margin: 0 auto;"  width=50%>
+<img class='zoom' src="img/badchains.svg" style="display:block; margin: 0 auto;"  width=50%>
 
 This is an example where things have gone horribly wrong.  The chains never converge nor do they mix with one another.  One reason for running multiple chains is that any individual chain might converge toward one target, while another chain might converge elsewhere, and this would still be a problem.  Also, you might see otherwise healthy chains get stuck on occasion over the course of the series, which might suggest more model tweaking or a change in the sampler settings is warranted.
 
 We can examine the mixed chains and density plots of the posterior with standard functions in the <span class="pack">rstan</span> package displayed previously, various functions in the <span class="pack">bayesplot</span> package, or interactively via <span class="pack">shinyStan</span> package and its <span class="func">launch_shiny</span> function.  In the Bayesian approach, increasing amounts of data leads to a posterior distribution of the parameter vector approaching multivariate normality.  The following shows a density, trace and autocorrelation plots for one of the regression coefficients using <span class="pack">shinyStan</span>.
 
 <br>
-<img src="img/shiny_stan.png" style="display:block; margin: 0 auto;">
+<img class='zoom' src="img/shiny_stan.png" style="display:block; margin: 0 auto;">
 
 ```{r badChain, eval=FALSE, echo=FALSE}
 # see https://groups.google.com/forum/#!topic/stan-users/hio0siMTvhE
@@ -65,7 +65,9 @@ ggsave('img/badchains.svg', width=11, height=8.5, bg='transparent')
 To go along with visual inspection, we can examine various statistics that might help our determination of convergence or lack thereof.  Gelman and Rubin's <span class="emph">potential scale reduction factor</span>, $\hat{R}$, provides an estimate of convergence based on the variance of an estimated parameter $\theta$ between chains, and the variance within a chain. It is interpreted as the factor by which the variance in the estimate might be reduced with longer chains.  We are looking for a value near 1 (and at the very least less than 1.1), and it will get there as $N_{sim} \rightarrow \infty$.  In the regression model things are looking good in this respect.
 
 ```{r showRhat, echo=FALSE}
-broom::tidy(fit, rhat=T)[,c(1:2,4)] %>% format(digits=4) %>% pander(justify='lrr')
+broom::tidy(fit, rhat=T)[,c(1:2,4)] %>% 
+  kable(align='lcc', digits = 3) %>% 
+  kable_styling(full_width = F)
 ```
 
 
@@ -133,15 +135,19 @@ ggplot(data = test, mapping = aes(x = lag, y = acf)) +
 The effective number of simulation draws is provided as $n_{\textrm{eff}}$ in the Stan output, and is similarly obtained in BUGS/JAGS.  Ideally, we would desire this number to equal the number of posterior draws requested, and in the presence of essentially no autocorrelation the values would be equal.  This is not a requirement though, and technically a low number of draws would still be usable.  However, a notable discrepancy might suggest there are some issues with the model, or simply that longer chains could be useful. In our current model, all our effective sample sizes are at or near the total number of posterior draws.
 
 ```{r showNeff, echo=FALSE}
-broom::tidy(fit, ess=T)[,c(1:2,4)] %>% format(digits=4) %>% pander(justify='lrr')
+broom::tidy(fit, ess=T)[,c(1:2,4)] %>% 
+  kable(align='lcc', digits = 3) %>% 
+  kable_styling(full_width = F)
 ```
 
 <span class="emph">Monte Carlo error</span> is an estimate of the uncertainty contributed by only having a finite number of posterior draws. We'd typically want roughly less than 5% of the posterior standard deviation (reported right next to it in the Stan output), but might as well go for less than 1%. With no autocorrelation it would equal $\sqrt{\frac{var(\theta)}{n_{\textrm{eff}}}}$[^mcerr]. and $n_{\textrm{eff}}$ would equal the number of simulation draws requested.
 
 ```{r showMCerror, echo=FALSE}
 rstan::summary(fit, pars=c('beta', 'sigma'))$summary[,c('mean', 'se_mean')] %>% 
-  format(digits=1) %>% 
-  pander(justify='lrr')
+  # format(digits=1) %>% 
+  data.frame() %>% 
+  kable(align='lcc', digits=3) %>% 
+  kable_styling(full_width = F) 
 ```
 
 

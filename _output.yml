@@ -1,28 +1,51 @@
-bookdown::gitbook:
-  css: [css/standard_html.css]
-  font-import: http://fonts.googleapis.com/css?family=Risque|Roboto|Open+Sans|Stalemate|Alex+Brush
-  font-family: 'Roboto'
-bookdown::epub_book:
-   stylesheet: [css/book.css, css/standard_html.css]
-# bookdown::tufte_html_book:
-#   css: [toc.css, ../css/tufte_bookdown/mytufte.css]
-#   font-import: http://fonts.googleapis.com/css?family=Risque|Roboto|Open+Sans
-#   font-family: 'Roboto'
-#   config:
-#     toc:
-#       before: |
-#         <li><a href="./"><span style="font-size:150%; font-variant:small-caps; font-style:italic; color:#ff5500">Become a Bayesian with R</span></a></li>
-#       after: |
-#         <li><a href="https://m-clark.github.io" target="blank">Michael Clark</a></li>
-#     edit:
-#       link: https://github.com/rstudio/bookdown-demo/edit/master/%s
-#     highlight: pygments
-# bookdown::html_book:
-#   css: [css/standard_html.css]
-#   font-import: http://fonts.googleapis.com/css?family=Risque|Roboto|Open+Sans|Alex+Brush
-#   font-family: 'Roboto'
-# bookdown::pdf_book:
-#   includes:
-#     in_header: preamble.tex
-#   latex_engine: xelatex
-#   citation_package: natbib
+ bookdown::gitbook:
+    css: [css/book.css, 'https://use.fontawesome.com/releases/v5.0.13/css/all.css']
+    font-import: https://fonts.googleapis.com/css?family=Roboto|Open+Sans|Alex+Brush
+    font-family: 'Roboto'
+    number_sections: false
+    split_by: rmd
+    config:
+      df_print: kable
+      highlight: pygments
+      edit : null
+      download: null
+      search: yes
+      sharing:
+        facebook: no
+        twitter: no
+        google: no
+        weibo: no
+        instapper: no
+        vk: no
+        all: ['twitter', 'facebook', 'google', 'weibo', 'instapaper']
+      toc:
+        depth: 2
+        collapse: section
+        scroll_highlight: yes
+        before: |
+         <li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li>
+        after: |
+         <li class='after'">
+            <a href="https://m-clark.github.io/">
+               <img src="img/mc_logo.png" style="width:25%; padding:0px 0; display:block; margin: 0 auto;" alt="MC logo">
+            </a>
+         </li>
+         <li class='after'">
+            <div style='text-align:center'>
+               <a href="https://github.com/m-clark/">
+                  <i class="fab fa-github fa-2x" aria-hidden="true"></i>
+               </a>
+            </div>
+         </li>
+         <li class='after'">
+            <div style='text-align:center'>
+               <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">
+                  <i class="fab fa-creative-commons fa-lg"></i>
+                  <i class="fab fa-creative-commons-by fa-lg"></i>
+                  <i class="fab fa-creative-commons-sa fa-lg"></i>
+               </a>
+            </div>
+         </li>
+
+# bookdown::epub_book:
+#  stylesheet: css/book.css

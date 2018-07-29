@@ -105,7 +105,9 @@ For a reference, the following is from the Stan manual, and notes variables of i
 tab = data.frame(c('modeled, unmodeled data', 'modeled parameters, missing data', 'unmodeled parameters', 'generated quantities', 'loop indices'),
                  c('data, transformed data', 'parameters, transformed parameters', 'data, transformed data', 'transformed data, transformed parameters, generated quantities','loop statement'))
 colnames(tab) = c('Variable Kind', 'Declaration Block')
-pander(tab, split.cells=Inf, split.table=Inf)
+# pander(tab, split.cells=Inf, split.table=Inf)
+kable(tab, align = 'cc') %>% 
+  kable_styling(full_width = F)
 ```
 
 The <span class="emph">transformed data</span> block is where you could do such things as log or center variables and similar, i.e. you can create new data based on the input data or just in general.  If you are using R though, it would almost always be easier to do those things in R first and just include them in the data list.  You can also declare any unmodeled parameters here, e.g. those you want fixed at some value.
@@ -178,7 +180,7 @@ But how would we know if our model was working out okay otherwise?  There are se
 stan_trace(fit, pars=c('beta[4]'))
 ```
 
-<span class="imgbigger"><img src="img/traceplotWarmup.svg" width=75% style="display:block; margin: 0 auto;"></span>
+<img class='zoom' src="img/traceplotWarmup.svg" width=75% style="display:block; margin: 0 auto;">
 
 ```{r rstanModelDiagnostics2, echo=F, eval=FALSE}
 # library(rstan)

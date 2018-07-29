@@ -389,7 +389,8 @@ Now we are ready to run the model.  You'll want to examine the help file for the
 tab = rbind(c("n.iter=3000", "  n.thin=1", "  n.burnin=2000"),
             c("n.iter=3000", "  n.thin=10", "  n.burnin=2000"),
             c("n.iter=3000", "  n.thin=100", "  n.burnin=2000"))
-pander(tab)
+kable(tab) %>% 
+  kable_styling(full_width = F)
 ```
 
 In other packages, with those arguments you'd end up with 1000, 100, and 10 posterior draws.
@@ -411,7 +412,9 @@ Now we are ready for the results, which will be the same as what we saw with Sta
 ```{r bugsModelResults, eval=c(1,3), echo=4, results='hold'}
 load('data/lmbugsResults.RData')
 print(lmbugs, digits=3)
-round(lmbugs$summary[,c(1:3,5,7:9)], 3) %>% pander
+lmbugs$summary[,c(1:3,5,7:9)] %>% 
+  kable(digits = 2) %>% 
+  kable_styling(full_width = F)
 lmbugs$summary
 ```
 
@@ -488,8 +491,12 @@ coda::effectiveSize(lmjags)
 
 ```{r jagsModelResults_pretty, echo=F}
 load('data/jagsModel.RData')
-broom::tidyMCMC(lmjags, conf.int=T) %>% format(digits=2) %>% pander(justify='lrrrr')
-coda::effectiveSize(lmjags) %>% pander
+broom::tidyMCMC(lmjags, conf.int=T) %>% 
+  kable(align='lrrrr', digits=2) %>% 
+  kable_styling(full_width = F)
+coda::effectiveSize(lmjags) %>% 
+  kable(digits=0) %>% 
+  kable_styling(full_width = F)
 ```
 
 
@@ -657,18 +664,25 @@ bfinal = as.mcmc(data.frame(beta=b[seq(burnin+1, nsim, by=thin),], sigmasq=s2[se
 
 # get summaries; compare to lm and stan
 # broom::tidyMCMC(bfinal, conf.int=T) %>% format(digits=2) %>% pander(justify='lrrrr')
-rstan::monitor(array(cbind(b,s2),dim=c(5000,1,5), dimnames=list(NULL, NULL, colnames(bfinal))), 
-               warmup=burnin, digits_summary=5, probs=c(.025,.975), print=F) %>% 
-  format(digit=2) %>% 
-  pander(justify='lrrrrrrr')
 # round(c(coef(modlm), sigamsq=summary(modlm)$sigma^2), 3) %>% pander
 ```
+
+```{r MHexampleRun_pretty_table, echo=FALSE}
+rstan::monitor(array(cbind(b,s2),dim=c(5000,1,5), dimnames=list(NULL, NULL, colnames(bfinal))), 
+               warmup=burnin, digits_summary=5, probs=c(.025,.975), print=F) %>% 
+  data.frame %>% 
+  kable(align='lrrrrrrr', digits=2) %>% 
+  kable_styling(full_width = F)
+```
+
 
 Here is the previous Stan fit for comparison.
 
 ```{r MHexampleCompare, echo=FALSE}
 # print(fit, digits=3, prob=c(.025,.5,.975))
-broom::tidy(fit, conf.int=T) %>%  format(digits=2) %>% pander(justify='lrrrr')
+broom::tidy(fit, conf.int=T) %>%  
+  kable(align='lrrrr', digits=2) %>% 
+  kable_styling(full_width = F)
 ```
 
 
@@ -862,14 +876,19 @@ finalest =  summary(theta)$statistics[,'Mean']
 # b = finalest[1:4]
 # sig = finalest[5]
 # broom::tidyMCMC(theta, conf.int=T) %>% format(digits=2) %>% pander(justify='lrrrr')
+```
+
+```{r HMCexampleRun_pretty_table, echo=FALSE}
 rstan::monitor(M1$sims, 
                warmup=500, digits_summary=5, probs=c(.025,.975),
                print=F) %>% 
-  round(digit=3) %>%
-  format(digit=3) %>%
-  pander(justify='lrrrrrrr')
+  kable(align='lrrrrrrr', digits=2) %>% 
+  kable_styling(full_width = F)
+
+
 glue::glue('log posterior = ', {round(log_p_th(X, y, finalest),3)})
 ```
+
 
 Our estimates look pretty good, and inspection of the diagnostics would show good mixing and convergence as well. At this point we can compare it to the Stan output.  For the following, I modified the previous Stan code to use the same inverse gamma prior and tweaked the control options for a little bit more similarity, but that's not necessary.
 
@@ -926,7 +945,9 @@ dat = list(N=N, K=ncol(X), y=y, X=X)
 #            control=list(adap_engaged=F, stepsize=stepsize, adap_t0=nLeap, refresh=0))
 load('data/IGModelData.RData')
 # print(fitIG, digits_summary=3, probs=c(.025,.5,.975))
-broom::tidy(fitIG, conf.int=T) %>% format(digits=3) %>% pander(justify='lrrrr')
+broom::tidy(fitIG, conf.int=T) %>% 
+  kable(align='lrrrr', digits = 2) %>% 
+  kable_styling(full_width = F)
 # finalest; log_p_th(X, y, finalest)
 glue::glue('log posterior = ', round(get_posterior_mean(fitIG, par='lp__')[,3],3))
 ```

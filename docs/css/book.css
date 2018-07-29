@@ -1,4 +1,37 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto");
+@import url("https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono|Roboto+Condensed|Lato|Lora|Fira+Sans|Alex+Brush");
+
+/* title page */
+
+.book .book-body .page-wrapper .page-inner section.normal h1.title {
+  font-size: 500%;
+  font-family: 'Alex Brush', 'Fira Sans', Karla, 'Roboto Condensed', Lora, Lato, Roboto, sans;
+  font-style: italic;
+  font-weight: 100;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal .author .noem {
+  font-size:  125%;
+  font-style:  normal;
+  font-variant:  small-caps;
+  font-weight: 200;
+  font-family: 'Roboto Condensed', 'Fira Sans', Roboto, 'Open Sans', sans;
+}
+
+
+.book .book-body .page-wrapper .page-inner section.normal a.uri {
+  font-size:  75%;
+  font-style:  normal;       /* ignored thanks to bootstrap random enforcement of em*/
+  font-variant:  small-caps;
+  font-family:  Roboto, 'Open Sans', sans;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal h4.date {
+  font-style: normal;
+  font-size:  100%;
+  font-family: 'Open Sans', sans;
+}
+
+/* main */
 
 .book  {
   background-color: #fffff8;
@@ -7,6 +40,8 @@
 .section {
   background-color: #fffff8;
 }
+
+
 
 .book .book-body .page-wrapper .page-inner section.normal {
     display: block;
@@ -80,6 +115,8 @@
     /* background: 0 0; */
 }
 
+
+
 /* only way to set bgcolor of top bar?*/
 .book-body.fixed {
   background-color: #fffff8;
@@ -88,7 +125,8 @@
 /* Rather than resize the header, just get rid of line */
 .book.with-summary .book-header.fixed {
   background-color: #fffff8;
-  /*font-family: Stalemate Roboto Sans; ignored as all it is doing is taking from index title*/
+  font-variant: small-caps;
+  font-family: Stalemate Roboto Sans;
   border-bottom: 0 solid rgba(0,0,0,.07);  /*just remove it; this makes height in .book-header above moot*/
   border-bottom-width: 0;
   border-bottom-style: solid;
@@ -99,6 +137,7 @@ i {
   background-color: #fffff8;
 }
 
+/* toc area general */
 .book .book-summary {
     position: absolute;
     font-family: "Open Sans", 'Helvetica Neue', Roboto, sans-serif;
@@ -108,7 +147,7 @@ i {
     z-index: 1;
     width: 300px;
     color: #364149;  /**/
-    background: #eaf5fb; /*#d9edf7#bdcadb #3572D9 #fafafa*/
+    background: #f5f5f540; /* #eaf5fb;  #d9edf7#bdcadb #3572D9 #fafafa*/
     border-right: 1px solid rgba(0,0,0,.07);
     -webkit-transition: left 250ms ease;
     -moz-transition: left 250ms ease;
@@ -119,7 +158,7 @@ i {
 /* nav/menu area */
 .book .book-summary ul.summary li a, .book .book-summary ul.summary li span {
     display: block;
-    padding: 10px 15px;
+    padding: 10px 25px;
     border-bottom: none;
     color: #364149; /**/
     background: 0 0;
@@ -127,35 +166,38 @@ i {
     overflow: hidden;
     white-space: nowrap;
     position: relative;
+    font-family: Lato,'Roboto Condensed', sans;
+    /* font-variant: small-caps; */
 }
 
 
 .book .book-summary ul.summary li a:hover, .book .book-summary ul.summary li.active>a {
   color: #fffff8;  /*#6197D5*/
-  background-color: #b2001d;
+  background-color: #990024;
 }
 
 /* so that before and after aren't treated the same as the toc, because why would they? */
 .book .book-summary ul.summary li.before a {
-  color: #b2001d;
+  color: #990024;
   text-decoration: none;
   font-size: 125%;
   font-variant: small-caps;
-  font-family: 'Helvetica Neue', 'Open Sans', Roboto, sans-serif;
-  font-weight: 800;
+  font-family: 'Roboto Condensed', 'Helvetica Neue', 'Open Sans', Roboto, sans-serif;
+  font-weight: 500;
 }
 
 
 .book .book-summary ul.summary li.before a:hover,
 .book .book-summary ul.summary li.before li.active>a {
   color: #fffff8;  /*#6197D5*/
-  background-color: #b2001d;
+  background-color: #990024;
   text-decoration: none;
 }
 
 .book .book-summary ul.summary li.after a, .book .book-summary ul.summary li.after a:hover {
   background-color: transparent;
 }
+
 
 /* divider line for the title before and other stuff  after toc */
 .book .book-summary ul.summary li.divider{
@@ -195,6 +237,14 @@ i {
   padding: 1em;
 }
 
+/* headers */
+
+h1, h2, h3, h4, h5 {
+  color:#990024;
+  font-family: 'Roboto Condensed';
+}
+
+/* notes */
 
 .img-note {
   vertical-align: central;
@@ -205,7 +255,125 @@ i {
   color: #00000080;
 }
 
+
+/* code */
+
+/* logical NA */
+.ot {
+ color: #337ab7;
+}
+
+/* char/string */
+.ch, .st {
+ color: #aa5500;
+}
+
+/* args */
+.dt {
+
+}
+
+/* package */
+code span.st {
+ color: #aa5500;
+}
+
+/* float, other */
+.fl, .dv {
+ color: #23527c;
+}
+
 /* override pygments setting code to a tag */
 .book .book-body .page-wrapper .page-inner section.normal pre code a {
   color: #585858;
+}
+
+/* img */
+
+img {
+  display: block;
+  margin: 0 auto;
+}
+
+/* zoom for img*/
+.zoom {
+    transition: all .3s;
+}
+
+.zoom:hover {
+    transform: scale(1.5); /* (150% zoom - Note: if the zoom is too large, it will go outside of the viewport) */
+}
+
+
+/* creative commons, github icons */
+.fab .fa-creative-commons, .fa-creative-commons-sa, .fa-creative-commons-by, .fa-github, .fa-lg {
+  color: #990024;
+  background-color: transparent;
+}
+
+/* text highlights */
+.emph {
+  color: #E32D00 ;  /*#ff5500 #D14300*/
+  font-weight: 500;
+}
+
+/* pack func and objclass colors initially come from hcl(seq(90,360, length.out=4), c=80, l=80); redone for contrast*/
+.pack {
+  color: #990071; /*#AC9CFF #e41a1c*/
+  font-weight: 500;
+}
+
+.func {
+  color: #007020;   /*#007199 #00CBB6; #984ea3; can just use `` instead*/
+  font-weight: bold;
+}
+
+.objclass {
+  color:  #947100;  /*#AAB400 #4daf4a; #FFC5D0*/
+  font-weight: 500;
+}
+
+/* miscellaneous */
+
+.col2 {
+  columns: 2 200px;         /* number of columns and width in pixels*/
+  -webkit-columns: 2 200px; /* chrome, safari */
+  -moz-columns: 2 200px;    /* firefox */
+}
+.col3 {
+  columns: 3 100px;
+  -webkit-columns: 3 100px;
+  -moz-columns: 3 100px;
+}
+
+.plotly {
+  margin-left: 5%;
+  margin-right: 5%;
+}
+
+/*.plotly html-widget {
+  width: 100%;
+}*/
+
+.d3heatmap {
+  margin-left: 5%;
+  margin-right: 5%;
+  width: 75%;
+}
+
+
+/* tables */
+
+
+table {
+  margin: auto;
+}
+
+.book .book-body .page-wrapper .page-inner section.normal table tr:nth-child(2n) {
+    background-color: white;
+}
+
+div.datatables {
+    margin-left: auto;     /* to center them when full is not necessary. */
+    margin-right: auto;
 }
