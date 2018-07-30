@@ -299,9 +299,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <a class="sourceLine" id="cb45-13" data-line-number="13">    <span class="dt">family =</span> <span class="kw">bernoulli</span>(<span class="dt">link =</span> <span class="st">&#39;logit&#39;</span>), </a>
 <a class="sourceLine" id="cb45-14" data-line-number="14">    <span class="dt">chains =</span> <span class="dv">2</span>,</a>
 <a class="sourceLine" id="cb45-15" data-line-number="15">    <span class="dt">cores =</span> <span class="dv">2</span>, </a>
-<a class="sourceLine" id="cb45-16" data-line-number="16">    <span class="dt">prior =</span> <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> b),</a>
-<a class="sourceLine" id="cb45-17" data-line-number="17">                  <span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="dt">class =</span> sd)<span class="er">)</span>,</a>
-<a class="sourceLine" id="cb45-18" data-line-number="18">    iter =<span class="st"> </span><span class="dv">2000</span><span class="er">)</span></a></code></pre></div>
+<a class="sourceLine" id="cb45-16" data-line-number="16">    <span class="dt">prior =</span> <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> b,</a>
+<a class="sourceLine" id="cb45-17" data-line-number="17">                  <span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="dt">class =</span> sd),</a>
+<a class="sourceLine" id="cb45-18" data-line-number="18">    <span class="dt">iter =</span> <span class="dv">2000</span>)</a></code></pre></div>
 <p>So the syntax is easy to use for both of them, and to a point identical to standard R modeling syntax, and both have the same <span class="pack">rstan</span> arguments. However, you’ll need to know what’s available to tweak and how to do so specifically for each package.</p>
 <div id="standard-regression-and-glm" class="section level2">
 <h2>Standard Regression and GLM</h2>

@@ -27,8 +27,8 @@ brm(y ~ x + z + (1|g),
     family = bernoulli(link = 'logit'), 
     chains = 2,
     cores = 2, 
-    prior = prior(normal(0, 1), class = b),
-                  cauchy(0, 5), class = sd)),
+    prior = prior(normal(0, 1), class = b,
+                  cauchy(0, 5), class = sd),
     iter = 2000)
 ```
 
