@@ -25,10 +25,10 @@ stan_glm(y ~ x + z + (1|g),
 brm(y ~ x + z + (1|g), 
     data=d, 
     family = bernoulli(link = 'logit'), 
-    chains = 2,
-    cores = 2, 
     prior = prior(normal(0, 1), class = b,
                   cauchy(0, 5), class = sd),
+    chains = 2,
+    cores = 2, 
     iter = 2000)
 ```
 
@@ -50,7 +50,7 @@ It's not a good thing that for the most common linear models R has multiple func
 - <span class="pack">nnet</span>::<span class="func">nnet</span>: multinomial regression model
 - <span class="pack">biglm</span>::<span class="func">biglm</span>: big data lm
 
-<span class="pack">rstanarm</span> keeps this nomenclature unfortunately, and currently doesn't offer anything for multinomial that I'm aware of.  Thus we have:
+<span class="pack">rstanarm</span> keeps this nomenclature unfortunately, and currently doesn't offer anything for [multinomial models](https://github.com/stan-dev/rstanarm/issues/20).  Thus we have:
 
 - <span class="func">stan_aov</span>: ANOVA
 - <span class="func">stan_lm</span>: standard regression (linear model)
@@ -67,25 +67,25 @@ However, if you want to do a standard linear regression, I would not recommend u
 You can certainly use <span class="pack">brms</span> for GLM, but it would have to compile the code and so will always be notably slower.  For LM with interactions or GLM generally, you may prefer it for the marginal effects plots.
 
 
-## Categorical models
+## Categorical Models
 
 
-If you're just doing a standard logistic regression, I'd suggest stan_glm, again, for the speed.  In addition, it has a specific model function for conditional logistic regression.  For ordinal regression, stan_polr goes back to requiring a prior for $R^2$, which is now the $R^2$ for the underlying latent variable of the ordinal outcome[^r2_polr].   Furthermore, <span class="pack">brms</span> has some ordinal-specific plots, as well as other types of ordinal regression (e.g. adjacent category) that allow the proportional odds assumption to be relaxed.  It also can do multinomial models.
+If you're just doing a standard logistic regression, I'd suggest <span class="func">stan_glm</span>, again, for the speed.  In addition, it has a specific model function for conditional logistic regression (<span class="func">stan_clogit</span>).  Beyond that, I'd probably recommend <span class="pack">brms</span>.  For ordinal regression, <span class="func">stan_polr</span> goes back to requiring a prior for $R^2$, which is now the $R^2$ for the underlying latent variable of the ordinal outcome[^r2_polr].  Furthermore, <span class="pack">brms</span> has some ordinal-specific plots, as well as other types of ordinal regression (e.g. adjacent category) that allow the proportional odds assumption to be relaxed.  It also can do multi-category models[^nomulti].
 
 ```{r ordinal, eval=FALSE}
-brm(y ~ x, family='categorical')  # multinomial
-brm(y ~ cs(x), family='acat')     # category-specific effects for x
+brm(y ~ x, family='categorical')  # nominal outcome with > 2 levels
+brm(y ~ cs(x), family='acat')     # ordinal model with category-specific effects for x
 ```
 
 <span class="pack">brms</span> families for categorical:
 
-- <span class="func">bernoulli</span>: binary outcome
-- <span class="func">categorical</span>: multi-category nominal outcome
-- <span class="func">cumulative</span>, sratio, cratio, and acat: ordinal outcome (cumulative, stopping ratio, continuation-ratio, adjacent category)
+- <span class="func">bernoulli</span>: binary target
+- <span class="func">categorical</span>: nominal target
+- <span class="func">cumulative</span>, <span class="func">sratio</span>, <span class="func">cratio</span>, and <span class="func">acat</span>: ordinal outcome (cumulative, stopping ratio, continuation-ratio, adjacent category)
 
-## Extended count models
+## Extended Count Models
 
-For going beyond binomial, poisson, and negative binomial distributions for count data, <span class="pack">brms</span> has a lot more for common extensions to those models. It also has zero-altered counterparts to continuous outcomes (e.g. <span class="func">hurdle_gamma</span>).
+For going beyond binomial, poisson, and negative binomial distributions for count data, <span class="pack">brms</span> has a lot more for common extensions to those models, and beyond. It also has zero-altered counterparts to continuous outcomes (e.g. <span class="func">hurdle_gamma</span>).
 
 - <span class="func">hurdle_poisson</span>
 - <span class="func">hurdle_negbinomial</span>
@@ -97,7 +97,9 @@ For going beyond binomial, poisson, and negative binomial distributions for coun
 - <span class="func">zero_inflated_beta</span>
 - <span class="func">zero_one_inflated_beta</span>
 
-## Mixed models
+As mentioned previously, there is currently no direct way to do multinomial count models[^nomulti] except via the poisson
+
+## Mixed Models
 
 The Bayesian approach really shines for mixed models in my opinion, where the random effects are estimated like other parameters, and so complicated structures are notably easier to deal with, and extending such models to other distribution families is straightforward.  For the usual speed boost you can use <span class="pack">rstanarm</span>:
 
@@ -111,7 +113,7 @@ The Bayesian approach really shines for mixed models in my opinion, where the ra
 I would probably just recommend <span class="pack">rstanarm</span> for stan_lmer and stan_glmer, as <span class="pack">brms</span> has more flexibility, and even would be recommended for the standard models if you want to estimate residual (co-)variance structure, e.g. autocorrelation.  It also will do multivariate models, and one can use <span class="pack">mgcv</span>::<span class="func">s</span> for smooth terms in *any* <span class="pack">brms</span> model.
 
 
-## Other models and related
+## Other Models and Related
 
 Along with all those <span class="pack">rstanarm</span> has specific functions for [beta regression](http://mc-stan.org/<span class="pack">rstanarm</span>/articles/betareg.html), [joint mixed/survival models](http://mc-stan.org/<span class="pack">rstanarm</span>/articles/jm.html), and [regularized linear regression](http://mc-stan.org/<span class="pack">rstanarm</span>/articles/lm.html).  <span class="pack">brms</span> has many more distributional families, can do hypothesis testing[^], has marginal effects plots, and more.  Both have plenty of tools for diagnostics, posterior predictive checks, and more of what has been discussed previously.
 
@@ -128,9 +130,9 @@ data_frame(Analysis = c('lm', 'glm', 'multinomial', 'ordinal', 'mixed', 'additiv
 Besides that, if you still need to model complexity not found within those, you can *still* use them to generate some highly optimized starter code, as they have functions for solely generating the underlying Stan code.
 
 
-## Even more packages
+## Even More Packages
 
-I've focused on the two widely-used general-purpose packages.  But nothing can stop Stan at this point. Here is a visualization of the current <span class="pack">rstan</span> ecosystem.
+I've focused on the two widely-used general-purpose packages, but nothing can stop Stan at this point. Here is a visualization of the current <span class="pack">rstan</span> ecosystem.
 
 ```{r stan_getgraph, eval=TRUE, echo=FALSE}
 get_depgraph = function(pack) {
@@ -176,6 +178,8 @@ visNetwork(nodes = nodes_trim,
 At this point there are already a couple dozen packages working with Stan under the hood.  Odds are good you'll find one to suit your needs.
 
 
-[^stan_lm_vignette]: The developers note in their vignette for <span class="func">stan_aov</span>:<br><br>'but it is reasonable to expect a researcher to have a plausible guess for R2 before conducting an ANOVA.'<br><br> Actually, it's not.  I see many, many researchers of varying levels of expertise, and I don't think any of them would be able to hazard much of a guess about $R^2$ before running a model, unless they're essentially duplicating previous work.  I also haven't come across an explanation in the documentation (which is otherwise great) of how to do specify it that would be very helpful to people just starting out with Bayesian analysis or even statistics in general.  If the result is that one then has to try a bunch of different priors, then that becomes a focus of the analytical effort, and all just for one of the simplest models there is.
+[^stan_lm_vignette]: The developers note in their vignette for <span class="func">stan_aov</span>:<br><br>'but it is reasonable to expect a researcher to have a plausible guess for R2 before conducting an ANOVA.'<br><br> Actually, I'm not sure how reasonable this is.  I see many, many researchers of varying levels of expertise, and I don't think any of them would be able to hazard much of a guess about $R^2$ before running a model, unless they're essentially duplicating previous work.  I also haven't come across an explanation in the documentation (which is otherwise great) of how to specify it that would be very helpful to people just starting out with Bayesian analysis or even statistics in general.  If the result is that one then has to try a bunch of different priors, then that becomes the focus of the analytical effort, which likely won't appeal to people just wanting to run a standard regression model.
 
 [^r2_polr]: If someone tells me they know what the prior should be for that, I probably would not believe them.
+
+[^nomulti]: The corresponding distribution is the categorical distribution, which is a multinomial distribution with size = 1.  Multinomial count models, i.e. with size > 1, on the other hand, are not currently supported [except indirectly](https://github.com/paul-buerkner/brms/issues/338). However, the multinomial-poisson transformation can be used instead.
