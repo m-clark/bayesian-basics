@@ -422,7 +422,7 @@ ggsave('figure/priorlikepost3.png', width=8, height=8, bg = "transparent") # png
 
 [^rooney]: The fifth shot would have won the game but was taken by Wayne Rooney.
 
-[^binomll]: See for yourself in the [binmoial likelihood][Binomial Likelihood Example] section in the appendix.
+[^binomll]: See for yourself in the [binomial likelihood][Binomial Likelihood Example] section in the appendix.
 
 [^postpred]: Mathematically represented as: $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$ <br><br> We can get a sense of the structure of this process via the following table, taken from Gelman: <br><br> <img class='zoom' src="img/gelmanTable.png" style="display:block; margin: 0 auto;" width='50%'>
 
