@@ -3,13 +3,13 @@
 ## Texts for Your Shelf
 
 
-The following are three texts I recommend in my consulting to folks who are interested in doing Bayesian data analyis. They can be seen as introduction, intermediate, and advanced respectively.
+The following are three texts I recommend to folks who are interested in doing Bayesian data analysis. They can be seen as introduction, intermediate, and advanced respectively.
 
-Kruschke, J. (2014) *Doing Bayesian Data Analysis*. A very introductory text, but might be good for those not too confident in statistics generally speaking. And who doesn't like puppies? Second edition has Stan examples.
+Kruschke, J. (2014) *Doing Bayesian Data Analysis*. A very introductory text, but might be good for those not too confident in statistics generally speaking. And who doesn't like puppies? Second edition has Stan examples. 2nd Edition.
 
-McElreath, R. (2015). *Statistical Rethinking*.  A good modeling book in general, by one who has contributed a lot to helping others learn Stan.  Comes with its own R package too.
+McElreath, R. (2020). *Statistical Rethinking*.  A great modeling book in general, by one who has contributed a lot to helping others learn Stan. 2nd Edition.
 
-Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). *Bayesian Data Analysis*.
+Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). *Bayesian Data Analysis*. 3rd Edition.
 
 
 ## Stan Specific Resources
@@ -26,9 +26,9 @@ Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, 
 More resources [here](http://mc-stan.org/documentation/)
 
 
-## Other
+<!-- ## Other -->
 
-Statisticat, LLC. [*Bayesian Inference*](https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf). A quick overview from the original author of the <span class="pack">LaplacesDemon</span> package.
+<!-- Statisticat, LLC. [*Bayesian Inference*](https://cran.r-project.org/web/packages/LaplacesDemon/vignettes/BayesianInference.pdf). A quick overview from the original author of the <span class="pack">LaplacesDemon</span> package. -->
 
 
 ## Works Cited/Used
