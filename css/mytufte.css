@@ -1,21 +1,41 @@
+/* Google Font API */
+/* @import url("(https://fonts.gstatic.com/s/librebaskerville/v4/pR0sBQVcY0JZc_ciXjFsKwHlCYWexZJCPRz1QQ0uKVU.woff2");*/
+
+@import url("http://fonts.googleapis.com/css?family=Libre+Baskerville"); 
+
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
   src: local('Open Sans'), local('OpenSans'), url(http://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3aCWcynf_cDxXwCLxiixG1c.ttf) format('truetype');
 }
-@font-face {
-  font-family: 'Risque';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Risque'), local('Risque-Regular'), url(http://fonts.gstatic.com/s/risque/v4/iFA7a9Hk8IxDgPVBx7IE_Q.ttf) format('truetype');
-}
+
 @font-face {
   font-family: 'Roboto';
   font-style: normal;
   font-weight: 400;
   src: local('Roboto'), local('Roboto-Regular'), url(http://fonts.gstatic.com/s/roboto/v15/zN7GBFwfMP4uA6AR0HCoLQ.ttf) format('truetype');
 }
+
+
+/* latin-ext */
+/*@font-face {
+  font-family: 'Libre Baskerville';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Libre Baskerville'), local('LibreBaskerville-Regular'), url(https://fonts.gstatic.com/s/librebaskerville/v4/pR0sBQVcY0JZc_ciXjFsKwHlCYWexZJCPRz1QQ0uKVU.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}*/
+/* latin */
+/*@font-face {
+  font-family: 'Libre Baskerville';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Libre Baskerville'), local('LibreBaskerville-Regular'), url(https://fonts.gstatic.com/s/librebaskerville/v4/pR0sBQVcY0JZc_ciXjFsK6Ucnt8gjcHpqyffjHeZWDA.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215;
+}*/
+
+
 
 .emph {
   color: #ff5503;
@@ -40,12 +60,27 @@
 
 
 body {
-  color: #7f7f7f;
+  font-family: 'Libre Baskerville', Roboto;
+  color: #595959; /*#595959 (i.e. gray35) provides recommended contrast ratio 7:1; previous  #7f7f7f (4:1); */
+  background: #fffff8;
+}
+
+div {
+  background: #fffff8;
 }
 
 p, ul, ol {
-  font-family: Roboto;
+  font-family: 'Libre Baskerville';
   font-size: 100%;
+  
+}
+.book .book-body .page-wrapper .page-inner section.normal {
+  background: #fffff8;
+}
+
+ul {
+  list-style-type: none;
+  background: #fffff8;
 }
 
 pre {
@@ -55,9 +90,9 @@ pre {
   position: relative;
   width: 100%;                  /* This changes where the code chunk box ends on the right side */
   font-size: 75%;               /*changes output size; and comments*/
-  line-height: 1.2em;           /* line spacing; default seems to be about 1.5 or more */
+  line-height: 1.25em;           /* line spacing; default seems to be about 1.5 or more */
   /*border: 10px solid #ff5500;*/   /*code block and results border*/
-  /*background-color:#ff5500;*/   /* results background*/
+  background-color: none;   /* results background #F7F7F7*/
 
 }
 
@@ -85,13 +120,13 @@ pre code.r {
 }
 
 li.tocify-item.list-group-item.active {
-  background-color: rgb(97,151,213);             /* background of current section in toc */
+  background-color: #B2001D;             /* background of current section in toc  rgb(97,151,213)*/
 }
 
 h1, h2, h3, h4, h5 {
-  color:rgb(97,151,213);
-  /* color:#B2001D; */  /* stan red*/
-
+  /* color:rgb(97,151,213); */
+   color: #B2001D;   /* stan red*/
+   font-family: 'Libre Baskerville';
 }
 
 
@@ -127,6 +162,7 @@ a:link {
   border-radius: 50px;
   border: 3px solid ;
   border-color: rgba(97,151,213, .75);
+  margin: 50px;
   /*border: 3px solid rgb(97,151,213);
   /*background:rgba(227,227,227,0.5);*/
   /* -webkit-box-shadow: #B3B3B3 5px 5px 5px;
@@ -141,3 +177,26 @@ a:link {
   background-color: #282828;
   border-color: #232323;
 }
+
+
+.imgbigger {
+    width: 100%;
+    height: 100%;
+}
+
+.imgbigger img {
+    -webkit-transition: all .5s ease; /* Safari and Chrome */
+    -moz-transition: all .5s ease; /* Firefox */
+    -ms-transition: all .5s ease; /* IE 9 */
+    -o-transition: all .5s ease; /* Opera */
+    transition: all .5s ease;
+}
+
+.imgbigger:hover img {
+    -webkit-transform:scale(2); /* Safari and Chrome */
+    -moz-transform:scale(2); /* Firefox */
+    -ms-transform:scale(2); /* IE 9 */
+    -o-transform:scale(2); /* Opera */
+     transform:scale(2);
+}
+
