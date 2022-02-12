@@ -49,22 +49,23 @@ showMethods(traceplot, class = "stanfit", include = TRUE)
 
 
 library(ggplot2)
-library(reshape2)
-gdat = melt(data.frame(extract(m_bad3, 'a1', permuted = FALSE)[, , 1]))
+
+gdat = posterior::as_draws_df(m_bad3) %>% select(a1, .chain, .iteration)
+
 ggplot(aes(
-  x = rep(1:1000, 4),
-  y = value,
-  color = variable,
-  group = variable
+  x = .iteration,
+  y = a1,
+  color = factor(.chain)
 ), data = gdat) +
   geom_line(show.legend = F) +
   labs(x = '', y = '') +
   theme_trueMinimal() +
   theme(
-    axis.text.y = element_blank(),
-    axis.ticks.y = element_blank(),
+    axis.text.y     = element_blank(),
+    axis.ticks.y    = element_blank(),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
+
 # ggsave('img/badchains.pdf', width=11, height=8.5)
 ggsave('img/badchains.svg',
        width = 11,
@@ -100,32 +101,22 @@ We can also look at the autocorrelation plot, in which the chain's correlation w
 
 ```{r autocorrExample, echo=FALSE, out.width='500px'}
 # first do original acf
-library(coda)
-betas = rstan::extract(fit, pars = 'beta', permuted = F)[, 1:3, 4] #1st chain beta4
-betas.mcmc = as.mcmc(betas)
-# pdf('img/acfPlotNoSerial.pdf')
-# acfplot(betas.mcmc[,1])
-# dev.off()
-# acf(betas.mcmc[,1], bty='n', col='#ff5500', lwd=3, main='', ci.col=scales::alpha('blue',.5),
-#     xaxt='n', ylab='Autocorrelation', col.lab='gray25', col.axis='gray50')
+test = bayesplot::mcmc_acf(fit, 'beta[4]')$data %>% 
+  filter(Chain == 1)
 
-test0 = acf(betas.mcmc[, 1], plot = FALSE)
-test = with(test0, data.frame(lag, acf))
-ggplot(data = test, mapping = aes(x = lag, y = acf)) +
+ggplot(data = test, aes(x = Lag, y = AC)) +
   geom_hline(aes(yintercept = 0), col = 'gray90') +
-  geom_segment(mapping = aes(xend = lag, yend = 0),
+  geom_segment(aes(xend = Lag, yend = 0),
                col = '#ff5500',
+               alpha = .75,
                lwd = 1.5) +
-  geom_point(
-    mapping = aes(x = lag, y = acf),
-    col = palettes$orange$complementary[2],
-    size = 5
-  ) +
+  geom_point(col = palettes$orange$complementary[2],
+             size = 5) +
   labs(x = 'Lag',  y = 'Autocorrelation') +
   theme_trueMinimal() +
   theme(
-    axis.title.x = element_text(color = 'gray25', size = 15),
-    axis.title.y = element_text(color = 'gray25', size = 15),
+    axis.title.x    = element_text(color = 'gray25', size = 15),
+    axis.title.y    = element_text(color = 'gray25', size = 15),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
 # ggsave('img/acfPlotNoSerial.svg', bg='transparent')
@@ -136,20 +127,19 @@ for (i in 2:length(pres2)) {
   pres2[i] = ifelse(is.na(pres2[i]), pres2[i - 1], pres2[i])
 }
 # pdf('img/acfPlotSerial.pdf')
-# acfplot(as.mcmc(pres2))
-# dev.off()
-test0 = acf(as.mcmc(pres2), plot = FALSE)
-test = with(test0, data.frame(lag, acf))
-ggplot(data = test, mapping = aes(x = lag, y = acf)) +
+
+test = tibble(acf = acf(pres2,)$acf[,1,1], lag = 0:(length(acf)-1)) 
+
+ggplot(data = test, aes(x = lag, y = acf)) +
   geom_hline(aes(yintercept = 0), col = 'gray90') +
   geom_segment(
-    mapping = aes(xend = lag, yend = 0),
+    aes(xend = lag, yend = 0),
     col = '#ff5500',
     lwd = 1.5,
+    alpha = .75,
     show.legend = F
   ) +
   geom_point(
-    mapping = aes(x = lag, y = acf),
     col = palettes$orange$complementary[2],
     size = 5,
     show.legend = F
@@ -157,8 +147,8 @@ ggplot(data = test, mapping = aes(x = lag, y = acf)) +
   labs(x = 'Lag',  y = 'Autocorrelation') +
   theme_trueMinimal() +
   theme(
-    axis.title.x = element_text(color = 'gray25', size = 15),
-    axis.title.y = element_text(color = 'gray25', size = 15),
+    axis.title.x    = element_text(color = 'gray25', size = 15),
+    axis.title.y    = element_text(color = 'gray25', size = 15),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
 # ggplotly()
@@ -179,11 +169,11 @@ broom.mixed::tidyMCMC(fit, ess = TRUE) %>%
 <span class="emph">Monte Carlo error</span> is an estimate of the uncertainty contributed by only having a finite number of posterior draws. We'd typically want roughly less than 5% of the posterior standard deviation (reported right next to it in the Stan output), but might as well go for less than 1%. With no autocorrelation it would equal $\sqrt{\frac{var(\theta)}{n_{\textrm{eff}}}}$[^mcerr]. and $n_{\textrm{eff}}$ would equal the number of simulation draws requested.
 
 ```{r showMCerror, echo=FALSE}
-rstan::summary(fit, pars=c('beta', 'sigma'))$summary[,c('mean', 'se_mean')] %>% 
-  # format(digits=1) %>% 
-  data.frame() %>% 
-  kable(align='lcc', digits=3) %>% 
-  kable_styling(full_width = F) 
+rstan::summary(fit, pars = c('beta', 'sigma'))$summary[, c('mean', 'se_mean')] %>%
+  # format(digits=1) %>%
+  data.frame() %>%
+  kable(align = 'lcc', digits = 3) %>%
+  kable_styling(full_width = FALSE) 
 ```
 
 
@@ -220,7 +210,7 @@ sigmas = theta$sigma
 nsims  = length(theta$sigma)
 
 # produce the replications and inspect
-yRep = sapply(1:nsims, function(s) rnorm(250, X%*%betas[s,], sigmas[s]))
+yRep = sapply(1:nsims, function(s) rnorm(250, X %*% betas[s,], sigmas[s]))
 str(yRep)
 ```
 
@@ -263,16 +253,21 @@ These results suggest we may be having difficulty picking up the lower tail of t
 
 ```{r posteriorPredictive10thComparisonHist, echo=FALSE, out.width='500px'}
 q10 = function(y) quantile(y, 0.1)
-q10_rep = bayesplot::ppc_stat(y, t(yRep), stat=q10)$data
 
-ggplot(aes(x=value), data=q10_rep) + 
-  geom_density(fill=scales::alpha('#ff5500', .5), color='transparent') + 
-  geom_line(color=palettes$orange$complementary[2], stat='density') + 
-  geom_vline(xintercept=quantile(y, .1), color='gray50', alpha=.75) + 
+q10_rep = bayesplot::ppc_stat(y, t(yRep), stat = q10)$data
+
+ggplot(aes(x = value), data = q10_rep) +
+  geom_density(fill = scales::alpha('#ff5500', .5), color = 'transparent') +
+  geom_line(color = palettes$orange$complementary[2], stat = 'density') +
+  geom_vline(xintercept = quantile(y, .1),
+             color = 'gray50',
+             alpha = .75) +
   theme_trueMinimal() +
-  theme(axis.title.x=element_text(color='gray25', size=15),
-        axis.title.y=element_text(color='gray25', size=15),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+  theme(
+    axis.title.x = element_text(color = 'gray25', size = 15),
+    axis.title.y = element_text(color = 'gray25', size = 15),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 # ggsave('img/histofyrepQ10.svg', bg='transparent')
 ```
 
@@ -286,16 +281,19 @@ In general, we can devise a test statistic, $T_{\textrm{Rep}}$, and associated p
 As there are any number of ways to do statistical posterior predictive checks, we have many options for graphical inspection as well.  I show a graph of our average fitted values versus the observed data as a starting point.  The average is over all posterior draws of $\theta$.
 
 ```{r posteriorPredictiveFitted, echo=FALSE, out.width='500px'}
-fits = sapply(1:nsims, function(s) X%*%betas[s,])
+fits = sapply(1:nsims, \(s) X %*% betas[s, ])
 avgfits = rowMeans(fits)
-ggplot(aes(x=y, y=avgfits), data=data.frame(y=y, avgfits=avgfits)) +
+
+ggplot(aes(x = y, y = avgfits), data = data.frame(y = y, avgfits = avgfits)) +
   # geom_point(col=palettes$orange$complementary, alpha=.75, size=3) +
-  geom_point(col='#ff5500', alpha=.75, size=3) +
-  labs(x='Observed y', y='Expected y') +
+  geom_point(col = '#ff5500', alpha = .5, size = 3) +
+  labs(x = 'Observed y', y = 'Expected y') +
   theme_trueMinimal() +
-  theme(axis.title.x=element_text(color='gray25'),
-        axis.title.y=element_text(color='gray25'),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+  theme(
+    axis.title.x = element_text(color = 'gray25'),
+    axis.title.y = element_text(color = 'gray25'),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 # ggsave('img/posteriorPredictiveFittedvsObserved.svg', bg='transparent')
 ```
 <p style="font-size:.75em; text-align:center">See <span class="func">ppc_scatter_avg</span> in <span class="pack">bayesplot</span>.</p>
@@ -369,51 +367,62 @@ We can also examine residual plots of $y - E(y|X,\theta)$ as with standard analy
 
 ```{r posteriorPredictiveResiduals, echo=FALSE, out.width='500px'}
 # marginal distribution check for each y as in BDA 6.5
-# library(ggplot2); library(reshape2)
-fits = sapply(1:nsims, function(s) X%*%betas[s,])
-realizedResids = sapply(1:nsims, function(s) rnorm(250, fits[,s], sigmas[s]) - fits[,s])
+# library(ggplot2)
+fits = sapply(1:nsims, \(s) X %*% betas[s,])
+
+realizedResids = sapply(1:nsims, \(s) rnorm(250, fits[,s], sigmas[s]) - fits[,s])
+
 # gdat = melt(realizedResids); colnames(gdat) = c('n', 'nsim', 'residual')
-gdat = data.frame(realizedResids) %>% 
-  rename_all(stringr::str_replace, pattern='X', replacement='Sim ') %>% 
-  gather(key=nsim, value=residual) %>% 
-  group_by(nsim) %>% 
-  mutate(N=1:n()) %>% 
+gdat = data.frame(realizedResids) %>%
+  rename_all(stringr::str_replace,
+             pattern = 'X',
+             replacement = 'Sim ') %>%
+  pivot_longer(everything(), names_to = 'nsim', values_to = 'residual') %>%
+  group_by(nsim) %>%
+  mutate(N = 1:n()) %>%
   ungroup()
-gdat$fit = gather(data.frame(fits))[,'value']
+
+gdat$fit    = pivot_longer(data.frame(fits), everything()) %>% pull(value)
 gdat$minres = rep(apply(realizedResids, 1, min), 1000)
 gdat$maxres = rep(apply(realizedResids, 1, max), 1000)
 
 # plot 6.11a
-ggplot(aes(x=fit, y=residual), data=gdat[1:250,]) +
-#   geom_linerange(aes(ymin=minres, ymax=maxres), alpha=.1) + 
-  geom_hline(aes(yintercept=0), col='darkred', alpha=.25) +
-  geom_point(aes(ymin=minres, ymax=maxres), color='#FF5500', alpha=.85) + 
-  scale_x_continuous(breaks=c(-3,0,3,6,9,12)) +
-  labs(x='Expected y', y='Realized Residual') +
+ggplot(aes(x = fit, y = residual), data = gdat %>% slice(1:250)) +
+  # geom_linerange(aes(ymin = minres, ymax = maxres), alpha = .1)+
+  geom_hline(aes(yintercept = 0), col = 'darkred', alpha = .25) +
+  geom_point(aes(ymin = minres, ymax = maxres),
+             color = '#FF5500',
+             alpha = .85) +
+  scale_x_continuous(breaks = c(-3, 0, 3, 6, 9, 12)) +
+  labs(x = 'Expected y', y = 'Realized Residual') +
   theme_trueMinimal() +
-  theme(axis.title.x=element_text(size=15),
-        axis.title.y=element_text(size=15),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+  theme(
+    axis.title.x = element_text(size = 15),
+    axis.title.y = element_text(size = 15),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 
 # ggsave('img/posteriorPredictiveResidualRaw.svg', bg="transparent")
 
 
-avgfits = rowMeans(fits)
-residRep = sweep(yRep, 1, avgfits)
-avgresidRep = rowMeans(yRep-fits)
+avgfits     = rowMeans(fits)
+residRep    = sweep(yRep, 1, avgfits)
+avgresidRep = rowMeans(yRep - fits)
 
 # figure 6.11b
-ggplot(aes(x=avgfits, y=avgresidRep), data=data.frame(avgfits, avgresidRep)) +
-  geom_point(alpha=.85, color='#FF5500') +
-  labs(x='Average Expected y', y='Average Realized Residual') +
+ggplot(aes(x = avgfits, y = avgresidRep), data = data.frame(avgfits, avgresidRep)) +
+  geom_point(alpha = .85, color = '#FF5500') +
+  labs(x = 'Average Expected y', y = 'Average Realized Residual') +
   theme_trueMinimal() +
-  theme(axis.title.x=element_text(size=15),
-        axis.title.y=element_text(size=15),
-        axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+  theme(
+    axis.title.x = element_text(size = 15),
+    axis.title.y = element_text(size = 15),
+    axis.text.y  = element_blank(),
+    axis.ticks.y = element_blank(),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 
 # ggsave('img/posteriorPredictiveResidualAvg.svg', bg="transparent")
 ```
