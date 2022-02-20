@@ -1,35 +1,39 @@
 # R Packages
 
-Here I will go into a bit of detail regarding <span class="pack">rstanarm</span> and <span class="pack">brms</span>.  For standard models, these should be your first choice, rather than using Stan directly. Why?  For one, the underlying code that is used will be more optimized and efficient than what you come up with, and has had multiple individuals developing that code and hundreds actually using it.  Furthermore, you can still, and probably should, set your priors as you wish.  
+Here I will go into a bit of detail regarding <span class="pack">rstanarm</span> and <span class="pack">brms</span>.  For standard models, these should be your first choice, rather than using Stan directly. Why?  For one, the underlying code that is used will be more optimized and efficient than what you come up with, and also, that code has had multiple individuals developing it and hundreds actually using it.  Furthermore, you can still, and probably should, set your priors as you wish.  
 
 The nice thing about both is that you use the same syntax that you do for [R modeling](https://m-clark.github.io/R-models/) in general.  Here is a a basic GLM in both.
 
 ```{r pack_demo, eval=FALSE}
-stan_glm(y ~ x + z, data=d)
-brm(y ~ x + z, data=d)
+stan_glm(y ~ x + z, data = d)
+
+brm(y ~ x + z, data = d)
 ```
 
 And here are a couple complexities thrown in to show some minor differences. For example, the priors are specified a bit differently, and you may have options for one that you won't have in the other, but both will allow passing standard arguments, like cores, chains, etc. to <span class="pack">rstan</span>.
 
 ```{r pack_demo2, eval=FALSE}
-stan_glm(y ~ x + z + (1|g), 
-         data=d, 
-         family = binomial(link = "logit"), 
-         prior = normal(0, 1),
-         prior_covariance = decov(regularization = 1, concentration = .5),
-         QR = TRUE,
-         chains = 2,
-         cores = 2,
-         iter = 2000)
+stan_glm(
+  y ~ x + z + (1|g), 
+  data   = d, 
+  family = binomial(link = "logit"), 
+  prior  = normal(0, 1),
+  prior_covariance = decov(regularization = 1, concentration = .5),
+  QR     = TRUE,
+  chains = 2,
+  cores  = 2,
+  iter   = 2000
+)
 
-brm(y ~ x + z + (1|g), 
-    data=d, 
-    family = bernoulli(link = 'logit'), 
-    prior = prior(normal(0, 1), class = b,
-                  cauchy(0, 5), class = sd),
-    chains = 2,
-    cores = 2, 
-    iter = 2000)
+brm(
+  y ~ x + z + (1|g), 
+  data   = d, 
+  family = bernoulli(link = 'logit'), 
+  prior  = prior(normal(0, 1), class = b, cauchy(0, 5), class = sd),
+  chains = 2,
+  cores  = 2, 
+  iter   = 2000
+)
 ```
 
 So the syntax is easy to use for both of them, and to a point identical to standard R modeling syntax, and both have the same <span class="pack">rstan</span> arguments. However, you'll need to know what's available to tweak and how to do so specifically for each package.
@@ -61,20 +65,22 @@ It's not a good thing that for the most common linear models R has multiple func
 
 Contrast this with <span class="pack">brms</span>, which only requires the <span class="func">brm</span> function and appropriate family, e.g. 'poisson' or 'categorical', and which can do multinomial models also.
 
-However, if you want to do a standard linear regression, I would not recommend using stan_lm, as it requires a prior for the $R^2$, which is unfamiliar and only explained in technical ways that are likely going to be lost on those less comfortable with or new to statistical or Bayesian analysis[^stan_lm_vignette].  The good news is that you can simply run stan_glm instead, and work with the prior on the regression coefficients as we have discussed, and you can use <span class="func">bayes_R2</span> to get the $R^2$.
+However, if you want to do a standard linear regression, I would probably not recommend using <span class="func">stan_lm</span>, as it requires a prior for the $R^2$, which is unfamiliar and only explained in technical ways that are likely going to be lost on those less comfortable with, or new to, statistical or Bayesian analysis[^stan_lm_vignette].  The good news is that you can simply run <span class="func">stan_glm</span> instead, and work with the prior on the regression coefficients as we have discussed, and you can use <span class="func">bayes_R2</span> to get the $R^2$.
 
 
-You can certainly use <span class="pack">brms</span> for GLM, but it would have to compile the code and so will always be notably slower.  For LM with interactions or GLM generally, you may prefer it for the marginal effects plots.
+You can certainly use <span class="pack">brms</span> for GLM, but it would have to compile the code first, and so will always be relatively, but not prohibitively, slower.  For linear models with interactions or GLM generally, you may prefer it for the marginal effects plots and other additional functionality.
+
 
 
 ## Categorical Models
 
 
-If you're just doing a standard logistic regression, I'd suggest <span class="func">stan_glm</span>, again, for the speed.  In addition, it has a specific model function for conditional logistic regression (<span class="func">stan_clogit</span>).  Beyond that, I'd probably recommend <span class="pack">brms</span>.  For ordinal regression, <span class="func">stan_polr</span> goes back to requiring a prior for $R^2$, which is now the $R^2$ for the underlying latent variable of the ordinal outcome[^r2_polr].  Furthermore, <span class="pack">brms</span> has some ordinal-specific plots, as well as other types of ordinal regression (e.g. adjacent category) that allow the proportional odds assumption to be relaxed.  It also can do multi-category models[^nomulti].
+If you're just doing a standard logistic regression, I'd suggest <span class="func">stan_glm</span>, again, for the speed.  In addition, it has a specific model function for conditional logistic regression (<span class="func">stan_clogit</span>).  Beyond that, I'd recommend <span class="pack">brms</span>.  For ordinal regression, <span class="func">stan_polr</span> goes back to requiring a prior for $R^2$, which is now the $R^2$ for the underlying latent variable of the ordinal outcome[^r2_polr].  Furthermore, <span class="pack">brms</span> has some ordinal-specific plots, as well as other types of ordinal regression (e.g. adjacent category) that allow the proportional odds assumption to be relaxed.  It also can do multi-category models.
 
 ```{r ordinal, eval=FALSE}
-brm(y ~ x, family='categorical')  # nominal outcome with > 2 levels
-brm(y ~ cs(x), family='acat')     # ordinal model with category-specific effects for x
+brm(y ~ x, family = 'categorical')  # nominal outcome with > 2 levels
+
+brm(y ~ cs(x), family = 'acat')     # ordinal model with category-specific effects for x
 ```
 
 <span class="pack">brms</span> families for categorical:
@@ -110,31 +116,44 @@ The Bayesian approach really shines for mixed models in my opinion, where the ra
 - <span class="func">stan_mvmer</span>: multivariate outcome
 - <span class="func">stan_gamm4</span>: generalized additive mixed model in <span class="pack">lme4</span> style
 
-I would probably just recommend <span class="pack">rstanarm</span> for stan_lmer and stan_glmer, as <span class="pack">brms</span> has more flexibility, and even would be recommended for the standard models if you want to estimate residual (co-)variance structure, e.g. autocorrelation.  It also will do multivariate models, and one can use <span class="pack">mgcv</span>::<span class="func">s</span> for smooth terms in *any* <span class="pack">brms</span> model.
+I would probably just recommend <span class="pack">rstanarm</span> for stan_lmer and stan_glmer, as <span class="pack">brms</span> has more flexibility, and even would be recommended for the standard models if you want to estimate residual (co-)variance structure, e.g. autocorrelation.  It also will do multivariate models, and one can use <span class="pack">mgcv</span>::<span class="func">s</span> for smooth terms in any <span class="pack">brms</span> model.
 
 
 ## Other Models and Related
 
-Along with all those <span class="pack">rstanarm</span> has specific functions for [beta regression](http://mc-stan.org/<span class="pack">rstanarm</span>/articles/betareg.html), [joint mixed/survival models](http://mc-stan.org/<span class="pack">rstanarm</span>/articles/jm.html), and [regularized linear regression](http://mc-stan.org/<span class="pack">rstanarm</span>/articles/lm.html).  <span class="pack">brms</span> has many more distributional families, can do hypothesis testing[^], has marginal effects plots, and more.  Both have plenty of tools for diagnostics, posterior predictive checks, and more of what has been discussed previously.
+Along with all those <span class="pack">rstanarm</span> has specific functions for [beta regression](http://mc-stan.org/rstanarm/articles/betareg.html), [joint mixed/survival models](http://mc-stan.org/rstanarm/articles/jm.html), and [regularized linear regression](http://mc-stan.org/rstanarm/articles/lm.html).  <span class="pack">brms</span> has many more distributional families, can do hypothesis testing[^], has marginal effects plots, and more.  Both have plenty of tools for diagnostics, posterior predictive checks, and more of what has been discussed previously.
 
-In general, <span class="pack">rstanarm</span> is a great tool for translating your standard models into Bayesian ones in an efficient fashion.  On the other hand, <span class="pack">brms</span> uses a simplified syntax and is notably more flexible.  Here is a brief summary of my recommend use.
+In general, <span class="pack">rstanarm</span> is a great tool for translating your standard models into Bayesian ones in an efficient fashion.  On the other hand, <span class="pack">brms</span> uses a simplified syntax and is notably more flexible.  Here is a brief summary of my recommend use for common regression models.
 
 ```{r arm_brms_comparison, echo=FALSE}
-data_frame(Analysis = c('lm', 'glm', 'multinomial', 'ordinal', 'mixed', 'additive', 'regularized', 'beyond'),
-           rstanarm = c('√', '√', '', '', '√', '√', '√', ''),
-           brms = c('', '', '√', '√', '√', '√', '√',  '√')) %>% 
-  kable(width='50%', align = 'lcc') %>% 
-  kable_styling(full_width = F)
+tibble(
+  Analysis = c(
+    'lm',
+    'glm',
+    'multinomial',
+    'ordinal',
+    'mixed',
+    'additive',
+    'regularized',
+    'beyond'
+  ),
+  rstanarm = c('√', '√', '', '', '√', '√', '√', ''),
+  brms = c('', '', '√', '√', '√', '√', '√',  '√')
+) %>%
+  kable(width = '50%', align = 'lcc') %>%
+  kable_styling(full_width = FALSE)
 ```
 
-Besides that, if you still need to model complexity not found within those, you can *still* use them to generate some highly optimized starter code, as they have functions for solely generating the underlying Stan code.
+Besides that, if you still need to model complexity not found within those, you can still use them to generate some highly optimized starter code, as they have functions for solely generating the underlying Stan code.
 
 
 ## Even More Packages
 
-I've focused on the two widely-used general-purpose packages, but nothing can stop Stan at this point. Here is a visualization of the current <span class="pack">rstan</span> ecosystem.
+I've focused on the two widely-used general-purpose packages, but nothing can stop Stan at this point. As of the latest update to this document, there are now `r length(devtools::revdep('rstan'))` other packages depending on <span class="pack">rstan</span> in some way.  There are also interfaces for Python, Julia, and more. Odds are good you'll find one to suit your needs.
 
-```{r stan_getgraph, eval=TRUE, echo=FALSE}
+```{r stan_getgraph, eval=FALSE, echo=FALSE}
+# no longer works, and wasn't easily duplicated with e.g. devtools::revdep
+
 get_depgraph = function(pack) {
   require(httr)
   url = paste0('http://rdocumentation.org/api/packages/', pack, '/reversedependencies')
@@ -147,7 +166,7 @@ get_depgraph = function(pack) {
 stan_depgraph = get_depgraph('rstan')
 ```
 
-```{r stan_graph, echo=F, eval=T, cache=FALSE}
+```{r stan_graph, echo=F, eval=F, cache=FALSE}
 library(visNetwork)
 nodes = stan_depgraph$node_df %>% 
   rename(label=name) %>% 
@@ -175,11 +194,8 @@ visNetwork(nodes = nodes_trim,
            physics = T)
 ```
 
-At this point there are already a couple dozen packages working with Stan under the hood.  Odds are good you'll find one to suit your needs.
 
 
-[^stan_lm_vignette]: The developers note in their vignette for <span class="func">stan_aov</span>:<br><br>'but it is reasonable to expect a researcher to have a plausible guess for R2 before conducting an ANOVA.'<br><br> Actually, I'm not sure how reasonable this is.  I see many, many researchers of varying levels of expertise, and I don't think any of them would be able to hazard much of a guess about $R^2$ before running a model, unless they're essentially duplicating previous work.  I also haven't come across an explanation in the documentation (which is otherwise great) of how to specify it that would be very helpful to people just starting out with Bayesian analysis or even statistics in general.  If the result is that one then has to try a bunch of different priors, then that becomes the focus of the analytical effort, which likely won't appeal to people just wanting to run a standard regression model.
+[^stan_lm_vignette]: The developers note in their [vignette for ANOVA](https://cran.r-project.org/web/packages/rstanarm/vignettes/aov.html):<br><br>'but it is reasonable to expect a researcher to have a plausible guess for R2 before conducting an ANOVA.'<br><br> Actually, I'm not sure how reasonable this is.  In consulting I've seen many, many researchers of varying levels of expertise, and I don't think even a large minority of them would be able to hazard much of a guess about $R^2$ before running a model, unless they're essentially duplicating previous work.  I also haven't come across an explanation in the documentation (which is otherwise great) of how to specify it that would be very helpful to people just starting out with Bayesian analysis or even statistics in general.  If the result is that one then has to try a bunch of different priors, then that becomes the focus of the analytical effort, which likely won't appeal to people just wanting to run a standard regression model.
 
 [^r2_polr]: If someone tells me they know what the prior should be for that, I probably would not believe them.
-
-[^nomulti]: The corresponding distribution is the categorical distribution, which is a multinomial distribution with size = 1.  Multinomial count models, i.e. with size > 1, on the other hand, are not currently supported [except indirectly](https://github.com/paul-buerkner/brms/issues/338). However, the multinomial-poisson transformation can be used instead.
