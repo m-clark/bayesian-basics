@@ -3,11 +3,11 @@
 ## Texts for Your Shelf
 
 
-The following are three texts I recommend to folks who are interested in doing Bayesian data analysis. They can be seen as introduction, intermediate, and advanced respectively.
+The following are three texts I have recommended in the past to folks who are interested in doing Bayesian data analysis. They can be seen as introduction, intermediate, and advanced respectively.
 
-Kruschke, J. (2014) *Doing Bayesian Data Analysis*. A very introductory text, but might be good for those not too confident in statistics generally speaking. And who doesn't like puppies? Second edition has Stan examples. 2nd Edition.
+Kruschke, J. (2014) *Doing Bayesian Data Analysis*. A very introductory text, but might be good for those not too confident in statistics generally speaking. And who doesn't like puppies? 2nd Edition.
 
-McElreath, R. (2020). *Statistical Rethinking*.  A great modeling book in general, by one who has contributed a lot to helping others learn Stan. 2nd Edition.
+McElreath, R. (2020). *Statistical Rethinking*.  A great modeling book in general, by one who has contributed a lot to helping others learn Stan and Bayesian analysis. 2nd Edition.
 
 Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, D. B. (2013). *Bayesian Data Analysis*. 3rd Edition.
 
@@ -20,10 +20,10 @@ Gelman, A., Carlin, J. B., Stern, H. S., Dunson, D. B., Vehtari, A., and Rubin, 
 
 [Stan Best Practices](https://github.com/stan-dev/stan/wiki/Stan-Best-Practices)
 
-[Example Models](https://github.com/stan-dev/example-models/wiki)
+[Example Models](https://github.com/stan-dev/example-models)
 
 
-More resources [here](http://mc-stan.org/documentation/)
+More resources [here](https://mc-stan.org/users/documentation/)
 
 
 <!-- ## Other -->
