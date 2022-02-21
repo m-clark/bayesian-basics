@@ -35,7 +35,7 @@ ggplot(data.frame(mus, L)) +
   geom_hline(aes(yintercept = max(L)), alpha = .5, lty = 2) +
   geom_path(aes(x = mus, y = L), color = '#ff5500', alpha = .9, lwd = 2) +
   labs(x = expression(theta), y = 'Likelihood') +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
     axis.ticks.y    = element_blank(),
     axis.text.y     = element_blank(),
@@ -221,7 +221,7 @@ ggplot(aes(x = mu, y = sigma), data = plotdat) +
   ) +
   # geom_path(aes(), col='navy', alpha=.5) +
   labs(x = expression(mu), y = expression(sigma)) +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
     axis.ticks.y    = element_blank(),
     axis.text.y     = element_blank(),
@@ -299,16 +299,15 @@ colnames(plotdat) = c('sigma', 'Intercept', 'β', 'll')
 plotdat$nll = -plotdat$ll
 
 
-# gdat= melt(plotdat, id=c('sigma', 'll', 'nll'))
 plotdat %>%
   select(-ll) %>%
-  gather(key = variable, value = value, -sigma, -nll) %>%
+  pivot_longer(-c(sigma, nll), names_to = 'variable') %>% 
   ggplot() +
   geom_point(
     aes(x = sigma, y = value, size = nll),
     color = palettes$orange$orange,
     alpha = .15,
-    show.legend = F,
+    show.legend = FALSE,
     position = position_jitter(w = 0.2, h = 0.2)
   ) +
   facet_wrap(~ variable) +  #, scales='free_y'
@@ -317,7 +316,6 @@ plotdat %>%
   theme_clean(center_axis_labels = TRUE) +
   theme(
     axis.ticks.y    = element_blank(),
-    # axis.text.y     = element_blank(),
     axis.text.x     = element_text(color = 'gray25', size = 14),
     axis.title.x    = element_text(color = 'gray25', size = 24),
     axis.title.y    = element_text(color = 'gray25', vjust = 1),
@@ -1173,7 +1171,7 @@ dat = list(N = N,
 
 # # standard stan
 # fit = stan(model_code = stanmodelcodeIG, data = dat, iter = nsim, 
-#            warmup=warmup, thin=1, chains = chains, verbose = F)
+#            warmup=warmup, thin=1, chains = chains, verbose = FALSE)
 
 # perhaps closer to above settings?
 # fitIG = stan(model_code = stanmodelcodeIG, data = dat, iter = nsim, 
@@ -1182,7 +1180,7 @@ dat = list(N = N,
 
 load('data/IGModelData.RData')
 # print(fitIG, digits_summary=3, probs=c(.025,.5,.975))
-broom::tidy(fitIG, conf.int = TRUE) %>%
+broom.mixed::tidy(fitIG, conf.int = TRUE) %>%
   kable(align = 'lrrrr', digits = 2) %>%
   kable_styling(full_width = FALSE)
 # finalest; log_p_th(X, y, finalest)

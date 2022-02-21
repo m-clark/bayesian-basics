@@ -159,8 +159,8 @@ get_depgraph = function(pack) {
   url = paste0('http://rdocumentation.org/api/packages/', pack, '/reversedependencies')
   out = GET(url) %>% 
     content()
-  node_df = data.table::rbindlist(out$nodes, fill = T)
-  edge_df = data.table::rbindlist(out$links, fill = T)
+  node_df = data.table::rbindlist(out$nodes, fill = TRUE)
+  edge_df = data.table::rbindlist(out$links, fill = TRUE)
   list(node_df=node_df, edge_df=edge_df)
 }
 stan_depgraph = get_depgraph('rstan')
@@ -191,7 +191,7 @@ visNetwork(nodes = nodes_trim,
              edges=edges_trim) %>% 
   visEdges(color=list(opacity=.10),
            # length = c(200,10),
-           physics = T)
+           physics = TRUE)
 ```
 
 

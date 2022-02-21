@@ -20,13 +20,13 @@ Selection of prior distributions can be a bit daunting for the new user of appli
 
 ### Noninformative, Weakly Informative, Informative
 
-We can begin with <span class="emph">noninformative priors</span>, which might also be referred to as *vague*, *flat*, *reference*, *objective*, or *diffuse* depending on the context.  The idea is to use something that allows for Bayesian inference but puts all the premium on the data, and/or soi-disant *objectivity*, though the fact that there is still choice here should make clear that these are not entirely noninformative or objective.  As we have alluded to elsewhere, if we put a prior uniform distribution on the regression coefficients (and e.g. the log of $\sigma$), this would be a noninformative approach that would essentially be akin to maximum likelihood estimation.  One might wonder at this point why we wouldn't just use vague priors all the time and not worry about overly influencing the analysis by the choice of prior.
+We can begin with *noninformative priors*, which might also be referred to as *vague*, *flat*, *reference*, *objective*, or *diffuse* depending on the context.  The idea is to use something that allows for Bayesian inference but puts all the premium on the data, and/or soi-disant *objectivity*, though the fact that there is still choice here should make clear that these are not entirely noninformative or objective.  As we have alluded to elsewhere, if we put a prior uniform distribution on the regression coefficients (and e.g. the log of $\sigma$), this would be a noninformative approach that would essentially be akin to maximum likelihood estimation.  One might wonder at this point why we wouldn't just use vague priors all the time and not worry about overly influencing the analysis by the choice of prior.
 
 As an example, let's assume a uniform distribution $(-\infty,\infty)$ for some parameter $\theta$.  Without bounds, this prior is *improper*, i.e. the probability distribution does not integrate to 1.  While the posterior distribution might be proper, it also might not be, and it is left the researcher to determine this.  One also has to choose a suitable range, something which may not be easy to ascertain.  In addition, the distribution may not be uniform on some transformation of the parameter, say $\theta^2$.  A *Jeffreys' prior* could be used to overcome this particular issue, but is more difficult for multiparameter settings.
 
 In general, there are several issues with using a noninformative or reference prior.  For many models, there may be no clear choice of what to use, and employing some reference to be used automatically isn't exactly in keeping with Bayesian thinking. In addition, such choices can still have unintended effects on the results.  And finally, if you had clear prior information, e.g. from previous research, one should use it. 
 
-In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague, but not too vague.  As an example, consider our earlier [binomial distribution example][prior].  Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80%  of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a $\mathcal{B}(9,3)$ would probably be a good way to proceed.  One can examine such a distribution in the subsequent density plot. 
+In practice, many priors we might use could be said to be *weakly informative*. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague, but not too vague.  As an example, consider our earlier [binomial distribution example][prior].  Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80%  of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a $\mathcal{B}(9,3)$ would probably be a good way to proceed.  One can examine such a distribution in the subsequent density plot. 
 
 
 ```{r chooseBetaPrior, results='hold', echo=c(1:3)}
@@ -36,24 +36,28 @@ diff(pbeta(c(.6, .9), 9, 3))
 ```
 
 ```{r chooseBetaPrior2, echo=F, out.width='500px'}
-
-ggplot(aes(x=x), data=data.frame(x=rbeta(10000, 9, 3))) + 
-  geom_line(stat='density', color=palettes$orange$complementary[2]) + 
-  geom_density(fill=scales::alpha('#ff5500', .75), color='transparent') + 
-  theme_trueMinimal() +
-  theme(axis.title.x=element_text(color='gray25'),
-        axis.title.y=element_text(color='gray25'),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+ggplot(aes(x = x), data = data.frame(x = rbeta(10000, 9, 3))) +
+  geom_line(stat = 'density', color = palettes$orange$complementary[2]) +
+  geom_density(fill = scales::alpha('#ff5500', .75), color = 'transparent') +
+  labs(y = '') +
+  theme_clean() +
+  theme(
+    axis.title.x = element_text(color = 'gray25'),
+    axis.title.y = element_text(color = 'gray25'),
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 # ggsave('img/betaDistr9and3.svg', bg='transparent')
 ```
 
 
-Thus, weakly informative priors can be based on perfectly reasonable settings, and this probably makes more sense than claiming complete ignorance, not to mention they simply work better for parameter estimation relative to flat priors. As mentioned, just some casual thought in many settings will often reveal that one isn't completely ignorant.  Furthermore, if we have clear prior information, in the form of prior research for example, we can then use <span class="emph">informative</span> priors based on those results.  This again would be preferable to a completely noninformative approach.
+Thus, weakly informative priors can be based on perfectly reasonable settings, and this probably makes more sense than claiming complete ignorance, not to mention they simply work better for parameter estimation relative to flat priors. As mentioned, just some casual thought in many settings will often reveal that one isn't completely ignorant.  Furthermore, if we have clear prior information, in the form of prior research for example, we can then use *informative* priors based on those results.  This again would be preferable to a completely noninformative approach.
 
 
 ### Conjugacy
 
-Another consideration in the choice of prior is <span class="emph">conjugacy</span>.  Consider using the beta distribution as a prior for the binomial setting as we have done previously.  It turns out that using a $\beta(\mathcal{A}, \mathcal{B})$ results in the following posterior:
+Another consideration in the choice of prior is *conjugacy*.  Consider using the beta distribution as a prior for the binomial setting as we have done previously.  It turns out that using a $\beta(\mathcal{A}, \mathcal{B})$ results in the following posterior:
 
 $$p(\theta|y, n) \propto \beta(y+\mathcal{A}, n-y+\mathcal{B})$$
 
@@ -72,9 +76,9 @@ If we want to take advantage of this sort of knowledge, we can set up our model 
 ```{r sim-priors}
 n_sim = 10
 
-prior_beta_0_10 = replicate(4, rnorm(n_sim, mean = 0, sd = 10))
-prior_beta_0_1  = replicate(4, rnorm(n_sim, mean = 0, sd = 1))
-prior_beta_0_01 = replicate(4, rnorm(n_sim, mean = 0, sd = .1))
+prior_beta_0_10  = replicate(4, rnorm(n_sim, mean = 0, sd = 10))
+prior_beta_0_1   = replicate(4, rnorm(n_sim, mean = 0, sd = 1))
+prior_beta_0_01  = replicate(4, rnorm(n_sim, mean = 0, sd = .1))
 
 y_rep_prior_0_10 = tcrossprod(X, prior_beta_0_10)
 y_rep_prior_0_1  = tcrossprod(X, prior_beta_0_1)
@@ -94,6 +98,12 @@ bind_rows(
   pivot_longer(-prior, names_to = 'sim') %>% 
   ggplot(aes(x = value)) +
   geom_density(aes(color = prior, group = sim), show.legend = FALSE) +
+  scale_color_manual(
+    values = alpha(c(
+      '#E69F00',
+      '#56B4E9',
+      '#009E73'
+    ), .33)) +
   labs(y = '', x = 'Y simulated from prior') +
   facet_wrap(vars(prior), scales = 'free')
 ```
@@ -107,7 +117,7 @@ While not all situations are not as straightforward[^ignoresigma], hopefully thi
 
 ### Hierarchical Priors
 
-Not to be confused with hierarchical linear models, *hierarchical* in the context of Bayesian models often refers to using what are called <span class="emph">hyperpriors</span>, or priors on priors.  Take for instance our example with regression coefficients.  Maybe we wouldn't know a good standard deviation to use.  In this case we might set it as yet another parameter to be estimated, $\sigma_\beta$, and give it a prior with lower bound of 0, e.g. $\sigma_\beta \sim \textrm{Half-Cauchy}(10)$, that would have a median of 10 but will result in a final estimate of some other value.  Technically this could turn into [turtles all the way up](https://en.wikipedia.org/wiki/Turtles_all_the_way_down#/media/File:River_terrapin.jpg), with priors upon priors upon priors.  Usually one level is enough though, and might make you feel better for not setting a specific parameter to some value.
+Not to be confused with hierarchical linear models, *hierarchical* in the context of Bayesian models often refers to using what are called *hyperpriors*, or priors on priors.  Take for instance our example with regression coefficients.  Maybe we wouldn't know a good standard deviation to use.  In this case we might set it as yet another parameter to be estimated, $\sigma_\beta$, and give it a prior with lower bound of 0, e.g. $\sigma_\beta \sim \textrm{Half-Cauchy}(10)$, that would have a median of 10 but will result in a final estimate of some other value.  Technically this could turn into [turtles all the way up](https://en.wikipedia.org/wiki/Turtles_all_the_way_down#/media/File:River_terrapin.jpg), with priors upon priors upon priors.  Usually one level is enough though, and might make you feel better for not setting a specific parameter to some value.
 
 
 ### Sensitivity Analysis Revisited
@@ -138,7 +148,7 @@ There are [many ways](http://m-clark.github.io/docs/ld_mcmc/) in which one might
 
 ### Metropolis
 
-We have mentioned that BUGS and JAGS use <span class="emph">Gibbs sampling</span>, which is a special case of the <span class="emph">Metropolis-Hastings</span> (MH) algorithm[^MH], a very general approach encompassing a wide variety of techniques.  The Metropolis algorithm can be briefly described in the following steps:
+We have mentioned that BUGS and JAGS use *Gibbs sampling*, which is a special case of the *Metropolis-Hastings* (MH) algorithm[^MH], a very general approach encompassing a wide variety of techniques.  The Metropolis algorithm can be briefly described in the following steps:
 
 1. Start with initial values for the parameters $\theta^0$
 
@@ -203,7 +213,7 @@ for (t in 1:nsim) {
 
 ### Hamiltonian Monte Carlo
 
-Stan uses <span class="emph">Hamiltonian Monte Carlo</span>, another variant of MH. It takes the parameters $\theta$ as collectively denoting the position of a particle in some space with momentum $\phi$ (of same dimension as $\theta$). Both $\theta$ and $\phi$ are updated at each Metropolis step and jointly estimated, though we are only interested in $\theta$.  We can describe the basic steps as follows.
+Stan uses *Hamiltonian Monte Carlo*, another variant of MH. It takes the parameters $\theta$ as collectively denoting the position of a particle in some space with momentum $\phi$ (of same dimension as $\theta$). Both $\theta$ and $\phi$ are updated at each Metropolis step and jointly estimated, though we are only interested in $\theta$.  We can describe the basic steps as follows.
 
 
 1. At iteration $t$, take a random draw of momentum $\phi$ from its posterior distribution

@@ -34,8 +34,8 @@ mean(x2); hist(x2)
 
 ```{r binomdist_hist, eval=FALSE, echo=FALSE}
 # if desired
-qplot(x1) + geom_bar(fill=palettes$orange$orange, color=palettes$orange$complementary[2]) + theme_trueMinimal()
-qplot(x2) + geom_bar(fill=palettes$orange$orange, color=palettes$orange$complementary[2]) + theme_trueMinimal()
+qplot(x1) + geom_bar(fill=palettes$orange$orange, color=palettes$orange$complementary[2]) + theme_clean()
+qplot(x2) + geom_bar(fill=palettes$orange$orange, color=palettes$orange$complementary[2]) + theme_clean()
 ```
 
 
@@ -97,7 +97,7 @@ pDataGivenTheta = choose(N, nGoal) * theta^nGoal * (1 - theta)^nMiss
 
 
 # Alternative methods
-# # get the liklihood for each value given each theta
+# # get the likelihood for each value given each theta
 # pDataGivenTheta2 = dbinom(6, size=10, prob=theta)
 # pDataGivenTheta3 = sapply(theta, function(p) dbinom(driveNum, size=1, prob=p))
 # # 
@@ -180,7 +180,7 @@ g = ggplot(aes(x = theta), data = probdat, xlim = c(0, 1)) +
     y = 3e-4,
     label = 'Prior~with~beta(10, 10)',
     color = alpha(palettes$Rblue$Rblue, .75),
-    parse = T
+    parse = TRUE
   ) + # doesn't work with ggplot (use~); but does with plotly
   geom_polygon(aes(y = likelihood), fill = 'red', alpha = .25) +
   annotate(
@@ -201,9 +201,9 @@ g = ggplot(aes(x = theta), data = probdat, xlim = c(0, 1)) +
     color = palettes$tyrian_purple$tyrian_purple
   ) +
   ylim(c(0, .001)) +
-  ylab('Density') +
+  ylab('') +
   xlab(substitute('theta')) +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
     axis.ticks.y = element_blank(),
     axis.text.y = element_blank(),
@@ -249,7 +249,7 @@ g = ggplot(aes(x = theta), data = probdat, xlim = c(0, 1)) +
     y = 3e-4,
     label = 'Prior~with~beta(2, 2)',
     color = palettes$Rblue$Rblue,
-    parse = T
+    parse = TRUE
   ) +
   geom_polygon(aes(y = likelihood), fill = 'red', alpha = .25) +
   annotate(
@@ -270,9 +270,9 @@ g = ggplot(aes(x = theta), data = probdat, xlim = c(0, 1)) +
     color = palettes$tyrian_purple$tyrian_purple
   ) +
   ylim(c(0, .001)) +
-  ylab('Density') +
+  ylab('') +
   xlab(expression('theta')) +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
     axis.ticks.y = element_blank(),
     axis.text.y = element_blank(),
@@ -318,7 +318,7 @@ g = ggplot(aes(x = theta), data = probdat, xlim = c(0, 1)) +
     y = 6e-4,
     label = 'Prior~with~beta(10, 10)',
     color = palettes$Rblue$Rblue,
-    parse = T
+    parse = TRUE
   ) +
   geom_polygon(aes(y = likelihood), fill = 'red', alpha = .25) +
   annotate(
@@ -339,9 +339,9 @@ g = ggplot(aes(x = theta), data = probdat, xlim = c(0, 1)) +
     color = palettes$tyrian_purple$tyrian_purple
   ) +
   ylim(c(0, .0015)) +
-  ylab('Density') +
+  ylab('') +
   xlab('theta') +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
     axis.ticks.y = element_blank(),
     axis.text.y = element_blank(),
@@ -386,10 +386,10 @@ yrep = data.frame(posterior_predict(shotres))
 colnames(yrep) = paste0('Player_', 1:10)
 
 sampleIndex = sample(1:500, 16)
-yrepLong = tidyr::gather(data.frame(Sim = 1:500, yrep)[sampleIndex,],
-                         key = Player,
-                         value = Goal,
-                         -Sim) %>%
+
+yrepLong = data.frame(Sim = 1:500, yrep) %>% 
+  slice(sampleIndex) %>% 
+  pivot_longer(-Sim, names_to = 'Player', values_to = 'Goal') %>% 
   arrange(Sim)
 
 
@@ -431,100 +431,184 @@ With an understanding of the key elements of Bayesian inference in hand, we can 
 set.seed(1234)
 nGoal = 6       # number of scores
 nMiss = 4           # number not
-theta = seq(from=.00001, to = .9999, length=5000)
+theta = seq(from = .00001, to = .9999, length = 5000)
 # pTheta = pmin(theta, 1-theta)
 # pTheta = dunif(theta)
 pTheta = dbeta(theta, 10, 10)
-pTheta = pTheta/sum(pTheta) # Normalize so sum to 1
-pDataGivenTheta =  theta^nGoal * (1-theta)^nMiss
-pDataGivenTheta = pDataGivenTheta/sum(pDataGivenTheta)
-pData = sum(pDataGivenTheta*pTheta)
-pThetaGivenData = pDataGivenTheta*pTheta  / pData
+pTheta = pTheta / sum(pTheta) # Normalize so sum to 1
+pDataGivenTheta =  theta ^ nGoal * (1 - theta) ^ nMiss
+pDataGivenTheta = pDataGivenTheta / sum(pDataGivenTheta)
+pData = sum(pDataGivenTheta * pTheta)
+pThetaGivenData = pDataGivenTheta * pTheta  / pData
 
-probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaGivenData)
+probdat = data.frame(prior = pTheta,
+                     likelihood = pDataGivenTheta,
+                     posterior = pThetaGivenData)
 
-ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill=palettes$stan_red$tetradic[2], alpha=.25) +
-  annotate('text',x=.2, y=3e-4, label='Prior&nbsp;with&nbsp;beta(10, 10)', color=palettes$Rblue$Rblue, parse=T) + # doesn't work with ggplot (use~); but does with plotly
-  geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  geom_text(x=.8, y=4e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
-  geom_polygon(aes(y=posterior), fill='purple', alpha=.25) +
-  geom_text(x=.4, y=8e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
-  ylab('Density') +
-#   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
-#   labs(title = expression("Prior~with~ beta(10, 10)"))
-  theme_trueMinimal() +
-  theme(axis.ticks.y=element_line(color='white'),
-        axis.text.y=element_text(color='white'),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+ggplot(aes(x = theta), data = probdat, xlim = c(0, 1)) +
+  geom_polygon(aes(y = prior),
+               fill = palettes$stan_red$tetradic[2],
+               alpha = .25) +
+  annotate(
+    'text',
+    x = .2,
+    y = 3e-4,
+    label = 'Prior&nbsp;with&nbsp;beta(10, 10)',
+    color = palettes$Rblue$Rblue,
+    parse = TRUE
+  ) + # doesn't work with ggplot (use~); but does with plotly
+  geom_polygon(aes(y = likelihood), fill = 'red', alpha = .25) +
+  geom_text(
+    x = .8,
+    y = 4e-4,
+    label = 'Likelihood',
+    color = palettes$stan_red$stan_red
+  ) +
+  geom_polygon(aes(y = posterior), fill = 'purple', alpha = .25) +
+  geom_text(
+    x = .4,
+    y = 8e-4,
+    label = 'Posterior',
+    color = palettes$tyrian_purple$tyrian_purple
+  ) +
+  ylab('') +
+  #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
+  #   labs(title = expression("Prior~with~ beta(10, 10)"))
+  theme_clean() +
+  theme(
+    axis.ticks.y = element_line(color = 'white'),
+    axis.text.y = element_text(color = 'white'),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 # ggsave('figure/priorlikepost1.svg', width=3, height=3)
-ggsave('img/priorlikepost1_test.png', width=8, height=8, bg = "transparent") # png for faster loading
+ggsave(
+  'img/priorlikepost1_test.png',
+  width = 8,
+  height = 8,
+  bg = "transparent"
+) # png for faster loading
 
 ### more vague prior
 set.seed(1234)
 nGoal = 6       # number of scores
 nMiss = 4           # number not
 pTheta = dbeta(theta, 2, 2)
-pTheta = pTheta/sum(pTheta) # Normalize so sum to 1
-pDataGivenTheta = theta^nGoal * (1-theta)^nMiss
-pDataGivenTheta = pDataGivenTheta/sum(pDataGivenTheta)
-pData = sum(pDataGivenTheta*pTheta)
-pThetaGivenData = pDataGivenTheta*pTheta  / pData
+pTheta = pTheta / sum(pTheta) # Normalize so sum to 1
+pDataGivenTheta = theta ^ nGoal * (1 - theta) ^ nMiss
+pDataGivenTheta = pDataGivenTheta / sum(pDataGivenTheta)
+pData = sum(pDataGivenTheta * pTheta)
+pThetaGivenData = pDataGivenTheta * pTheta  / pData
 
-probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaGivenData)
+probdat = data.frame(prior = pTheta,
+                     likelihood = pDataGivenTheta,
+                     posterior = pThetaGivenData)
 
 
-ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
-  annotate('text',x=.3, y=3e-4, label='Prior~with~beta(2, 2)', color=palettes$Rblue$Rblue, parse=T) +
-  geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  geom_text(x=.8, y=5e-4, label='Likelihood', color=palettes$stan_red$stan_red) +
-  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
-  geom_text(x=.4, y=5e-4, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
-  ylab('Density') +
-#   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
-#   labs(title = 'A more vague prior') +
-  theme_trueMinimal() +
-  theme(axis.ticks.y=element_line(color='white'),
-        axis.text.y=element_text(color='white'),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+ggplot(aes(x = theta), data = probdat, xlim = c(0, 1)) +
+  geom_polygon(aes(y = prior), fill = palettes$Rblue$Rblue, alpha = .25) +
+  annotate(
+    'text',
+    x = .3,
+    y = 3e-4,
+    label = 'Prior~with~beta(2, 2)',
+    color = palettes$Rblue$Rblue,
+    parse = TRUE
+  ) +
+  geom_polygon(aes(y = likelihood), fill = 'red', alpha = .25) +
+  geom_text(
+    x = .8,
+    y = 5e-4,
+    label = 'Likelihood',
+    color = palettes$stan_red$stan_red
+  ) +
+  geom_polygon(aes(y = posterior),
+               fill = palettes$tyrian_purple$tyrian_purple,
+               alpha = .25) +
+  geom_text(
+    x = .4,
+    y = 5e-4,
+    label = 'Posterior',
+    color = palettes$tyrian_purple$tyrian_purple
+  ) +
+  ylab('') +
+  #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
+  #   labs(title = 'A more vague prior') +
+  theme_clean() +
+  theme(
+    axis.ticks.y = element_line(color = 'white'),
+    axis.text.y = element_text(color = 'white'),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 # ggsave('figure/priorlikepost2.svg', width=3, height=3)
-ggsave('figure/priorlikepost2.png', width=8, height=8, bg = "transparent") # png for faster loading
+ggsave(
+  'figure/priorlikepost2.png',
+  width = 8,
+  height = 8,
+  bg = "transparent"
+) # png for faster loading
 
 ### more data
 set.seed(1234)
 N = 50
-drive = rbinom(N, size=1, p=.6)
-nGoal = sum(drive==1)       # number of scores
-nMiss = sum(drive==0)           # number not
+drive = rbinom(N, size = 1, p = .6)
+nGoal = sum(drive == 1)       # number of scores
+nMiss = sum(drive == 0)           # number not
 
 
 pTheta = dbeta(theta, 10, 10)
-pTheta = pTheta/sum(pTheta) # Normalize so sum to 1
-pDataGivenTheta = theta^nGoal * (1-theta)^nMiss
-pDataGivenTheta = pDataGivenTheta/sum(pDataGivenTheta)
-pData = sum(pDataGivenTheta*pTheta)
-pThetaGivenData = pDataGivenTheta*pTheta  / pData
+pTheta = pTheta / sum(pTheta) # Normalize so sum to 1
+pDataGivenTheta = theta ^ nGoal * (1 - theta) ^ nMiss
+pDataGivenTheta = pDataGivenTheta / sum(pDataGivenTheta)
+pData = sum(pDataGivenTheta * pTheta)
+pThetaGivenData = pDataGivenTheta * pTheta  / pData
 
-probdat = data.frame(prior=pTheta, likelihood=pDataGivenTheta, posterior=pThetaGivenData)
+probdat = data.frame(prior = pTheta,
+                     likelihood = pDataGivenTheta,
+                     posterior = pThetaGivenData)
 
 
-ggplot(aes(x=theta), data=probdat, xlim=c(0,1)) +
-  geom_polygon(aes(y=prior), fill=palettes$Rblue$Rblue, alpha=.25) +
-  annotate('text',x=.3, y=6e-4, label='Prior~with~beta(10, 10)', color=palettes$Rblue$Rblue, parse=T) +
-  geom_polygon(aes(y=likelihood), fill='red', alpha=.25) +
-  geom_text(x=.8, y=1e-3, label=paste('Likelihood with N =', N), color=palettes$stan_red$stan_red) +
-  geom_polygon(aes(y=posterior), fill=palettes$tyrian_purple$tyrian_purple, alpha=.25) +
-  geom_text(x=.45, y=1e-3, label='Posterior', color=palettes$tyrian_purple$tyrian_purple) +
-  ylab('Density') +
-#   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
-#   labs(title = expression("Prior~with~ beta(10, 10)"))
-  theme_trueMinimal() +
-  theme(axis.ticks.y=element_line(color='white'),
-        axis.text.y=element_text(color='white'),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+ggplot(aes(x = theta), data = probdat, xlim = c(0, 1)) +
+  geom_polygon(aes(y = prior), fill = palettes$Rblue$Rblue, alpha = .25) +
+  annotate(
+    'text',
+    x = .3,
+    y = 6e-4,
+    label = 'Prior~with~beta(10, 10)',
+    color = palettes$Rblue$Rblue,
+    parse = TRUE
+  ) +
+  geom_polygon(aes(y = likelihood), fill = 'red', alpha = .25) +
+  geom_text(
+    x = .8,
+    y = 1e-3,
+    label = paste('Likelihood with N =', N),
+    color = palettes$stan_red$stan_red
+  ) +
+  geom_polygon(aes(y = posterior),
+               fill = palettes$tyrian_purple$tyrian_purple,
+               alpha = .25) +
+  geom_text(
+    x = .45,
+    y = 1e-3,
+    label = 'Posterior',
+    color = palettes$tyrian_purple$tyrian_purple
+  ) +
+  ylab('') +
+  #   annotate('title', label='Prior~with~beta(10, 10)', parse=T) +
+  #   labs(title = expression("Prior~with~ beta(10, 10)"))
+  theme_clean() +
+  theme(
+    axis.ticks.y = element_line(color = 'white'),
+    axis.text.y = element_text(color = 'white'),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 # ggsave('figure/priorlikepost3.svg', width=3, height=3)
-ggsave('figure/priorlikepost3.png', width=8, height=8, bg = "transparent") # png for faster loading
+ggsave(
+  'figure/priorlikepost3.png',
+  width = 8,
+  height = 8,
+  bg = "transparent"
+) # png for faster loading
 
 ```
 
@@ -532,7 +616,7 @@ ggsave('figure/priorlikepost3.png', width=8, height=8, bg = "transparent") # png
 [^football]: Don't even start, it's always been both 'football' and 'soccer'.
 
 
-[^binomll]: See for yourself in the [binmoial likelihood][Binomial Likelihood Example] section in the appendix.
+[^binomll]: See for yourself in the [binomial likelihood][Binomial Likelihood Example] section in the appendix.
 
 [^postpred]: Mathematically represented as: $p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta$ <br><br> We can get a sense of the structure of this process via the following table, taken from Gelman: <br><br> <img class='zoom' src="img/gelmanTable.png" style="display:block; margin: 0 auto;" width='50%'>
 

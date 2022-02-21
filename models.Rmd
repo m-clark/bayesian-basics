@@ -1,15 +1,6 @@
 # Regression Models
 
 
-```{r}
-knitr::opts_chunk$set(
-  cache.rebuild = TRUE,
-  cache = TRUE
-)   
-
-```
-
-
 Now armed with a conceptual understanding of the Bayesian approach, we will actually investigate a regression model using it.  To keep things simple, we start with a standard linear model for regression.  Later, we will show how easy it can be to add changes to the sampling distribution or priors for alternative modeling techniques. But before getting too far, you should peruse the [Modeling Languages][Modeling Languages] section of the appendix to get a sense of some of the programming approaches available.  We will be using the programming language Stan via R and the associated R package <span class="pack">rstan</span>.  If you prefer to keep things conceptual rather than worry about the code, you can read through the following data description and then skip to [running the model][Running the Model][^easystan].
 
 
@@ -113,9 +104,9 @@ generated quantities {      // Generated quantities block. Not used presently.
 
 ### Stan Code
 
-The first section is the <span class="emph">data</span> block, where we tell Stan the data it should be expecting from the data list.  It is useful to put in bounds as a check on the data input, and that is what is being done between the `< >` (e.g. we should at least have a sample size of 1).  The first two variables declared are `N` and `K`, both as integers.  Next the code declares the model matrix and target vector respectively. As you'll note here and for the next blocks, we declare the type and dimensions of the variable and then its name. In Stan, everything declared in one block is available to subsequent blocks, but those declared in a block may not be used in earlier blocks. Even within a block, anything declared, such as `N` and `K`, can then be used subsequently, as we did to specify dimensions of the model matrix `X`.
+The first section is the *data* block, where we tell Stan the data it should be expecting from the data list.  It is useful to put in bounds as a check on the data input, and that is what is being done between the `< >` (e.g. we should at least have a sample size of 1).  The first two variables declared are `N` and `K`, both as integers.  Next the code declares the model matrix and target vector respectively. As you'll note here and for the next blocks, we declare the type and dimensions of the variable and then its name. In Stan, everything declared in one block is available to subsequent blocks, but those declared in a block may not be used in earlier blocks. Even within a block, anything declared, such as `N` and `K`, can then be used subsequently, as we did to specify dimensions of the model matrix `X`.
 
-For a reference, the following is from an older version of the Stan manual but I think still helps (see the latest section [here](https://mc-stan.org/docs/2_28/reference-manual/overview-of-stans-program-blocks.html)), and notes variables of interest and the associated blocks where they would be declared.
+For a reference, the following is from an older version of the Stan manual, but I think still helps clarify a bit (see the latest section [here](https://mc-stan.org/docs/2_28/reference-manual/overview-of-stans-program-blocks.html)), and notes variables of interest and the associated blocks where they would be declared.
 
 ```{r stanBlocks, results='asis', echo=FALSE}
 tab = data.frame(
@@ -190,9 +181,9 @@ load('data/mainModels.RData')
 # summary
 print(
   fit,
-  pars = c('beta', 'sigma'),
+  pars   = c('beta', 'sigma'),
   digits = 3,
-  prob = c(.025, .5, .975)
+  prob   = c(.025, .5, .975)
 )
 ```
 
@@ -208,7 +199,7 @@ summary(modlm)
 pander(summary(modlm), justify='crrrr')
 ```
 
-But how would we know if our model was working out okay otherwise?  There are several standard diagnostics, and we will talk about them in more detail in the next section, but let's take a look at some presently.  In the summary, `se_mean` is the <span class="emph">Monte Carlo error</span>, and is an estimate of the uncertainty contributed by only having a finite number of posterior draws. `n_eff` is <span class="emph">effective sample size</span> given all chains, and essentially accounts for autocorrelation in the chain, i.e. the correlation of the estimates as we go from one draw to the next. It actually doesn't have to be very large, but if it was small relative to the total number of draws desired, that might be cause for concern.  `Rhat` is a measure of how well chains mix, and goes to 1 as chains are allowed to run for an infinite number of draws.  In this case, `n_eff` and `Rhat` suggest we have good convergence, but we can also examine this visually with a traceplot.
+But how would we know if our model was working out okay otherwise?  There are several standard diagnostics, and we will talk about them in more detail in the next section, but let's take a look at some presently.  In the summary, `se_mean` is the *Monte Carlo error*, and is an estimate of the uncertainty contributed by only having a finite number of posterior draws. `n_eff` is *effective sample size* given all chains, and essentially accounts for autocorrelation in the chain, i.e. the correlation of the estimates as we go from one draw to the next. It actually doesn't have to be very large, but if it was small relative to the total number of draws desired, that might be cause for concern.  `Rhat` is a measure of how well chains mix, and goes to 1 as chains are allowed to run for an infinite number of draws.  In this case, `n_eff` and `Rhat` suggest we have good convergence, but we can also examine this visually with a traceplot.
 
 
 ```{r rstanModelDiagnostics, eval=F, fig.align='center'}
@@ -252,7 +243,7 @@ ggplot(data = beta4) +
                      breaks = seq(100, 500, 100)
                      ) +
   labs(x = 'Iteration', y = 'Estimate') +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
     plot.background = element_rect(fill = 'transparent', color = NA),
     legend.background = element_rect(fill = 'transparent', color = NA),
@@ -268,7 +259,7 @@ ggsave('img/traceplotWarmup.svg', bg='transparent')
 # pairs(fit, pars=c('beta','sigma'))
 ```
 
-I only show one parameter for the current demonstration, but one should always look at the traceplots for all parameters.  What we are looking for after the warmup period is a "fat hairy caterpillar" or something that might be labeled as "grassy", and this plot  qualifies as such[^diagnostics]. One can see that the estimates from each chain find their way from the starting point to a more or less steady state quite rapidly (initial warmup iterations in gray).  Furthermore, all chains, each noted by a different color, are mixing well and bouncing around the same conclusion. So the statistical measures and traceplot suggest that we are doing okay.
+I only show one parameter above, but one should always look at the traceplots for all parameters.  What we are looking for after the warmup period is a "fat hairy caterpillar" or something that might be labeled as "grassy", and this plot  qualifies as such[^diagnostics]. One can see that the estimates from each chain find their way from the starting point to a more or less steady state quite rapidly (initial warmup iterations in gray).  Furthermore, all chains, each noted by a different color, are mixing well and bouncing around the same conclusion. So the statistical measures and traceplot suggest that we are doing okay.
 
 The Stan development crew has made it easy to interactively explore diagnostics via the <span class="pack">shinystan</span> package, and one should do so with each model.  In addition, there are other diagnostics available in other packages like <span class="pack">loo</span> and <span class="pack">posterior</span>.  
 
@@ -302,4 +293,4 @@ So there you have it.  Aside from the initial setup with making a data list and 
 
 [^moremcmc]: How far one wants to go down the rabbit hole regarding MCMC is up to the reader.  A great many applied researchers do classical statistical analysis without putting much thought into the actual maximum likelihood estimation process, and I suppose one could do so here as well.
 
-[^finaliter]: $\frac{5000-2500}{10} \cdot 4 = 1000$
+[^finaliter]: $\frac{2000-1000}{4} \cdot 4 = 1000$

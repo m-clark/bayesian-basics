@@ -57,9 +57,9 @@ ggplot(aes(
   y = a1,
   color = factor(.chain)
 ), data = gdat) +
-  geom_line(show.legend = F) +
+  geom_line(show.legend = FALSE) +
   labs(x = '', y = '') +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
     axis.text.y     = element_blank(),
     axis.ticks.y    = element_blank(),
@@ -76,7 +76,7 @@ ggsave('img/badchains.svg',
 
 ### Statistical Measures
 
-To go along with visual inspection, we can examine various statistics that might help our determination of convergence or lack thereof.  Gelman and Rubin's <span class="emph">potential scale reduction factor</span>, $\hat{R}$, provides an estimate of convergence based on the variance of an estimated parameter $\theta$ between chains, and the variance within a chain. It is interpreted as the factor by which the variance in the estimate might be reduced with longer chains.  We are looking for a value near 1 (and at the very least less than 1.1), and it will get there as $N_{sim} \rightarrow \infty$.  In the regression model things are looking good in this respect.
+To go along with visual inspection, we can examine various statistics that might help our determination of convergence or lack thereof.  Gelman and Rubin's *potential scale reduction factor*, $\hat{R}$, provides an estimate of convergence based on the variance of an estimated parameter $\theta$ between chains, and the variance within a chain. It is interpreted as the factor by which the variance in the estimate might be reduced with longer chains.  We are looking for a value near 1 (and at the very least less than 1.1), and it will get there as $N_{sim} \rightarrow \infty$.  In the regression model things are looking good in this respect.
 
 ```{r showRhat, echo=FALSE}
 broom.mixed::tidyMCMC(fit, rhat = TRUE) %>% 
@@ -110,10 +110,13 @@ ggplot(data = test, aes(x = Lag, y = AC)) +
                col = '#ff5500',
                alpha = .75,
                lwd = 1.5) +
-  geom_point(col = palettes$orange$complementary[2],
-             size = 5) +
+  geom_point(
+    col = palettes$orange$complementary[2],
+    size = 5,
+    alpha = 1
+  ) +
   labs(x = 'Lag',  y = 'Autocorrelation') +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
     axis.title.x    = element_text(color = 'gray25', size = 15),
     axis.title.y    = element_text(color = 'gray25', size = 15),
@@ -128,7 +131,7 @@ for (i in 2:length(pres2)) {
 }
 # pdf('img/acfPlotSerial.pdf')
 
-test = tibble(acf = acf(pres2,)$acf[,1,1], lag = 0:(length(acf)-1)) 
+test = tibble(acf = acf(pres2, plot = FALSE)$acf[,1,1], lag = 0:(length(acf)-1)) 
 
 ggplot(data = test, aes(x = lag, y = acf)) +
   geom_hline(aes(yintercept = 0), col = 'gray90') +
@@ -137,15 +140,16 @@ ggplot(data = test, aes(x = lag, y = acf)) +
     col = '#ff5500',
     lwd = 1.5,
     alpha = .75,
-    show.legend = F
+    show.legend = FALSE
   ) +
   geom_point(
     col = palettes$orange$complementary[2],
     size = 5,
-    show.legend = F
+    alpha = 1,
+    show.legend = FALSE
   ) +
   labs(x = 'Lag',  y = 'Autocorrelation') +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
     axis.title.x    = element_text(color = 'gray25', size = 15),
     axis.title.y    = element_text(color = 'gray25', size = 15),
@@ -166,7 +170,7 @@ broom.mixed::tidyMCMC(fit, ess = TRUE) %>%
   kable_styling(full_width = FALSE)
 ```
 
-<span class="emph">Monte Carlo error</span> is an estimate of the uncertainty contributed by only having a finite number of posterior draws. We'd typically want roughly less than 5% of the posterior standard deviation (reported right next to it in the Stan output), but might as well go for less than 1%. With no autocorrelation it would equal $\sqrt{\frac{var(\theta)}{n_{\textrm{eff}}}}$[^mcerr]. and $n_{\textrm{eff}}$ would equal the number of simulation draws requested.
+*Monte Carlo error* is an estimate of the uncertainty contributed by only having a finite number of posterior draws. We'd typically want roughly less than 5% of the posterior standard deviation (reported right next to it in the Stan output), but might as well go for less than 1%. With no autocorrelation it would equal $\sqrt{\frac{var(\theta)}{n_{\textrm{eff}}}}$[^mcerr]. and $n_{\textrm{eff}}$ would equal the number of simulation draws requested.
 
 ```{r showMCerror, echo=FALSE}
 rstan::summary(fit, pars = c('beta', 'sigma'))$summary[, c('mean', 'se_mean')] %>%
@@ -195,9 +199,9 @@ For model comparison of out of sample predictive performance, there are informat
 
 ### Posterior Predictive Checking: Statistical
 
-For an overall assessment of model fit, we can examine how well the model can reproduce the data at hand given the $\theta$ draws from the posterior.  We discussed earlier the <span class="emph">posterior predictive distribution</span> for a future observation $\tilde{y}$[^ppcheck2], and here we'll dive in to using it explicitly. There are two sources of uncertainty in our regression model, the variance in $y$ not explained by the model ($\sigma^2$), and posterior uncertainty in the parameters due to having a finite sample size.  As $N\rightarrow\infty$, the latter goes to zero, and so we can simulate draws of $\tilde{y} \sim N(\tilde{X}\beta, \sigma^2I)$[^conjugate]. If $\tilde{X}$ is the model data as in the following, then we will refer to $y^{\textrm{Rep}}$ instead of $\tilde{y}$.
+For an overall assessment of model fit, we can examine how well the model can reproduce the data at hand given the $\theta$ draws from the posterior.  We discussed earlier the *posterior predictive distribution* for a future observation $\tilde{y}$[^ppcheck2], and here we'll dive in to using it explicitly. There are two sources of uncertainty in our regression model, the variance in $y$ not explained by the model ($\sigma^2$), and posterior uncertainty in the parameters due to having a finite sample size.  As $N\rightarrow\infty$, the latter goes to zero, and so we can simulate draws of $\tilde{y} \sim N(\tilde{X}\beta, \sigma^2I)$[^conjugate]. If $\tilde{X}$ is the model data as in the following, then we will refer to $y^{\textrm{Rep}}$ instead of $\tilde{y}$.
 
-For our model, this entails extracting the simulated values from the model object, and taking a random draw from the normal distribution based on the $\beta$ and $\sigma$ that are drawn to produce our <span class="emph">replicated data</span>, $y^{\textrm{Rep}}$ (see @gelman_bda, Appendix C).  In what follows, I write out the process explicitly, but <span class="pack">bayesplot</span>, <span class="pack">rstanarm</span>, and <span class="pack">brms</span> make this straightforward, possibly with a single line of code, the latter packages using <span class="pack">bayesplot</span>. In addition, it's often simpler to create the $y^{\textrm{Rep}}$ as part of your generated quantities section of the model code if modeling with Stan explicitly.
+For our model, this entails extracting the simulated values from the model object, and taking a random draw from the normal distribution based on the $\beta$ and $\sigma$ that are drawn to produce our *replicated data*, $y^{\textrm{Rep}}$ (see @gelman_bda, Appendix C).  In what follows, I write out the process explicitly, but <span class="pack">bayesplot</span>, <span class="pack">rstanarm</span>, and <span class="pack">brms</span> make this straightforward, possibly with a single line of code, the latter packages using <span class="pack">bayesplot</span>. In addition, it's often simpler to create the $y^{\textrm{Rep}}$ as part of your generated quantities section of the model code if modeling with Stan explicitly.
 
 ```{r posteriorPredictiveExample, fig.show='hide', echo=-(1:3)}
 load('data/mainModels.RData')
@@ -221,8 +225,6 @@ As a starting point, we can check our minimum value among the replicated data se
 ```{r posteriorPredictiveMinComparison, fig.keep='none', fig.show='hide'}
 min_rep = apply(yRep, 2, min)
 min_y = min(y)
-hist(min_rep, main = '')
-abline(v = min_y)
 c(mean(min_rep), min_y)
 prop.table(table(min_rep > min_y))
 sort(y)[1:5]
@@ -233,16 +235,19 @@ sort(y)[1:5]
 # pdf('img/histofyrepMinimum.pdf', paper='USr')
 # hist(min_rep, main='', 'FD', yaxt='n', ylab='', border='gray50'); abline(v=min_y, col='gray50')
 # dev.off()
-ggplot(aes(x = min_rep), data = data_frame(min_rep = min_rep)) +
+ggplot(aes(x = min_rep), data = tibble(min_rep = min_rep)) +
   geom_density(fill = scales::alpha('#ff5500', .5), color = 'transparent') +
   geom_line(color = palettes$orange$complementary[2], stat = 'density') +
   geom_vline(xintercept = min_y,
              color = 'gray50',
              alpha = .75) +
-  theme_trueMinimal() +
+  labs(y = '') +
+  theme_clean() +
   theme(
-    axis.title.x = element_text(color = 'gray25', size = 15),
-    axis.title.y = element_text(color = 'gray25', size = 15),
+    axis.title.x    = element_text(color = 'gray25', size = 15),
+    axis.title.y    = element_text(color = 'gray25', size = 15),
+    axis.text.y     = element_blank(),
+    axis.ticks.y    = element_blank(),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
 # ggsave('img/histofyrepMinimum.svg', bg='transparent')
@@ -262,10 +267,13 @@ ggplot(aes(x = value), data = q10_rep) +
   geom_vline(xintercept = quantile(y, .1),
              color = 'gray50',
              alpha = .75) +
-  theme_trueMinimal() +
+  labs(y = '') +
+  theme_clean() +
   theme(
-    axis.title.x = element_text(color = 'gray25', size = 15),
-    axis.title.y = element_text(color = 'gray25', size = 15),
+    axis.title.x    = element_text(color = 'gray25', size = 15),
+    axis.title.y    = element_text(color = 'gray25', size = 15),
+    axis.text.y     = element_blank(),
+    axis.ticks.y    = element_blank(),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
 # ggsave('img/histofyrepQ10.svg', bg='transparent')
@@ -288,7 +296,7 @@ ggplot(aes(x = y, y = avgfits), data = data.frame(y = y, avgfits = avgfits)) +
   # geom_point(col=palettes$orange$complementary, alpha=.75, size=3) +
   geom_point(col = '#ff5500', alpha = .5, size = 3) +
   labs(x = 'Observed y', y = 'Expected y') +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
     axis.title.x = element_text(color = 'gray25'),
     axis.title.y = element_text(color = 'gray25'),
@@ -304,58 +312,85 @@ Next, I show density plots for a random sample of 20 of the replicated data sets
 
 
 ```{r posteriorPredictiveIndividually, echo=FALSE, out.width='500px'}
-yRepSample = yRep[,sample(1:nsims, 20)]
-# gdat = melt(yRepSample); colnames(gdat) = c('n', 'nsim', 'yRep')
-gdat = data.frame(yRepSample) %>% 
-  rename_all(stringr::str_replace, pattern='X', replacement='Sim ') %>% 
-  gather(key=nsim, value=yRep) %>% 
-  group_by(nsim) %>% 
-  mutate(N=1:n()) %>% 
+yRepSample = yRep[, sample(1:nsims, 20)]
+
+gdat = data.frame(yRepSample) %>%
+  rename_all(stringr::str_replace,
+             pattern     = 'X',
+             replacement = 'Sim ') %>%
+  pivot_longer(everything(), names_to = 'nsim', values_to = 'yRep') %>%
+  group_by(nsim) %>%
+  mutate(N = 1:n()) %>%
   ungroup()
-ggplot(aes(x=yRep), data=gdat) +
-  stat_density(aes(x=y), size=1, fill='gray90', data.frame(y=y)) +
-  stat_density(aes(group=as.factor(nsim), color=as.factor(nsim)), 
-               alpha=.25, show.legend=F, geom='line', position='dodge') +  
-  # scale_color_discrete()
-  labs(x='', y='') +
-  theme_trueMinimal() +
-  theme(axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+
+ggplot(aes(x = yRep), data = gdat) +
+  stat_density(aes(x = y), size = 1, fill = 'gray90', tibble(y = y)) +
+  stat_density(
+    aes(group = as.factor(nsim)),
+    color = alpha('#ff5500', .05),
+    alpha = .25,
+    geom  = 'line',
+    show.legend = FALSE,
+    position = position_dodge()
+  ) +
+  labs(x = '', y = '') +
+  theme_clean() +
+  theme(
+    axis.text.y     = element_blank(),
+    axis.ticks.y    = element_blank(),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 # ggsave('img/yRepDensity.svg', bg='transparent')
 
 
 # marginal distribution check for each y as in BDA 6.5
-# ggplot(aes(x=yRep), data=gdat) +
-# #   stat_density(aes(x=y), size=1, fill='gray90') +
-#   stat_density(aes(group=as.factor(N), color=as.factor(N)), 
-#                alpha=.5, show.legend=F, geom='line', position='dodge') +  
-#   geom_vline(aes(xintercept=quantile(y)[3])) +
-#   labs(x='', y='') +
-#   theme_trueMinimal() +
-#   theme(axis.text.y=element_blank(),
-#         axis.ticks.y=element_blank())
+# ggplot(aes(x = yRep), data = gdat) +
+#   #   stat_density(aes(x=y), size=1, fill='gray90') +
+#   stat_density(
+#     aes(group = as.factor(N), color = as.factor(N)),
+#     alpha = .5,
+#     show.legend = FALSE,
+#     geom = 'line',
+#     position = 'dodge'
+#   ) +
+#   geom_vline(aes(xintercept = quantile(y)[3])) +
+#   labs(x = '', y = '') +
+#   theme_clean() +
+#   theme(axis.text.y = element_blank(),
+#         axis.ticks.y = element_blank())
 
 # yq = round(seq(1,250, length=5)) # rough quantiles
 # yq = c(50,125,200)
-yRepSample = yRep[,sample(1:nsims, 200)]
+yRepSample = yRep[, sample(1:nsims, 200)]
 yq = 100
-gdat = data.frame(yRepSample) %>% 
-  rename_all(stringr::str_replace, pattern='X', replacement='Sim ') %>% 
-  gather(key=nsim, value=yRep) %>% 
-  group_by(nsim) %>% 
-  mutate(N=1:n()) %>% 
+
+gdat = data.frame(yRepSample) %>%
+  rename_all(stringr::str_replace,
+             pattern = 'X',
+             replacement = 'Sim ') %>%
+  pivot_longer(everything(), names_to = 'nsim', values_to = 'yRep') %>%
+  group_by(nsim) %>%
+  mutate(N = 1:n()) %>%
   ungroup() %>%
   filter(N %in% yq)
-ggplot(aes(x=yRep), data=gdat) +
-  geom_vline(aes(xintercept=sort(y)[yq]), alpha=.5) +
-  stat_density(aes(group=as.factor(N)), color='#ff5500', 
-               alpha=.85, show.legend=F, geom='line', position='dodge') +  
-  labs(x='', y='') +
-  theme_trueMinimal() +
-  theme(axis.text.y=element_blank(),
-        axis.ticks.y=element_blank(),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+
+ggplot(aes(x = yRep), data = gdat) +
+  geom_vline(aes(xintercept = sort(y)[yq]), alpha = .5) +
+  stat_density(
+    aes(group = as.factor(N)),
+    color = '#ff5500',
+    alpha = .85,
+    show.legend = FALSE,
+    geom = 'line',
+    position = 'dodge'
+  ) +
+  labs(x = '', y = '') +
+  theme_clean() +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 
 # ggsave('img/posteriorPredictiveFittedY.svg', bg='transparent')
 ```
@@ -372,7 +407,7 @@ fits = sapply(1:nsims, \(s) X %*% betas[s,])
 
 realizedResids = sapply(1:nsims, \(s) rnorm(250, fits[,s], sigmas[s]) - fits[,s])
 
-# gdat = melt(realizedResids); colnames(gdat) = c('n', 'nsim', 'residual')
+
 gdat = data.frame(realizedResids) %>%
   rename_all(stringr::str_replace,
              pattern = 'X',
@@ -387,20 +422,20 @@ gdat$minres = rep(apply(realizedResids, 1, min), 1000)
 gdat$maxres = rep(apply(realizedResids, 1, max), 1000)
 
 # plot 6.11a
-ggplot(aes(x = fit, y = residual), data = gdat %>% slice(1:250)) +
+ggplot(aes(x = fit, y = residual), data = gdat %>% dplyr::slice(1:250)) +
   # geom_linerange(aes(ymin = minres, ymax = maxres), alpha = .1)+
-  geom_hline(aes(yintercept = 0), col = 'darkred', alpha = .25) +
+  geom_hline(aes(yintercept = 0), alpha = .25) +
   geom_point(aes(ymin = minres, ymax = maxres),
              color = '#FF5500',
              alpha = .85) +
   scale_x_continuous(breaks = c(-3, 0, 3, 6, 9, 12)) +
   labs(x = 'Expected y', y = 'Realized Residual') +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
-    axis.title.x = element_text(size = 15),
-    axis.title.y = element_text(size = 15),
-    axis.text.y  = element_blank(),
-    axis.ticks.y = element_blank(),
+    axis.title.x    = element_text(size = 15),
+    axis.title.y    = element_text(size = 15),
+    axis.text.y     = element_blank(),
+    axis.ticks.y    = element_blank(),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
 
@@ -415,12 +450,12 @@ avgresidRep = rowMeans(yRep - fits)
 ggplot(aes(x = avgfits, y = avgresidRep), data = data.frame(avgfits, avgresidRep)) +
   geom_point(alpha = .85, color = '#FF5500') +
   labs(x = 'Average Expected y', y = 'Average Realized Residual') +
-  theme_trueMinimal() +
+  theme_clean() +
   theme(
-    axis.title.x = element_text(size = 15),
-    axis.title.y = element_text(size = 15),
-    axis.text.y  = element_blank(),
-    axis.ticks.y = element_blank(),
+    axis.title.x    = element_text(size = 15),
+    axis.title.y    = element_text(size = 15),
+    axis.text.y     = element_blank(),
+    axis.ticks.y    = element_blank(),
     plot.background = element_rect(fill = "transparent", colour = NA)
   )
 

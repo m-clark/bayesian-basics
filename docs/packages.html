@@ -1,44 +1,47 @@
 <!DOCTYPE html>
-<html >
-
+<html lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Bayesian Basics</title>
-  <meta name="description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more.">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>R Packages | Bayesian Basics</title>
+  <meta name="description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Bayesian Basics" />
+  <meta property="og:title" content="R Packages | Bayesian Basics" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/bayesian-basics/" />
-  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
+  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics//img/nineteeneightyR.png" />
   <meta property="og:description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
   <meta name="github-repo" content="m-clark/bayesian-basics/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Bayesian Basics" />
+  <meta name="twitter:title" content="R Packages | Bayesian Basics" />
   
   <meta name="twitter:description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
-  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
+  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics//img/nineteeneightyR.png" />
 
 
 
-<meta name="date" content="2018-07-30">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
-  
-<link rel="prev" href="issues.html">
-<link rel="next" href="conclusion.html">
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="issues.html"/>
+<link rel="next" href="conclusion.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
 
 
 
@@ -47,41 +50,38 @@
 
 
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
-<script src="libs/htmlwidgets-1.2/htmlwidgets.js"></script>
-<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
-<script src="libs/vis-4.20.1/vis.min.js"></script>
-<script src="libs/visNetwork-binding-2.0.4/visNetwork.js"></script>
-<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; position: absolute; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; }
-pre.numberSource a.sourceLine:empty
-  { position: absolute; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -90,9 +90,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -125,8 +125,31 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="css/book.css" type="text/css" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.0/css/all.css" type="text/css" />
 </head>
 
 <body>
@@ -142,36 +165,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#going-further"><i class="fa fa-check"></i>Going Further</a></li>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#note"><i class="fa fa-check"></i>Note</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#about-the-author"><i class="fa fa-check"></i>About the Author</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a><ul>
-<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a><ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a>
+<ul>
 <li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#conditional-probability-bayes-theorem"><i class="fa fa-check"></i>Conditional probability &amp; Bayes theorem</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i>A Hands-on Example</a><ul>
+<li class="chapter" data-level="" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i>A Hands-on Example</a>
+<ul>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#prior-likelihood-posterior-distributions"><i class="fa fa-check"></i>Prior, likelihood, &amp; posterior distributions</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#prior"><i class="fa fa-check"></i>Prior</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#likelihood"><i class="fa fa-check"></i>Likelihood</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#posterior"><i class="fa fa-check"></i>Posterior</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i>Regression Models</a><ul>
-<li class="chapter" data-level="" data-path="models.html"><a href="models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a><ul>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i>Regression Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a>
+<ul>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#setup"><i class="fa fa-check"></i>Setup</a></li>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#stan-code"><i class="fa fa-check"></i>Stan Code</a></li>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#running-the-model"><i class="fa fa-check"></i>Running the Model</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html"><i class="fa fa-check"></i>Model Exploration</a><ul>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html"><i class="fa fa-check"></i>Model Exploration</a>
+<ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a>
+<ul>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#visual-inspection-traceplot-densities"><i class="fa fa-check"></i>Visual Inspection: Traceplot &amp; Densities</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#statistical-measures"><i class="fa fa-check"></i>Statistical Measures</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#autocorrelation"><i class="fa fa-check"></i>Autocorrelation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#model-checking"><i class="fa fa-check"></i>Model Checking</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#model-criticism"><i class="fa fa-check"></i>Model Criticism</a>
+<ul>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#sensitivity-analysis"><i class="fa fa-check"></i>Sensitivity Analysis</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#predictive-accuracy-model-comparison"><i class="fa fa-check"></i>Predictive Accuracy &amp; Model Comparison</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#posterior-predictive-checking-statistical"><i class="fa fa-check"></i>Posterior Predictive Checking: Statistical</a></li>
@@ -179,21 +213,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#summary"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a><ul>
+<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a>
+<ul>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#generating-new-variables-of-interest"><i class="fa fa-check"></i>Generating New Variables of Interest</a></li>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#robust-regression"><i class="fa fa-check"></i>Robust Regression</a></li>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#generalized-linear-model"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#debugging"><i class="fa fa-check"></i>Debugging</a></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#choice-of-prior"><i class="fa fa-check"></i>Choice of Prior</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#choice-of-prior"><i class="fa fa-check"></i>Choice of Prior</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#noninformative-weakly-informative-informative"><i class="fa fa-check"></i>Noninformative, Weakly Informative, Informative</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#conjugacy"><i class="fa fa-check"></i>Conjugacy</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#test-your-priors-beforehand"><i class="fa fa-check"></i>Test your Priors Beforehand</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#hierarchical-priors"><i class="fa fa-check"></i>Hierarchical Priors</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sensitivity-analysis-revisited"><i class="fa fa-check"></i>Sensitivity Analysis Revisited</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#a-simple-check"><i class="fa fa-check"></i>A Simple Check</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#summary-1"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sampling-procedure"><i class="fa fa-check"></i>Sampling Procedure</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sampling-procedure"><i class="fa fa-check"></i>Sampling Procedure</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#metropolis"><i class="fa fa-check"></i>Metropolis</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#gibbs"><i class="fa fa-check"></i>Gibbs</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#hamiltonian-monte-carlo"><i class="fa fa-check"></i>Hamiltonian Monte Carlo</a></li>
@@ -202,7 +242,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#number-of-draws-thinning-warm-up"><i class="fa fa-check"></i>Number of draws, thinning, warm-up</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#model-complexity"><i class="fa fa-check"></i>Model Complexity</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i>R Packages</a><ul>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i>R Packages</a>
+<ul>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#standard-regression-and-glm"><i class="fa fa-check"></i>Standard Regression and GLM</a></li>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#categorical-models"><i class="fa fa-check"></i>Categorical Models</a></li>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#extended-count-models"><i class="fa fa-check"></i>Extended Count Models</a></li>
@@ -211,15 +252,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#even-more-packages"><i class="fa fa-check"></i>Even More Packages</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i>Final Thoughts</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a>
+<ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a>
+<ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#example"><i class="fa fa-check"></i>Example</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#linear-model"><i class="fa fa-check"></i>Linear Model</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#binomial-likelihood-example"><i class="fa fa-check"></i>Binomial Likelihood Example</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#modeling-languages"><i class="fa fa-check"></i>Modeling Languages</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#modeling-languages"><i class="fa fa-check"></i>Modeling Languages</a>
+<ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#bugs"><i class="fa fa-check"></i>Bugs</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#jags"><i class="fa fa-check"></i>JAGS</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#nimble"><i class="fa fa-check"></i>Nimble</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#stan"><i class="fa fa-check"></i>Stan</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#r"><i class="fa fa-check"></i>R</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#general-statistical-packages"><i class="fa fa-check"></i>General Statistical Packages</a></li>
@@ -231,10 +276,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#metropolis-hastings-example"><i class="fa fa-check"></i>Metropolis Hastings Example</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#hamiltonian-monte-carlo-example"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a><ul>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a>
+<ul>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts-for-your-shelf"><i class="fa fa-check"></i>Texts for Your Shelf</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#stan-specific-resources"><i class="fa fa-check"></i>Stan Specific Resources</a></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html#other"><i class="fa fa-check"></i>Other</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 <li class="divider"></li>
@@ -279,29 +324,33 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="r-packages" class="section level1">
 <h1>R Packages</h1>
-<p>Here I will go into a bit of detail regarding <span class="pack">rstanarm</span> and <span class="pack">brms</span>. For standard models, these should be your first choice, rather than using Stan directly. Why? For one, the underlying code that is used will be more optimized and efficient than what you come up with, and has had multiple individuals developing that code and hundreds actually using it. Furthermore, you can still, and probably should, set your priors as you wish.</p>
+<p>Here I will go into a bit of detail regarding <span class="pack">rstanarm</span> and <span class="pack">brms</span>. For standard models, these should be your first choice, rather than using Stan directly. Why? For one, the underlying code that is used will be more optimized and efficient than what you come up with, and also, that code has had multiple individuals developing it and hundreds actually using it. Furthermore, you can still, and probably should, set your priors as you wish.</p>
 <p>The nice thing about both is that you use the same syntax that you do for <a href="https://m-clark.github.io/R-models/">R modeling</a> in general. Here is a a basic GLM in both.</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb44-1" data-line-number="1"><span class="kw">stan_glm</span>(y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span>z, <span class="dt">data=</span>d)</a>
-<a class="sourceLine" id="cb44-2" data-line-number="2"><span class="kw">brm</span>(y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span>z, <span class="dt">data=</span>d)</a></code></pre></div>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="packages.html#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stan_glm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data =</span> d)</span>
+<span id="cb45-2"><a href="packages.html#cb45-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-3"><a href="packages.html#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="fu">brm</span>(y <span class="sc">~</span> x <span class="sc">+</span> z, <span class="at">data =</span> d)</span></code></pre></div>
 <p>And here are a couple complexities thrown in to show some minor differences. For example, the priors are specified a bit differently, and you may have options for one that you won’t have in the other, but both will allow passing standard arguments, like cores, chains, etc. to <span class="pack">rstan</span>.</p>
-<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" data-line-number="1"><span class="kw">stan_glm</span>(y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span>z <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>g), </a>
-<a class="sourceLine" id="cb45-2" data-line-number="2">         <span class="dt">data=</span>d, </a>
-<a class="sourceLine" id="cb45-3" data-line-number="3">         <span class="dt">family =</span> <span class="kw">binomial</span>(<span class="dt">link =</span> <span class="st">&quot;logit&quot;</span>), </a>
-<a class="sourceLine" id="cb45-4" data-line-number="4">         <span class="dt">prior =</span> <span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>),</a>
-<a class="sourceLine" id="cb45-5" data-line-number="5">         <span class="dt">prior_covariance =</span> <span class="kw">decov</span>(<span class="dt">regularization =</span> <span class="dv">1</span>, <span class="dt">concentration =</span> <span class="fl">.5</span>),</a>
-<a class="sourceLine" id="cb45-6" data-line-number="6">         <span class="dt">QR =</span> <span class="ot">TRUE</span>,</a>
-<a class="sourceLine" id="cb45-7" data-line-number="7">         <span class="dt">chains =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb45-8" data-line-number="8">         <span class="dt">cores =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb45-9" data-line-number="9">         <span class="dt">iter =</span> <span class="dv">2000</span>)</a>
-<a class="sourceLine" id="cb45-10" data-line-number="10"></a>
-<a class="sourceLine" id="cb45-11" data-line-number="11"><span class="kw">brm</span>(y <span class="op">~</span><span class="st"> </span>x <span class="op">+</span><span class="st"> </span>z <span class="op">+</span><span class="st"> </span>(<span class="dv">1</span><span class="op">|</span>g), </a>
-<a class="sourceLine" id="cb45-12" data-line-number="12">    <span class="dt">data=</span>d, </a>
-<a class="sourceLine" id="cb45-13" data-line-number="13">    <span class="dt">family =</span> <span class="kw">bernoulli</span>(<span class="dt">link =</span> <span class="st">&#39;logit&#39;</span>), </a>
-<a class="sourceLine" id="cb45-14" data-line-number="14">    <span class="dt">prior =</span> <span class="kw">prior</span>(<span class="kw">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="dt">class =</span> b,</a>
-<a class="sourceLine" id="cb45-15" data-line-number="15">                  <span class="kw">cauchy</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="dt">class =</span> sd),</a>
-<a class="sourceLine" id="cb45-16" data-line-number="16">    <span class="dt">chains =</span> <span class="dv">2</span>,</a>
-<a class="sourceLine" id="cb45-17" data-line-number="17">    <span class="dt">cores =</span> <span class="dv">2</span>, </a>
-<a class="sourceLine" id="cb45-18" data-line-number="18">    <span class="dt">iter =</span> <span class="dv">2000</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="packages.html#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stan_glm</span>(</span>
+<span id="cb46-2"><a href="packages.html#cb46-2" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>g), </span>
+<span id="cb46-3"><a href="packages.html#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data   =</span> d, </span>
+<span id="cb46-4"><a href="packages.html#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> <span class="st">&quot;logit&quot;</span>), </span>
+<span id="cb46-5"><a href="packages.html#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior  =</span> <span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb46-6"><a href="packages.html#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior_covariance =</span> <span class="fu">decov</span>(<span class="at">regularization =</span> <span class="dv">1</span>, <span class="at">concentration =</span> .<span class="dv">5</span>),</span>
+<span id="cb46-7"><a href="packages.html#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">QR     =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb46-8"><a href="packages.html#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb46-9"><a href="packages.html#cb46-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores  =</span> <span class="dv">2</span>,</span>
+<span id="cb46-10"><a href="packages.html#cb46-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter   =</span> <span class="dv">2000</span></span>
+<span id="cb46-11"><a href="packages.html#cb46-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb46-12"><a href="packages.html#cb46-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-13"><a href="packages.html#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="fu">brm</span>(</span>
+<span id="cb46-14"><a href="packages.html#cb46-14" aria-hidden="true" tabindex="-1"></a>  y <span class="sc">~</span> x <span class="sc">+</span> z <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>g), </span>
+<span id="cb46-15"><a href="packages.html#cb46-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">data   =</span> d, </span>
+<span id="cb46-16"><a href="packages.html#cb46-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="fu">bernoulli</span>(<span class="at">link =</span> <span class="st">&#39;logit&#39;</span>), </span>
+<span id="cb46-17"><a href="packages.html#cb46-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">prior  =</span> <span class="fu">prior</span>(<span class="fu">normal</span>(<span class="dv">0</span>, <span class="dv">1</span>), <span class="at">class =</span> b, <span class="fu">cauchy</span>(<span class="dv">0</span>, <span class="dv">5</span>), <span class="at">class =</span> sd),</span>
+<span id="cb46-18"><a href="packages.html#cb46-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">chains =</span> <span class="dv">2</span>,</span>
+<span id="cb46-19"><a href="packages.html#cb46-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">cores  =</span> <span class="dv">2</span>, </span>
+<span id="cb46-20"><a href="packages.html#cb46-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">iter   =</span> <span class="dv">2000</span></span>
+<span id="cb46-21"><a href="packages.html#cb46-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
 <p>So the syntax is easy to use for both of them, and to a point identical to standard R modeling syntax, and both have the same <span class="pack">rstan</span> arguments. However, you’ll need to know what’s available to tweak and how to do so specifically for each package.</p>
 <div id="standard-regression-and-glm" class="section level2">
 <h2>Standard Regression and GLM</h2>
@@ -325,15 +374,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="func">stan_polr</span>: ordinal regression model</li>
 <li><span class="func">stan_biglm</span>: big data lm</li>
 </ul>
-<p>Contrast this with <span class="pack">brms</span>, which only requires the <span class="func">brm</span> function and appropriate family, e.g. ‘poisson’ or ‘categorical’, and which can do multinomial models also.</p>
-<p>However, if you want to do a standard linear regression, I would not recommend using stan_lm, as it requires a prior for the <span class="math inline">\(R^2\)</span>, which is unfamiliar and only explained in technical ways that are likely going to be lost on those less comfortable with or new to statistical or Bayesian analysis<a href="#fn54" class="footnote-ref" id="fnref54"><sup>54</sup></a>. The good news is that you can simply run stan_glm instead, and work with the prior on the regression coefficients as we have discussed, and you can use <span class="func">bayes_R2</span> to get the <span class="math inline">\(R^2\)</span>.</p>
-<p>You can certainly use <span class="pack">brms</span> for GLM, but it would have to compile the code and so will always be notably slower. For LM with interactions or GLM generally, you may prefer it for the marginal effects plots.</p>
+<p>Contrast this with <span class="pack">brms</span>, which only requires the <span class="func">brm</span> function and appropriate family, e.g. ‘poisson’ or ‘categorical,’ and which can do multinomial models also.</p>
+<p>However, if you want to do a standard linear regression, I would probably not recommend using <span class="func">stan_lm</span>, as it requires a prior for the <span class="math inline">\(R^2\)</span>, which is unfamiliar and only explained in technical ways that are likely going to be lost on those less comfortable with, or new to, statistical or Bayesian analysis<a href="#fn54" class="footnote-ref" id="fnref54"><sup>54</sup></a>. The good news is that you can simply run <span class="func">stan_glm</span> instead, and work with the prior on the regression coefficients as we have discussed, and you can use <span class="func">bayes_R2</span> to get the <span class="math inline">\(R^2\)</span>.</p>
+<p>You can certainly use <span class="pack">brms</span> for GLM, but it would have to compile the code first, and so will always be relatively, but not prohibitively, slower. For linear models with interactions or GLM generally, you may prefer it for the marginal effects plots and other additional functionality.</p>
 </div>
 <div id="categorical-models" class="section level2">
 <h2>Categorical Models</h2>
-<p>If you’re just doing a standard logistic regression, I’d suggest <span class="func">stan_glm</span>, again, for the speed. In addition, it has a specific model function for conditional logistic regression (<span class="func">stan_clogit</span>). Beyond that, I’d probably recommend <span class="pack">brms</span>. For ordinal regression, <span class="func">stan_polr</span> goes back to requiring a prior for <span class="math inline">\(R^2\)</span>, which is now the <span class="math inline">\(R^2\)</span> for the underlying latent variable of the ordinal outcome<a href="#fn55" class="footnote-ref" id="fnref55"><sup>55</sup></a>. Furthermore, <span class="pack">brms</span> has some ordinal-specific plots, as well as other types of ordinal regression (e.g. adjacent category) that allow the proportional odds assumption to be relaxed. It also can do multi-category models<a href="#fn56" class="footnote-ref" id="fnref56"><sup>56</sup></a>.</p>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" data-line-number="1"><span class="kw">brm</span>(y <span class="op">~</span><span class="st"> </span>x, <span class="dt">family=</span><span class="st">&#39;categorical&#39;</span>)  <span class="co"># nominal outcome with &gt; 2 levels</span></a>
-<a class="sourceLine" id="cb46-2" data-line-number="2"><span class="kw">brm</span>(y <span class="op">~</span><span class="st"> </span><span class="kw">cs</span>(x), <span class="dt">family=</span><span class="st">&#39;acat&#39;</span>)     <span class="co"># ordinal model with category-specific effects for x</span></a></code></pre></div>
+<p>If you’re just doing a standard logistic regression, I’d suggest <span class="func">stan_glm</span>, again, for the speed. In addition, it has a specific model function for conditional logistic regression (<span class="func">stan_clogit</span>). Beyond that, I’d recommend <span class="pack">brms</span>. For ordinal regression, <span class="func">stan_polr</span> goes back to requiring a prior for <span class="math inline">\(R^2\)</span>, which is now the <span class="math inline">\(R^2\)</span> for the underlying latent variable of the ordinal outcome<a href="#fn55" class="footnote-ref" id="fnref55"><sup>55</sup></a>. Furthermore, <span class="pack">brms</span> has some ordinal-specific plots, as well as other types of ordinal regression (e.g. adjacent category) that allow the proportional odds assumption to be relaxed. It also can do multi-category models.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="packages.html#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">brm</span>(y <span class="sc">~</span> x, <span class="at">family =</span> <span class="st">&#39;categorical&#39;</span>)  <span class="co"># nominal outcome with &gt; 2 levels</span></span>
+<span id="cb47-2"><a href="packages.html#cb47-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-3"><a href="packages.html#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">brm</span>(y <span class="sc">~</span> <span class="fu">cs</span>(x), <span class="at">family =</span> <span class="st">&#39;acat&#39;</span>)     <span class="co"># ordinal model with category-specific effects for x</span></span></code></pre></div>
 <p><span class="pack">brms</span> families for categorical:</p>
 <ul>
 <li><span class="func">bernoulli</span>: binary target</li>
@@ -343,7 +393,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <div id="extended-count-models" class="section level2">
 <h2>Extended Count Models</h2>
-<p>For going beyond binomial, poisson, and negative binomial distributions for count data, <span class="pack">brms</span> has a lot more for common extensions to those models, and beyond. It also has zero-altered counterparts to continuous outcomes (e.g. <span class="func">hurdle_gamma</span>).</p>
+<p>For going beyond binomial, poisson, and negative binomial distributions for count data, <span class="pack">brms</span> has a lot more for common extensions to those models, and beyond. It also has zero-altered counterparts to continuous outcomes (e.g. <span class="func">hurdle_gamma</span>).</p>
 <ul>
 <li><span class="func">hurdle_poisson</span></li>
 <li><span class="func">hurdle_negbinomial</span></li>
@@ -355,7 +405,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="func">zero_inflated_beta</span></li>
 <li><span class="func">zero_one_inflated_beta</span></li>
 </ul>
-<p>As mentioned previously, there is currently no direct way to do multinomial count models<a href="#fn57" class="footnote-ref" id="fnref57"><sup>57</sup></a> except via the poisson</p>
+<p>As mentioned previously, there is currently no direct way to do multinomial count models[^nomulti] except via the poisson</p>
 </div>
 <div id="mixed-models" class="section level2">
 <h2>Mixed Models</h2>
@@ -368,12 +418,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><span class="func">stan_mvmer</span>: multivariate outcome</li>
 <li><span class="func">stan_gamm4</span>: generalized additive mixed model in <span class="pack">lme4</span> style</li>
 </ul>
-<p>I would probably just recommend <span class="pack">rstanarm</span> for stan_lmer and stan_glmer, as <span class="pack">brms</span> has more flexibility, and even would be recommended for the standard models if you want to estimate residual (co-)variance structure, e.g. autocorrelation. It also will do multivariate models, and one can use <span class="pack">mgcv</span>::<span class="func">s</span> for smooth terms in <em>any</em> <span class="pack">brms</span> model.</p>
+<p>I would probably just recommend <span class="pack">rstanarm</span> for stan_lmer and stan_glmer, as <span class="pack">brms</span> has more flexibility, and even would be recommended for the standard models if you want to estimate residual (co-)variance structure, e.g. autocorrelation. It also will do multivariate models, and one can use <span class="pack">mgcv</span>::<span class="func">s</span> for smooth terms in any <span class="pack">brms</span> model.</p>
 </div>
 <div id="other-models-and-related" class="section level2">
 <h2>Other Models and Related</h2>
-<p>Along with all those <span class="pack">rstanarm</span> has specific functions for <a href="http://mc-stan.org/%3Cspan%20class=%22pack%22%3Erstanarm%3C/span%3E/articles/betareg.html">beta regression</a>, <a href="http://mc-stan.org/%3Cspan%20class=%22pack%22%3Erstanarm%3C/span%3E/articles/jm.html">joint mixed/survival models</a>, and <a href="http://mc-stan.org/%3Cspan%20class=%22pack%22%3Erstanarm%3C/span%3E/articles/lm.html">regularized linear regression</a>. <span class="pack">brms</span> has many more distributional families, can do hypothesis testing[^], has marginal effects plots, and more. Both have plenty of tools for diagnostics, posterior predictive checks, and more of what has been discussed previously.</p>
-<p>In general, <span class="pack">rstanarm</span> is a great tool for translating your standard models into Bayesian ones in an efficient fashion. On the other hand, <span class="pack">brms</span> uses a simplified syntax and is notably more flexible. Here is a brief summary of my recommend use.</p>
+<p>Along with all those <span class="pack">rstanarm</span> has specific functions for <a href="http://mc-stan.org/rstanarm/articles/betareg.html">beta regression</a>, <a href="http://mc-stan.org/rstanarm/articles/jm.html">joint mixed/survival models</a>, and <a href="http://mc-stan.org/rstanarm/articles/lm.html">regularized linear regression</a>. <span class="pack">brms</span> has many more distributional families, can do hypothesis testing[^], has marginal effects plots, and more. Both have plenty of tools for diagnostics, posterior predictive checks, and more of what has been discussed previously.</p>
+<p>In general, <span class="pack">rstanarm</span> is a great tool for translating your standard models into Bayesian ones in an efficient fashion. On the other hand, <span class="pack">brms</span> uses a simplified syntax and is notably more flexible. Here is a brief summary of my recommend use for common regression models.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -474,24 +524,19 @@ beyond
 </tr>
 </tbody>
 </table>
-<p>Besides that, if you still need to model complexity not found within those, you can <em>still</em> use them to generate some highly optimized starter code, as they have functions for solely generating the underlying Stan code.</p>
+<p>Besides that, if you still need to model complexity not found within those, you can still use them to generate some highly optimized starter code, as they have functions for solely generating the underlying Stan code.</p>
 </div>
 <div id="even-more-packages" class="section level2">
 <h2>Even More Packages</h2>
-<p>I’ve focused on the two widely-used general-purpose packages, but nothing can stop Stan at this point. Here is a visualization of the current <span class="pack">rstan</span> ecosystem.</p>
-<div id="htmlwidget-a3f43d062061f3958749" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-a3f43d062061f3958749">{"x":{"nodes":{"id":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57],"label":["rstan","broom","brms","lsmeans","prophet","bayesplot","rstanarm","sjstats","shinystan","nimble","rstantools","ggmcmc","bmlm","ctsem","loo","bridgesampling","MCMCvis","finalfit","dfpk","beanz","hBayesDM","JMbayes","eggCounts","dgo","CopulaDTA","BANOVA","blavaan","DeLorean","RBesT","edstan","raw","idem","clinDR","breathteststan","ggfan","evidence","survHE","walker","dfped","bayesLopod","projpred","DrBats","bayesImageS","treatSens","varian","adnuts","themetagenomics","glmmfields","MADPop","idealstan","MIXFIM","gastempt","tmbstan","trialr","nauf","tidybayes","mlmm","rethinking"],"group":[0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57],"value":[100,0,30,0,0,30,30,0,30,0,0,0,0,0,30,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,30,0,30]},"edges":{"from":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57],"to":[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],"value":[10,30,10,10,30,30,10,30,10,10,10,10,10,30,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,30,10,30],"length":[250,0,250,250,0,0,250,0,250,250,250,250,250,0,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,250,0,250,0]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"edges":{"physics":true,"color":{"opacity":0.1}}},"groups":["0","1","2","3","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20","21","22","23","24","25","26","27","28","29","30","31","32","33","34","35","36","37","38","39","40","41","42","43","44","45","46","47","48","49","50","51","52","53","54","55","56","57"],"width":null,"height":null,"idselection":{"enabled":false},"byselection":{"enabled":false},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)"},"evals":[],"jsHooks":[]}</script>
-<p>At this point there are already a couple dozen packages working with Stan under the hood. Odds are good you’ll find one to suit your needs.</p>
+<p>I’ve focused on the two widely-used general-purpose packages, but nothing can stop Stan at this point. As of the latest update to this document, there are now 144 other packages depending on <span class="pack">rstan</span> in some way. There are also interfaces for Python, Julia, and more. Odds are good you’ll find one to suit your needs.</p>
 
 </div>
 </div>
 <div class="footnotes">
 <hr />
 <ol start="54">
-<li id="fn54"><p>The developers note in their vignette for <span class="func">stan_aov</span>:<br><br>‘but it is reasonable to expect a researcher to have a plausible guess for R2 before conducting an ANOVA.’<br><br> Actually, I’m not sure how reasonable this is. I see many, many researchers of varying levels of expertise, and I don’t think any of them would be able to hazard much of a guess about <span class="math inline">\(R^2\)</span> before running a model, unless they’re essentially duplicating previous work. I also haven’t come across an explanation in the documentation (which is otherwise great) of how to specify it that would be very helpful to people just starting out with Bayesian analysis or even statistics in general. If the result is that one then has to try a bunch of different priors, then that becomes the focus of the analytical effort, which likely won’t appeal to people just wanting to run a standard regression model.<a href="packages.html#fnref54" class="footnote-back">↩</a></p></li>
-<li id="fn55"><p>If someone tells me they know what the prior should be for that, I probably would not believe them.<a href="packages.html#fnref55" class="footnote-back">↩</a></p></li>
-<li id="fn56"><p>The corresponding distribution is the categorical distribution, which is a multinomial distribution with size = 1. Multinomial count models, i.e. with size &gt; 1, on the other hand, are not currently supported <a href="https://github.com/paul-buerkner/brms/issues/338">except indirectly</a>. However, the multinomial-poisson transformation can be used instead.<a href="packages.html#fnref56" class="footnote-back">↩</a></p></li>
-<li id="fn57"><p>The corresponding distribution is the categorical distribution, which is a multinomial distribution with size = 1. Multinomial count models, i.e. with size &gt; 1, on the other hand, are not currently supported <a href="https://github.com/paul-buerkner/brms/issues/338">except indirectly</a>. However, the multinomial-poisson transformation can be used instead.<a href="packages.html#fnref57" class="footnote-back">↩</a></p></li>
+<li id="fn54"><p>The developers note in their <a href="https://cran.r-project.org/web/packages/rstanarm/vignettes/aov.html">vignette for ANOVA</a>:<br><br>‘but it is reasonable to expect a researcher to have a plausible guess for R2 before conducting an ANOVA.’<br><br> Actually, I’m not sure how reasonable this is. In consulting I’ve seen many, many researchers of varying levels of expertise, and I don’t think even a large minority of them would be able to hazard much of a guess about <span class="math inline">\(R^2\)</span> before running a model, unless they’re essentially duplicating previous work. I also haven’t come across an explanation in the documentation (which is otherwise great) of how to specify it that would be very helpful to people just starting out with Bayesian analysis or even statistics in general. If the result is that one then has to try a bunch of different priors, then that becomes the focus of the analytical effort, which likely won’t appeal to people just wanting to run a standard regression model.<a href="packages.html#fnref54" class="footnote-back">↩︎</a></p></li>
+<li id="fn55"><p>If someone tells me they know what the prior should be for that, I probably would not believe them.<a href="packages.html#fnref55" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -504,12 +549,13 @@ beyond
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -517,12 +563,14 @@ gitbook.start({
 "github": false,
 "facebook": false,
 "twitter": false,
-"google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
-"all": ["twitter", "facebook", "google", "weibo", "instapaper"]
+"whatsapp": false,
+"all": ["twitter", "facebook", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
 },
 "fontsettings": {
 "theme": "white",
@@ -530,15 +578,26 @@ gitbook.start({
 "size": 2
 },
 "edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
 "download": ["Bayesian-Basics.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "depth": 2,
 "scroll_highlight": true
 },
 "df_print": "kable",
-"highlight": "pygments",
-"search": true
+"highlight": "pygments"
 });
 });
 </script>
@@ -549,9 +608,10 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
