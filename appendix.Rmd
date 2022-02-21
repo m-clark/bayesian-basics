@@ -3,23 +3,23 @@
 
 ## Maximum Likelihood Review
 
-This is a very brief refresher on <span class="emph">maximum likelihood estimation</span> using a standard regression approach as an example, and more or less assumes one hasn't tried to roll their own such function in a programming environment before.  Given the likelihood's role in Bayesian estimation and statistics in general, and the ties between specific Bayesian results and maximum likelihood estimates one typically comes across, one should be conceptually comfortable with some basic likelihood estimation.
+This is a very brief refresher on *maximum likelihood estimation* using a standard regression approach as an example.  Given the likelihood's role in Bayesian estimation and statistics in general, and the ties between specific Bayesian results and maximum likelihood estimates one typically comes across, one should be conceptually comfortable with some basic likelihood estimation.
 
-In the standard model setting we attempt to find parameters $\theta$ that will maximize the probability of the data we actually observe.  We'll start with an observed random target vector $y$ with $i...N$ independent and identically distributed observations and some data-generating process underlying it $f(\cdot|\theta)$.  We are interested in estimating the model parameter(s), $\theta$, that would make the data most likely to have occurred.  The probability density function for $y$ given some particular estimate for the parameters can be noted as $f(y_i|\theta)$.  The joint probability distribution of the (independent) observations given those parameters, $f(y_i|\theta)$, is the product of the individual densities, and is our *likelihood function*.  We can write it out generally as:
+In the standard model setting we attempt to find parameters $\theta$ that will maximize the probability of the data we actually observe.  We'll start with an observed random target vector $y$ with $i...N$ independent and identically distributed observations and some data-generating process underlying it $f(\cdot|\theta)$.  The key idea is that we are interested in estimating the model parameter(s), $\theta$, that would make the data most likely to have occurred.  The probability density function for an observed value of $y$ given some particular estimate for the parameters can be noted as $f(y_i|\theta)$.  The joint probability distribution of the (independent) observations given those parameters is the product of the individual densities, and this is our basic *likelihood function*.  We can write it out generally as:
 
 
 $$\mathcal{L}(\theta) = \prod_{i=1}^N f(y_i|\theta)$$
 
 <!-- <img src="img/maxLikeNormalCompareLLforDifferentMeans.svg" style="display:block; margin: 0 auto; width:50%"> -->
 
-Thus, the *likelihood* for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates.  Furthermore, we can compare one set, $\mathcal{L}(\theta_A)$, to that of another, $\mathcal{L}(\theta_B)$, and whichever produces the greater likelihood would be the preferred set of estimates.  We can get a sense of this with the following visualization, based on a single parameter, Poisson distributed variable. The data is drawn from  a variable with mean $\theta=5$.  We note the calculated likelihood increases as we estimate values for $\theta$ closer to $5$. With more and more data, the final ML estimate will converge on the true value.
+So the *likelihood* for one set of parameter estimates given a fixed set of data y, is equal to the probability of the data given those (fixed) estimates.  Furthermore, we can compare one set, $\mathcal{L}(\theta_A)$, to that of another, $\mathcal{L}(\theta_B)$, and whichever produces the greater likelihood would be the preferred set of estimates.  We can get a sense of this with the following visualization, based on a single parameter, Poisson distributed variable. The data is drawn from  a variable with mean $\theta=5$.  We note the calculated likelihood increases as we estimate values for $\theta$ closer to $5$. With more and more data, the final ML estimate will converge on the true value.
 
 ```{r maxLikeillustration, echo=FALSE, out.width='500px', message=T}
 set.seed(1234)
-y = rpois(100000, lambda=5)
-mus = seq(3, 8, l=100)
-L = sapply(mus, function(mu) sum(dpois(y, lambda=mu, log=T)))
-message(glue::glue('Final estimate = ', round(mus[L==max(L)], 2)))
+y = rpois(100000, lambda = 5)
+mus = seq(3, 8, l = 100)
+L = map_dbl(mus, function(mu) sum(dpois(y, lambda = mu, log = TRUE)))
+message(glue::glue('Final estimate = ', round(mus[L == max(L)], 2)))
 
 # y = rnorm(100000, mean=50, 10)
 # mus = seq(40,60, l=100)
@@ -30,17 +30,19 @@ message(glue::glue('Final estimate = ', round(mus[L==max(L)], 2)))
 # L = sapply(mus, function(mu) sum(dbinom(y, size=100, p=mu, log=T)))
 # mus[L==max(L)]
 
-ggplot(data.frame(mus, L)) + 
-  geom_vline(aes(xintercept=5), alpha=.5, lty=2) +
-  geom_hline(aes(yintercept=max(L)), alpha=.5, lty=2) +
-  geom_path(aes(x=mus, y=L), color='#ff5500', lwd=2) + 
-  labs(x=expression(theta), y='Likelihood') +
+ggplot(data.frame(mus, L)) +
+  geom_vline(aes(xintercept = 5), alpha = .5, lty = 2) +
+  geom_hline(aes(yintercept = max(L)), alpha = .5, lty = 2) +
+  geom_path(aes(x = mus, y = L), color = '#ff5500', alpha = .9, lwd = 2) +
+  labs(x = expression(theta), y = 'Likelihood') +
   theme_trueMinimal() +
-  theme(axis.ticks.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.text.x=element_text(color='gray10', size=14),
-        axis.title.x=element_text(color='gray10', size=24),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+  theme(
+    axis.ticks.y    = element_blank(),
+    axis.text.y     = element_blank(),
+    axis.text.x     = element_text(color = 'gray10', size = 14),
+    axis.title.x    = element_text(color = 'gray10', size = 24),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 # ggsave('img/maxLikeNormalCompareLLforDifferentMeans.svg', bg='transparent')
 ```
 
@@ -69,18 +71,21 @@ In the following we will demonstrate the maximum likelihood approach to estimati
 set.seed(1234)
 
 # create the data
-y = rnorm(1000, mean=5, sd=2)
+y = rnorm(1000, mean = 5, sd = 2)
 startvals = c(0, 1)
 
 # the log likelihood function
-LL = function(mu=startvals[1], sigma=startvals[2], verbose=TRUE) {
-  ll = -sum(dnorm(y, mean=mu, sd=sigma, log=T))
+LL = function(mu = startvals[1], sigma = startvals[2], verbose = TRUE) {
+  
+  ll = -sum(dnorm(y, mean = mu, sd = sigma, log = TRUE))
+  
   if (verbose) message(paste(mu, sigma, ll))
+  
   ll
 }
 ```
 
-The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them $\mu$ and $\sigma$, which will be set to `r startvals[1]` and `r startvals[2]` respectively.  Only the first line (ll = -sum...) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point[^reasy].  Since this optimizer is by default minimization, we reverse the sign of the sum so as to minimize the negative log likelihood, which is the same as maximizing the likelihood.  Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values.  I do not show that here but you'll see it in your console if `verbose=TRUE`.
+The <span class="func">LL</span> function takes starting points for the parameters as arguments, in this case we call them $\mu$ and $\sigma$, which will be set to `r startvals[1]` and `r startvals[2]` respectively.  Only the first line (ll = -sum...) is actually necessary, and we use <span class="func">dnorm</span> to get the density for each point[^reasy].  Since this optimizer is by default minimization, we reverse the sign of the sum so as to *minimize the negative log likelihood*, which is the same as maximizing the likelihood.  Note that the bit of other code just allows you to see the estimates as the optimization procedure searches for the best values.  I do not show that here, but you'll see it in your console if `verbose=TRUE`.
 
 We are now ready to obtain maximum likelihood estimates for the parameters.  For the <span class="func">mle2</span> function we will need the function we've created, plus other inputs related to that function or the underlying optimizing function used (by default <span class="func">optim</span>).  In this case we will use an optimization procedure that will allow us to set a lower bound for $\sigma$.  This isn't strictly necessary, but otherwise you would get warnings and possibly lack of convergence if negative estimates for $\sigma$ were allowed[^logsigma].
 
@@ -88,22 +93,29 @@ We are now ready to obtain maximum likelihood estimates for the parameters.  For
 library(bbmle)
 # using optim, and L-BFGS-B so as to constrain sigma to be positive by setting
 # the lower bound at zero
-mlnorm =  mle2(LL, start=list(mu=2, sigma=1), method="L-BFGS-B", lower=c(sigma=0)) 
+mlnorm =  mle2(
+  LL,
+  start  = list(mu = 2, sigma = 1),
+  method = "L-BFGS-B",
+  lower  = c(sigma = 0)
+)
+
 mlnorm
 
 # compare to an intercept only regression model
-summary(lm(y~1))
+broom::tidy(lm(y ~ 1))
 ```
 
 We can see that the ML estimates are the same as the intercept only model estimates[^MLvOLS], which given the sample size are close to the true values.
 
-In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a <span class="emph">likelihood surface</span> that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point[^tangent]. For simpler settings such as this, we can  visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum (the surface plot is interactive- feel free to adjust).  I also plot the path of the optimizer from a top down view.  The large blue dot noted represents the minimum negative log likelihood. 
+In terms of the parameters we estimate, in the typical case of two or more parameters we can think of a *likelihood surface* that represents the possible likelihood values given any particular set of estimates. Given some starting point, the optimization procedure then travels along the surface looking for a minimum/maximum point[^tangent]. For simpler settings such as this, we can  visualize the likelihood surface and its minimum point. The optimizer travels along this surface until it finds a minimum (the surface plot is interactive- feel free to adjust).  I also plot the path of the optimizer from a top down view.  The large blue dot noted represents the minimum negative log likelihood. 
 
 ```{r plotSurface, echo=FALSE}
 # RSTUDIO VIEWER WILL NOT CORRECTLY DISPLAY EVEN IF PLOT IS CORRECT
 # PLOTLY STILL BREAKS MATHJAX FOR TUFTE, CAN ONLY USE SCREENSHOT
 
-mu = seq(4, 6, length=50); sigma=seq(1.5, 3, length=50)
+mu     = seq(4, 6, length = 50)
+sigma  = seq(1.5, 3, length = 50)
 llsurf = matrix(NA, length(mu), length(sigma))
 
 for (i in 1:length(mu)){
@@ -111,10 +123,12 @@ for (i in 1:length(mu)){
     llsurf[i,j] = -sum(dnorm(y, mean=mu[i], sd=sigma[j], log=T))
   }
 }
+
 rownames(llsurf) = mu
 colnames(llsurf) = sigma
 
-plotdat = read.csv('data//mleNormEstimates.csv'); colnames(plotdat) = c('mu','sigma', 'll')
+plotdat = read.csv('data//mleNormEstimates.csv')
+colnames(plotdat) = c('mu', 'sigma', 'll')
 pointdat = subset(plotdat, mu <=6 & mu >=4 & sigma<= 3 & sigma >=1.5)
 # because plotly legend doesn't work correctly with surface, color scale dropped, not needed anyway https://community.plot.ly/t/how-to-name-axis-and-show-legend-in-mesh3d-and-surface-3d-plots/1819
 
@@ -123,30 +137,60 @@ library(plotly)
 
 llsurf_trans = t(llsurf)
 
-plot_ly(x=~mu, y =~ sigma, z=~llsurf_trans, 
-        colors = viridis::plasma(500), 
-        type='surface', showscale = FALSE, width=750) %>% 
-  add_trace(x=~mu, y=~sigma, z=~ll, mode='markers', marker=list(color=palettes$orange, size=3), type = "scatter3d", 
-            data=pointdat, name=NULL, showlegend=F) %>%
-  add_trace(x=coef(mlnorm)[1], y=coef(mlnorm)[2],  z=mlnorm@min, 
-            marker=list(color=palettes$orange$complementary, size=10), type = "scatter3d", showlegend=F) %>%
-  config(displayModeBar = F) %>%
-  theme_plotly() %>% 
-  layout(scene = list(
-    xaxis = list(title = 'mu',
-                 titlefont=list(size=12),
-                 tickfont=list(size=10),
-                 dtick=.25),
-    yaxis = list(title = 'sigma',
-                 titlefont=list(size=12),
-                 tickfont=list(size=10),
-                 dtick=.25),
-    zaxis = list(title = 'Neg. Log Lik ',
-                 titlefont=list(size=8),
-                 tickfont=list(size=10),
-                 position=.1)),
-    paper_bgcolor='rgba(0,0,0,0)',
-    plot_bgcolor='rgba(0,0,0,0)')
+plot_ly(
+  x =  ~ mu,
+  y =  ~ sigma,
+  z =  ~ llsurf_trans,
+  colors = viridis::plasma(500),
+  showscale = FALSE,
+  width = 750
+) %>% 
+  add_surface() %>% 
+  add_trace(
+    x =  ~ mu,
+    y =  ~ sigma,
+    z =  ~ ll,
+    mode = 'markers',
+    marker = list(color = palettes$orange, size = 3),
+    type = "scatter3d",
+    data = pointdat,
+    name = NULL,
+    showlegend = FALSE
+  ) %>%
+  add_trace(
+    x = coef(mlnorm)[1],
+    y = coef(mlnorm)[2],
+    z = mlnorm@min,
+    marker = list(color = palettes$orange$complementary[2], size = 10),
+    type = "scatter3d",
+    showlegend = FALSE
+  ) %>%
+  # config(displayModeBar = FALSE) %>%
+  theme_plotly() %>%
+  layout(
+    scene = list(
+      xaxis = list(
+        title = 'mu',
+        titlefont = list(size = 12),
+        tickfont  = list(size = 10),
+        dtick = .25
+      ),
+      yaxis = list(
+        title = 'sigma',
+        titlefont = list(size = 12),
+        tickfont  = list(size = 10),
+        dtick = .25
+      ),
+      zaxis = list(
+        title = 'Neg. Log Lik ',
+        titlefont = list(size = 8),
+        tickfont  = list(size = 10),
+        position = .1
+      )
+    ),
+    paper_bgcolor = 'rgba(0,0,0,0)',
+    plot_bgcolor = 'rgba(0,0,0,0)'
+  )
 
 detach(package:plotly)
 ```
@@ -158,19 +202,34 @@ plotdat$nll = -plotdat$ll
 # car::scatter3d(ll~mu + sigma, data=plotdat, fill=F, grid=F, residuals=F, point.col='#FF5500')
 
 # library(ggplot2); library(reshape2)
-ggplot(aes(x=mu, y=sigma), data=plotdat) + 
-  geom_point(aes(), color='#ff5500', size=4, alpha=.25, show.legend=F, position = position_jitter(w = 0.2, h = 0.2)) +
-  scale_size_continuous(range=c(.1,5)) +
-  geom_point(aes(), col=palettes$orange$complementary[2], data=data.frame(t(coef(mlnorm))), size=10, alpha=.9) + 
+ggplot(aes(x = mu, y = sigma), data = plotdat) +
+  geom_point(
+    aes(),
+    color = '#ff5500',
+    size  = 4,
+    alpha = .25,
+    show.legend = FALSE,
+    position = position_jitter(w = 0.2, h = 0.2)
+  ) +
+  scale_size_continuous(range = c(.1, 5)) +
+  geom_point(
+    aes(),
+    col   = palettes$orange$complementary[2],
+    data  = data.frame(t(coef(mlnorm))),
+    size  = 10,
+    alpha = .9
+  ) +
   # geom_path(aes(), col='navy', alpha=.5) +
-  labs(x=expression(mu), y=expression(sigma))+
+  labs(x = expression(mu), y = expression(sigma)) +
   theme_trueMinimal() +
-  theme(axis.ticks.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.text.x=element_text(color='gray10', size=14),
-        axis.title.x=element_text(color='gray10', size=24),
-        axis.title.y=element_text(color='gray10', size=24),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+  theme(
+    axis.ticks.y    = element_blank(),
+    axis.text.y     = element_blank(),
+    axis.text.x     = element_text(color = 'gray10', size = 14),
+    axis.title.x    = element_text(color = 'gray10', size = 24),
+    axis.title.y    = element_text(color = 'gray10', size = 24),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
 # ggsave('img/mlnorm.svg', bg='transparent')
 ```
 
@@ -185,7 +244,7 @@ Please note that there are many other considerations in optimization completely 
 
 ## Linear Model
 
-In the standard regression context, our expected value for the target variable comes from our linear predictor, i.e. the weighted combination of our explanatory variables, and we estimate the regression weights/coefficients and possibly other relevant parameters.  We can expand our previous example to the standard linear model without too much change.  In this case we estimate a mean for each observation, but otherwise assume the variance is constant across observations.  Again, we first construct some data so that we know exactly what to expect, then write out the likelihood function with starting parameters.  As we need to estimate our intercept and  coefficient for the X predictor (collectively referred to as $\beta$), we can think of our likelihood  explicitly as before:
+In the standard regression context, the expected value for the target variable comes from our linear predictor, i.e. the weighted combination of our explanatory variables, and we estimate the regression weights/coefficients and possibly other relevant parameters.  We can expand our previous example to the standard linear model without too much change.  In this case we estimate a mean for each observation, but otherwise assume the variance is constant across observations.  Again, we first construct some data so that we know exactly what to expect, then write out the likelihood function with starting parameters.  As we need to estimate our intercept and  coefficient for the X predictor (collectively referred to as $\beta$), we can think of our likelihood  explicitly as before:
 
 $$\ln\mathcal{L}(\beta, \sigma^2) = \sum_{i=1}^N \ln[\frac{1}{\sqrt{2\pi\sigma^2}}\exp(-\frac{(y-X\beta)^2}{2\sigma^2})]$$
 
@@ -198,61 +257,77 @@ set.seed(1234)
 X = rnorm(1000)
 
 # coefficients for intercept and predictor
-beta = c(5,2) 
+beta = c(5, 2)
 
 # add intercept to X and create y with some noise
-y = cbind(1,X)%*%beta + rnorm(1000, sd=2.5)
+y = cbind(1, X) %*% beta + rnorm(1000, sd = 2.5)
 
-regLL = function(sigma=1, Int=0, b1=0){
+regLL = function(sigma = 1, Int = 0, b1 = 0){
+  
   coefs = c(Int, b1)
-  mu = cbind(1,X)%*%coefs
-  ll = -sum(dnorm(y, mean=mu, sd=sigma, log=T))
+  
+  mu = cbind(1, X) %*% coefs
+  
+  ll = -sum(dnorm(y, mean = mu, sd = sigma, log = TRUE))
   
   message(paste(sigma, Int, b1, ll))
+  
   ll
 }
 
 library(bbmle)
-mlopt =  mle2(regLL, method="L-BFGS-B", lower=c(sigma=0)) 
-summary(mlopt)
-# plot(profile(mlopt), absVal=F)
 
-modlm = lm(y~X)
-summary(modlm)
--2*logLik(modlm)
+mlopt =  mle2(regLL, method = "L-BFGS-B", lower = c(sigma = 0)) 
+
+summary(mlopt)
+# plot(profile(mlopt), absVal = FALSE)
+
+modlm = lm(y ~ X)
+broom::tidy(modlm)
+-2 * logLik(modlm)
 ```
 
-As before, our estimates and final log likelihood value are about where they should be, and reflect the lm output, as the OLS estimates are the maximum likelihood estimates.  The visualization becomes more difficult beyond two parameters, but we can examine slices similar to the previous plot. 
+As before, our estimates and final log likelihood value are about where they should be, and reflect the `lm` output, as the OLS estimates are the maximum likelihood estimates.  The visualization becomes more difficult beyond two parameters, but we can examine slices similar to the previous plot. 
 
 ```{r mlmisc, echo=FALSE}
 detach(package:bbmle) # why are people still using MASS?!
 # detach(package:MASS) # why are people still using MASS?!
-plotdat = read.csv('data//mleEstimates.csv'); colnames(plotdat) = c('sigma', 'Intercept', 'β', 'll')
-# plotdat = read.csv('data//mleEstimates.csv'); colnames(plotdat) = c('sigma', 'Int', 'b1', 'll')
+plotdat = read_csv('data//mleEstimates.csv')
+colnames(plotdat) = c('sigma', 'Intercept', 'β', 'll')
+# plotdat = read.csv('data//mleEstimates.csv')
+# colnames(plotdat) = c('sigma', 'Int', 'b1', 'll')
 plotdat$nll = -plotdat$ll
 
 
 # gdat= melt(plotdat, id=c('sigma', 'll', 'nll'))
-plotdat %>% 
-  select(-ll) %>% 
-  gather(key=variable, value=value, -sigma, -nll) %>% 
-  ggplot() + 
-  geom_point(aes(x=sigma, y=value, size=nll), color=palettes$orange$orange, 
-             alpha=.15, show.legend=F, position = position_jitter(w = 0.2, h = 0.2)) +
-  facet_wrap(~variable) +  #, scales='free_y'
-  scale_size_continuous(range=c(.5,5)) +
-  labs(x=expression(sigma))+
-  theme_trueMinimal() +
-  theme(axis.ticks.y=element_blank(),
-        axis.text.y=element_blank(),
-        axis.text.x=element_text(color='gray10', size=14),
-        axis.title.x=element_text(color='gray10', size=24),
-        plot.background = element_rect(fill = "transparent",colour = NA))
+plotdat %>%
+  select(-ll) %>%
+  gather(key = variable, value = value, -sigma, -nll) %>%
+  ggplot() +
+  geom_point(
+    aes(x = sigma, y = value, size = nll),
+    color = palettes$orange$orange,
+    alpha = .15,
+    show.legend = F,
+    position = position_jitter(w = 0.2, h = 0.2)
+  ) +
+  facet_wrap(~ variable) +  #, scales='free_y'
+  scale_size_continuous(range = c(.5, 5)) +
+  labs(x = expression(sigma)) +
+  theme_clean(center_axis_labels = TRUE) +
+  theme(
+    axis.ticks.y    = element_blank(),
+    # axis.text.y     = element_blank(),
+    axis.text.x     = element_text(color = 'gray25', size = 14),
+    axis.title.x    = element_text(color = 'gray25', size = 24),
+    axis.title.y    = element_text(color = 'gray25', vjust = 1),
+    plot.background = element_rect(fill = "transparent", colour = NA)
+  )
   
 # ggsave('img/mlreg.svg', bg='transparent')
 ```
 
-To move to generalized linear models, very little changes of the process outside of the distribution assumed and that we are typically modeling a function of the target variable (e.g. $\log(y)=X\beta; \mu = e^{X\beta}$).
+To move to generalized linear models, very little changes of the process.  We will have a potentially different distribution assumed, and we are typically modeling a function of the target variable (e.g. $\log(y)=X\beta; \mu = e^{X\beta}$).
 
 
 
@@ -262,15 +337,25 @@ This regards the example seen in the early part of the document with the hands-o
 
 ```{r binomLL, echo=-1}
 set.seed(1234)
-x1 = rbinom(1000, size=10, p=.5)
-x2 = rbinom(1000, size=10, p=.85)
+x1 = rbinom(1000, size = 10, p = .5)
+x2 = rbinom(1000, size = 10, p = .85)
 
 binomLL = function(theta, x) {
-  -sum(dbinom(x, size=10, p=theta, log=T))
+  -sum(dbinom(x, size = 10, p = theta, log = TRUE))
 }
 
-optimize(binomLL, x=x1, lower=0, upper=1); mean(x1)
-optimize(binomLL, x=x2, lower=0, upper=1); mean(x2)
+optimize(binomLL,
+         x = x1,
+         lower = 0,
+         upper = 1)
+mean(x1)
+
+optimize(binomLL,
+         x = x2,
+         lower = 0,
+         upper = 1)
+
+mean(x2)
 ```
 
 
@@ -281,15 +366,20 @@ I will talk only briefly about a couple of the modeling language options availab
 
 ### Bugs
 
-When I first wrote this document, BUGS [@bugsbook] (*B*ayesian inference *U*sing *G*ibbs *S*ampling) was perhaps the most widely known and used Bayesian modeling language, and it has been around for almost 30 years at this point.  It is implemented via [OpenBUGS](http://www.openbugs.net/) and freely available for download[^winbugs]. It even has a GUI interface if such a thing is desired.
+When I first wrote this document, BUGS [@bugsbook] (*B*ayesian inference *U*sing *G*ibbs *S*ampling) was perhaps the most widely known and used Bayesian modeling language, and it has been around for over 30 years at this point.  It is implemented via [OpenBUGS](http://www.openbugs.net/) and freely available for download[^winbugs]. It even has a GUI interface if such a thing is desired.
 
 ### JAGS
 
 [JAGS](http://mcmc-jags.sourceforge.net/) (*J*ust *A*nother *G*ibbs *S*ampler) is a more recent dialect of the BUGS language, and is also free to use.  It offers some technical and modeling advantages to OpenBUGs, but much of the code translates directly from one to the other.
 
+### Nimble
+
+[Nimble](https://r-nimble.org/) allows one to implement BUGS style models within R, but also is highly extensible and provides additional options.
+
+
 ### Stan
 
-[Stan](http://mc-stan.org/) is a relative newcomer to Bayesian modeling languages, and as I write this it is about to have the 5th year anniversary of its 1.0 release.  It uses a different estimation procedure than the BUGS language and this makes it more flexible and perhaps better behaved for many types of models.  It actually compiles Stan code to C++, and so can be very fast as well.  I personally prefer it as I find it more clear in its expression, and there are many associated tools for model exploration.
+[Stan](http://mc-stan.org/) is a relative newcomer to Bayesian modeling languages, and as I write this it is about to have its 10 year anniversary.  It uses a different estimation procedure than the BUGS language, and this makes it more flexible and perhaps better behaved for many types of models.  It actually compiles Stan code to C++, and so can be very fast as well. In addition, it has interfaces for Python, Julia and more.  I personally prefer it as I find it more clear in its expression, and there are many associated tools for model exploration.
 
 
 ### R
@@ -299,7 +389,7 @@ R has many modeling packages devoted to Bayesian analysis such that there is a [
 
 ### General Statistical Packages
 
-The general statistical languages such as SAS, SPSS, and Stata were generally *very* late to the Bayesian game, even for implementations of Bayesian versions of commonly used models.  SAS started a few years ago with experimental and extremely limited capability, and Stata only very recently (but there is [StataStan](http://mc-stan.org/interfaces/stata-stan)).  SPSS doesn't seem to have much capability in this area, much like a lot of other things.  Others still seem to be lacking as well.  In general, I wouldn't recommend these packages for Bayesian analysis, except as an interface to one of the Bayesian specific languages, assuming they have the capability and you are already familiar with the program.
+The general statistical languages such as SAS, SPSS, and Stata were generally *very* late to the Bayesian game, even for implementations of Bayesian versions of commonly used models.  SAS and Stata are fairly capable from what I can tell (but there is [StataStan](http://mc-stan.org/interfaces/stata-stan)).  Others still seem to be lacking as well.  In general, I wouldn't recommend these packages for Bayesian analysis, except as an interface to one of the Bayesian specific languages, assuming they have the capability and you are already familiar with the program.
 
 ### Other Programming Languages
 
@@ -385,50 +475,65 @@ sink()
 
 Now we are ready to run the model.  You'll want to examine the help file for the <span class="func">bugs</span> function for more information.  In addition, depending on your setup you may need to set the working directory and other options. Note that `n.thin` argument is used differently than other packages. One specifies the n posterior draws (per chain) you to keep want as n.iter-n.burnin. The thinned samples aren't stored. Compare this to other packages where n.iter is the total before thinning and including burn-in, and n.keep is (n.iter-n.burnin)/n.thin. With the function used here, n.keep is the same, but as far as arguments your you'll want to think of n.iter as the number of posterior draws *after* thinning. So the following all produce 1000 posterior draws in <span class="pack">R2OpenBUGS</span>:
 
+
 ```{r bugsIter, echo=FALSE, results='asis'}
-tab = rbind(c("n.iter=3000", "  n.thin=1", "  n.burnin=2000"),
-            c("n.iter=3000", "  n.thin=10", "  n.burnin=2000"),
-            c("n.iter=3000", "  n.thin=100", "  n.burnin=2000"))
-kable(tab) %>% 
-  kable_styling(full_width = F)
+tab = rbind(
+  c("n.iter = 3000", "  n.thin = 1",   "  n.burnin = 2000"),
+  c("n.iter = 3000", "  n.thin = 10",  "  n.burnin = 2000"),
+  c("n.iter = 3000", "  n.thin = 100", "  n.burnin = 2000")
+)
+
+kable(tab) %>%
+  kable_styling(full_width = FALSE)
 ```
 
 In other packages, with those arguments you'd end up with 1000, 100, and 10 posterior draws.
 
-```{r bugsRunModel, eval=FALSE, echo=-c(1:5, 9)}
+```{r bugsRunModel, eval=FALSE, echo=5:15}
 #####################
 ### Run the model ###
 #####################
 
 library(R2OpenBUGS)
-lmbugs <- bugs(bugsdat, inits=NULL, parameters=c('beta', 'sigma.y'), 
-               model.file='lmbugs.txt', n.chains=3, n.iter=3000, n.thin=10, 
-               n.burnin=2000)
+lmbugs <- bugs(
+  bugsdat,
+  inits      = NULL,
+  parameters = c('beta', 'sigma.y'),
+  model.file = 'lmbugs.txt',
+  n.chains   = 3,
+  n.iter     = 3000,
+  n.thin     = 10,
+  n.burnin   = 2000
+)
 # save.image('data/lmbugsResults.RData')
 ```
 
-Now we are ready for the results, which will be the same as what we saw with Stan.  In addition to the usual output, you get the <span class="emph">deviance information criterion</span> as a potential means for model comparison.
+Now we are ready for the results, which will be the same as what we saw with Stan.  In addition to the usual output, you get the *deviance information criterion* as a potential means for model comparison.
 
-```{r bugsModelResults, eval=c(1,3), echo=4, results='hold'}
+```{r bugsModelResults, eval=c(1, 5), echo=7, results='hold'}
 load('data/lmbugsResults.RData')
-print(lmbugs, digits=3)
-lmbugs$summary[,c(1:3,5,7:9)] %>% 
-  kable(digits = 2) %>% 
-  kable_styling(full_width = F)
+
+print(lmbugs, digits = 3)
+
+lmbugs$summary[, c(1:3, 5, 7:9)] %>%
+  kable(digits = 2) %>%
+  kable_styling(full_width = FALSE)
+
 lmbugs$summary
 ```
 
-The usual model diagnostics are available with conversion of the results to an object the <span class="pack">coda</span> package can work with. Figures are not shown, but they are the typical traceplots and density plots.
+The usual model diagnostics are available with conversion of the results to a general MCMC object, here shown via the  the <span class="pack">posterior</span> package. You can then use <span class="pack">bayesplot</span> or other visualization tools. Figures are not shown, but they are the typical traceplots and density plots.
 
-```{r bugsModelDiag, eval=FALSE, echo=-c(1,7), fig.show='hide'}
-library(coda); library(R2OpenBUGS)
-lmbugscoda = as.mcmc.list(lmbugs)
-traceplot(lmbugscoda)
-densityplot(lmbugscoda)
-plot(lmbugscoda)
-corrplot:::corrplot(cor(lmbugscoda[[2]])) # noticeably better than levelplot
-# par(mar=c(5, 4, 4, 2) + 0.1) # reset margins
+```{r bugsModelSamples, eval=FALSE}
+bugs_samples = posterior::as_draws(lmbugs$sims.array)
+
+posterior::summarise_draws(bugs_samples)
+posterior::rstar(bugs_samples)
+
+bayesplot::mcmc_trace(bugs_samples)
+bayesplot::mcmc_dens(bugs_samples)
 ```
+
 
 
 ## JAGS Example
@@ -437,8 +542,13 @@ The following shows how to run the regression model presented earlier in the doc
 
 
 ```{r jagsExample, eval=FALSE, echo=-1}
-load('data/mainModelData.RData')
-jagsdat = list('y'=y, 'X'=X, 'N'=N, 'K'=K)
+load('data/mainModels.RData')
+jagsdat = list(
+  'y' = y,
+  'X' = X,
+  'N' = N,
+  'K' = K
+)
 
 sink('data/lmjags.txt')
 cat(
@@ -464,24 +574,37 @@ sink()
 
 
 # explicitly provided initial values not necessary, but can specify as follows
-# inits <- function(){
-#   list(beta=rep(0,4), sigma.y=runif(1,0,10))
+# inits <- function() {
+#   list(beta = rep(0, 4), sigma.y = runif(1, 0, 10))
 # }
+
 parameters = c('beta', 'sigma.y')
 ```
 
 With everything set, we can now run the model. With JAGS, we have what might be called an initialization stage that sets the model up and runs through the warm-up period, after which we can then flexibly sample from the posterior via the <span class="func">coda.samples</span> function.
 
-```{r jagsRunModel, eval=FALSE, echo=-4}
-library(rjags); library(coda)
-lmjagsmod = jags.model(file='data/lmjags.txt', data=jagsdat, # inits=inits
-                        n.chains=3, n.adapt=2000)
+```{r jagsRunModel, eval=FALSE, echo=-11}
+library(rjags)
+# library(coda)
+
+lmjagsmod = jags.model(
+  file     = 'data/lmjags.txt',
+  data     = jagsdat,
+  n.chains = 3,
+  n.adapt  = 2000
+  # inits = inits  # if you use them
+)
 # update(lmjagsmod, 10000) # alternative approach
-lmjags = coda.samples(lmjagsmod, c('beta', 'sigma.y'), n.iter=10000, 
-                      thin=10, n.chains=3)
+lmjags = coda.samples(
+  model    = lmjagsmod,
+  n.iter   = 10000,
+  thin     = 10,
+  n.chains = 3,
+  variable.names = parameters
+)
 ```
 
-Now we have a model identical to the others, and can summarize the posterior distribution in similar fashion.
+Now we have a model identical to the others, and can summarize the posterior distribution in similar fashion.  As before, you can use the <span class="pack">posterior</span> and other packages as well.
 
 ```{r jagsModelResults, echo=-1, eval=FALSE}
 load('data/jagsModel.RData')
@@ -489,29 +612,30 @@ summary(lmjags)
 coda::effectiveSize(lmjags)
 ```
 
-```{r jagsModelResults_pretty, echo=F}
+```{r jagsModelResults_pretty, echo=FALSE}
 load('data/jagsModel.RData')
-broom::tidyMCMC(lmjags, conf.int=T) %>% 
-  kable(align='lrrrr', digits=2) %>% 
-  kable_styling(full_width = F)
-coda::effectiveSize(lmjags) %>% 
-  kable(digits=0) %>% 
-  kable_styling(full_width = F)
+
+broom.mixed::tidyMCMC(lmjags, conf.int = TRUE) %>%
+  bind_cols(tibble(ESS = coda::effectiveSize(lmjags))) %>% 
+  kable(align = 'lrrrr', digits = 2) %>%
+  kable_styling(full_width = FALSE)
 ```
 
 
 ```{r jagsModelDiag, eval=FALSE, echo=F}
 # visualize
-library(coda); library(scales); library(ggthemes)
+library(coda)
+library(scales)
+library(ggthemes)
 
-traceplot(lmjags, col=alpha(gg_color_hue(3), .5))
+traceplot(lmjags, col = alpha(gg_color_hue(3), .5))
 
-densityplot(lmjags, col=alpha(gg_color_hue(3), .5))
+densityplot(lmjags, col = alpha(gg_color_hue(3), .5))
 
-plot(lmjags, col=alpha(gg_color_hue(3), .25))
+plot(lmjags, col = alpha(gg_color_hue(3), .25))
 
 corrplot:::corrplot(cor(lmjags[[2]]))  # noticeably better than levelplot
-par(mar=c(5, 4, 4, 2) + 0.1) # reset margins
+par(mar = c(5, 4, 4, 2) + 0.1) # reset margins
 ```
 
 
@@ -520,7 +644,9 @@ par(mar=c(5, 4, 4, 2) + 0.1) # reset margins
 
 ## Metropolis Hastings Example
 
-Next depicted is a random walk Metropolis-Hastings algorithm using the data and model from prior sections of the document.  I had several texts open while cobbling together this code such as @gelman_bda, and some oriented towards the social sciences by @jeff_gill_bayesian_2008, @simon_jackman_bayesian_2009, and @scott_lynch_2007 etc.  Some parts of the code reflect information and code examples found therein, and follows Lynch's code a bit more.
+Next depicted is a random walk Metropolis-Hastings algorithm using the data and model from prior sections of the document.  I had several texts open while cobbling together this code such as @gelman_bda, and some oriented towards the social sciences by @jeff_gill_bayesian_2008, @simon_jackman_bayesian_2009, and @scott_lynch_2007 etc.  Some parts of the code reflect information and code examples found therein, and follows Lynch's code a bit more[^bettercode].
+
+[^bettercode]: Some of these texts may have more recent editions, so consult those if interested. 
 
 The primary functions that we need to specify regard the posterior distribution[^MHexample], an update step for beta coefficients, and an update step for the variance estimate.<br><br>
 
@@ -531,16 +657,16 @@ post = function(x, y, b, s2) {
   # Args: X is the model matrix; y the target vector; b and s2 the parameters
   # to be estimated
 
-  beta = b           
-  sigma = sqrt(s2)
+  beta   = b           
+  sigma  = sqrt(s2)
   sigma2 = s2
-  mu = X %*% beta
+  mu     = X %*% beta
   
-  # priors are b0 ~ N(0, sd=10), sigma2 ~ invGamma(.001, .001)
+  # priors are b0 ~ N(0, sd = 10), sigma2 ~ invGamma(.001, .001)
   priorbvarinv = diag(1/100, 4) 
   prioralpha = priorbeta = .001
   
-  if (is.nan(sigma) | sigma<=0) {     # scale parameter must be positive
+  if (is.nan(sigma) | sigma <= 0) {     # scale parameter must be positive
     return(-Inf)
   }
   
@@ -553,9 +679,22 @@ post = function(x, y, b, s2) {
       -(prioralpha+1)*log(sigma2) + log(sigma2) - priorbeta/sigma2 
   }
   # else {
-  #   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)
-  #   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)
-  #   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)
+  #   ll = mvtnorm::dmvnorm(
+  #     y,
+  #     mean = mu,
+  #     sigma = diag(sigma2, length(y)),
+  #     log = TRUE
+  #   )
+  #   
+  #   priorb = mvtnorm::dmvnorm(
+  #     beta,
+  #     mean = rep(0, length(beta)),
+  #     sigma = diag(100, length(beta)),
+  #     log = TRUE
+  #   )
+  #   
+  #   priors2 = dgamma(1 / sigma2, prioralpha, priorbeta, log = TRUE)
+  #   
   #   logposterior = ll + priorb + priors2
   #   logposterior
   # }
@@ -565,15 +704,17 @@ post = function(x, y, b, s2) {
 
 updatereg = function(i, x, y, b, s2) {
   # Args are the same as above but with additional i iterator argument.
-  b[i,] = MASS::mvrnorm(1, mu=b[i-1,], Sigma=bvarscale)  # proposal/jumping distribution
+  b[i,] = MASS::mvrnorm(1, mu = b[i-1, ], Sigma = bvarscale)  # proposal/jumping distribution
   
   # Compare to past- does it increase the posterior probability?
-  postdiff = post(x=x, y=y, b=b[i,],   s2=s2[i-1]) - 
-             post(x=x, y=y, b=b[i-1,], s2=s2[i-1]) 
+  postdiff = 
+    post(x = x, y = y, b = b[i, ],   s2 = s2[i-1]) - 
+    post(x = x, y = y, b = b[i-1, ], s2 = s2[i-1]) 
   
   # Acceptance phase
   unidraw = runif(1)
-  accept = unidraw < min(exp(postdiff), 1)  # accept if so
+  accept  = unidraw < min(exp(postdiff), 1)  # accept if so
+  
   if (accept) b[i,]
   else b[i-1,]
 }
@@ -581,14 +722,18 @@ updatereg = function(i, x, y, b, s2) {
 # update step for sigma2
 
 updates2 = function(i, x, y, b, s2) {
-  s2candidate =  rnorm(1, s2[i-1], sd=sigmascale)
+  s2candidate =  rnorm(1, s2[i-1], sd = sigmascale)
+  
   if (s2candidate < 0) {
     accept = FALSE
   } 
   else {
-    s2diff = post(x=x, y=y, b=b[i,], s2=s2candidate) - 
-             post(x=x, y=y, b=b[i,], s2=s2[i-1])
+    s2diff = 
+      post(x = x, y = y, b = b[i, ], s2 = s2candidate) - 
+      post(x = x, y = y, b = b[i, ], s2 = s2[i-1])
+    
     unidraw = runif(1)
+    
     accept = unidraw < min(exp(s2diff), 1)
   }
   
@@ -601,11 +746,11 @@ Now we can set things up for the MCMC chain[^MHmcmc].  Aside from the typical MC
 
 ```{r MHexampleSetup}
 # Setup, starting values etc. 
-nsim = 5000
+nsim   = 5000
 burnin = 1000
-thin = 10
+thin   = 10
 
-b = matrix(0, nsim, ncol(X))         # initialize beta update matrix
+b  = matrix(0, nsim, ncol(X))        # initialize beta update matrix
 s2 = rep(1, nsim)                    # initialize sigma vector
 
 
@@ -615,8 +760,8 @@ s2 = rep(1, nsim)                    # initialize sigma vector
 # starting with a value of one and fiddling from there to get around .44.
 
 c = 2.4/sqrt(ncol(b))
-bvar = vcov(lm(y~., data.frame(X[,-1]))) 
-bvarscale = bvar * c^2               
+bvar = vcov(lm(y ~ ., data.frame(X[, -1]))) 
+bvarscale  = bvar * c^2               
 sigmascale = .9
 ```
 
@@ -625,54 +770,77 @@ We can now run and summarize the model with tools from the <span class="pack">co
 ```{r MHexampleRun, eval=F}
 # Run
 for (i in 2:nsim) {
-  b[i,] = updatereg(i=i, y=y, x=X, b=b, s2=s2)
-  s2[i] = updates2(i=i, y=y, x=X, b=b, s2=s2)
+  b[i, ] = updatereg(
+    i  = i,
+    y  = y,
+    x  = X,
+    b  = b,
+    s2 = s2
+  )
+  s2[i] = updates2(
+    i  = i,
+    y  = y,
+    x  = X,
+    b  = b,
+    s2 = s2
+  )
 }
 
 # calculate acceptance rates
-baccrate = mean(diff(b[(burnin+1):nsim,]) != 0)
-s2accrate = mean(diff(s2[(burnin+1):nsim]) != 0)            
-baccrate
-s2accrate
+b_acc_rate  = mean(diff(b[(burnin + 1):nsim,]) != 0)
+s2_acc_rate = mean(diff(s2[(burnin + 1):nsim]) != 0)            
+
+tibble(b_acc_rate, s2_acc_rate)
 
 # get final chain
-library(coda)
-bfinal = as.mcmc(b[seq(burnin+1, nsim, by=thin),])
-s2final = as.mcmc(s2[seq(burnin+1, nsim, by=thin)])
+library(posterior)
+
+b_final  = as_draws(b[seq(burnin + 1, nsim, by = thin), ])
+s2_final = as_draws(matrix(s2[seq(burnin + 1, nsim, by = thin)]))
 
 # get summaries; compare to lm and stan
-summary(bfinal); summary(s2final)
-round(c(coef(modlm), summary(modlm)$sigma^2), 3)
+summarise_draws(b_final)
+summarise_draws(s2_final)
+
+round(c(coef(modlm), summary(modlm)$sigma ^ 2), 3)
 ```
 
-```{r MHexampleRun_pretty, echo=F}
+```{r MHexampleRun_pretty, echo=FALSE}
 # Run
 for (i in 2:nsim) {
-  b[i,] = updatereg(i=i, y=y, x=X, b=b, s2=s2)
-  s2[i] = updates2(i=i, y=y, x=X, b=b, s2=s2)
+  b[i,] = updatereg(i = i, y = y, x = X, b = b, s2 = s2)
+  s2[i] =  updates2(i = i, y = y, x = X, b = b, s2 = s2)
 }
 
 # calculate acceptance rates
-baccrate = mean(diff(b[(burnin+1):nsim,]) != 0)
-s2accrate = mean(diff(s2[(burnin+1):nsim]) != 0)            
-baccrate
-s2accrate
+b_acc_rate  = mean(diff(b[(burnin + 1):nsim,]) != 0)
+s2_acc_rate = mean(diff(s2[(burnin + 1):nsim]) != 0)
+
+# tibble(b_acc_rate, s2_acc_rate)
 
 # get final chain
-library(coda)
-bfinal = as.mcmc(data.frame(beta=b[seq(burnin+1, nsim, by=thin),], sigmasq=s2[seq(burnin+1, nsim, by=thin)]))
+library(posterior)
 
-# get summaries; compare to lm and stan
-# broom::tidyMCMC(bfinal, conf.int=T) %>% format(digits=2) %>% pander(justify='lrrrr')
-# round(c(coef(modlm), sigamsq=summary(modlm)$sigma^2), 3) %>% pander
+b_final =  as_draws(
+  data.frame(
+    beta =  b[seq(burnin + 1, nsim, by = thin), ],
+    s2   = s2[seq(burnin + 1, nsim, by = thin)]
+    )
+  )
 ```
 
 ```{r MHexampleRun_pretty_table, echo=FALSE}
-rstan::monitor(array(cbind(b,s2),dim=c(5000,1,5), dimnames=list(NULL, NULL, colnames(bfinal))), 
-               warmup=burnin, digits_summary=5, probs=c(.025,.975), print=F) %>% 
-  data.frame %>% 
-  kable(align='lrrrrrrr', digits=2) %>% 
-  kable_styling(full_width = F)
+posterior::summarise_draws(
+  b_final,
+  mean     = mean,
+  sd       = sd,
+  mcse     = mcse_mean,
+  quantile = \(x, ...) quantile2(x, probs = c(.025, .975), ...),
+  default_convergence_measures()
+  # .args = list(probs = c(.025, .975)) # problem passing arg to quantile without any explicit call of quantile
+) %>%
+  kable(align = 'lrrrrrrr', digits = 2) %>%
+  kable_styling(full_width = FALSE)
 ```
 
 
@@ -680,9 +848,9 @@ Here is the previous Stan fit for comparison.
 
 ```{r MHexampleCompare, echo=FALSE}
 # print(fit, digits=3, prob=c(.025,.5,.975))
-broom::tidy(fit, conf.int=T) %>%  
-  kable(align='lrrrr', digits=2) %>% 
-  kable_styling(full_width = F)
+broom::tidy(fit, conf.int = TRUE) %>%
+  kable(align = 'lrrrr', digits = 2) %>%
+  kable_styling(full_width = FALSE)
 ```
 
 
@@ -696,22 +864,22 @@ First we start with the functions.
 
 ```{r HMCexample}
 # Log posterior function
-log_p_th = function(X, y, th) {
-  # Args: X is the model matrix; y the target vector; th is the current 
+log_p_th = function(X, y, theta) {
+  # Args: X is the model matrix; y the target vector; theta are the current 
   # parameter estimates.
-  beta = th[-length(th)]            # reg coefs to be estimated
-  sigma = th[length(th)]            # sigma to be estimated
+  beta   = theta[-length(theta)]           # reg coefs to be estimated
+  sigma  = theta[length(theta)]            # sigma to be estimated
   sigma2 = sigma^2
-  mu = X %*% beta
+  mu     = X %*% beta
   
   # priors are b0 ~ N(0, sd=10), sigma2 ~ invGamma(.001, .001)
   priorbvarinv = diag(1/100, 4) 
   prioralpha = priorbeta = .001
   
-  if (is.nan(sigma) | sigma<=0) {     # scale parameter must be positive, so post
-    return(-Inf)                    # density is zero if it jumps below zero
+  if (is.nan(sigma) | sigma<=0) {     # scale parameter must be positive, so posterior
+    return(-Inf)                      # density is zero if it jumps below zero
   }
-  # log posterior in this conjugate setting. conceptuallyit's 
+  # log posterior in this conjugate setting. conceptually it's 
   # (log) prior + (log) likelihood. (See commented 'else')
   else {
     -.5*nrow(X)*log(sigma2) - (.5*(1/sigma2) * (crossprod(y-mu))) +
@@ -719,9 +887,19 @@ log_p_th = function(X, y, th) {
       -(prioralpha+1)*log(sigma2) + log(sigma2) - priorbeta/sigma2
   }
   # else {
-  #   ll = mvtnorm::dmvnorm(y, mean=mu, sigma=diag(sigma2, length(y)), log=T)
-  #   priorb = mvtnorm::dmvnorm(beta, mean=rep(0, length(beta)), sigma=diag(100, length(beta)), log=T)
-  #   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log=T)
+  #   ll = mvtnorm::dmvnorm(
+  #     y,
+  #     mean  = mu,
+  #     sigma = diag(sigma2, length(y)),
+  #     log   = TRUE
+  #   )
+  #   priorb = mvtnorm::dmvnorm(
+  #     beta,
+  #     mean  = rep(0, length(beta)),
+  #     sigma = diag(100, length(beta)),
+  #     log   = TRUE
+  #   )
+  #   priors2 = dgamma(1/sigma2, prioralpha, priorbeta, log = TRUE)
   #   logposterior = ll + priorb + priors2
   #   logposterior
   # }
@@ -729,23 +907,32 @@ log_p_th = function(X, y, th) {
 
 
 # numerical gradient function as given in BDA3 p. 602; same args as posterior
-gradient_th_numerical = function(X, y, th) {
-  d = length(th)
+gradient_theta_numerical = function(X, y, theta) {
+  d = length(theta)
   e = .0001
   diffs = numeric(5)
+  
   for (k in 1:d) {
-    th_hi = th
-    th_lo = th
-    th_hi[k] = th[k] + e
-    th_lo[k] = th[k] - e
+    th_hi = theta
+    th_lo = theta
+    th_hi[k] = theta[k] + e
+    th_lo[k] = theta[k] - e
     diffs[k] = (log_p_th(X, y, th_hi) - log_p_th(X, y, th_lo)) / (2*e)
   }
+  
   return(diffs)
 }
 
 
 # single HMC iteration function
-hmc_iteration = function(X, y, th, epsilon, L, M) {
+hmc_iteration = function(
+  X, 
+  y, 
+  theta, 
+  epsilon, 
+  L, 
+  M
+  ) {
   # Args: epsilon is the stepsize; L is the number of leapfrog steps; epsilon
   # and L are drawn randomly at each iteration to explore other areas of the
   # posterior (starting with epsilon0 and L0); M is a diagonal mass matrix 
@@ -754,143 +941,189 @@ hmc_iteration = function(X, y, th, epsilon, L, M) {
   # by phi. See the sampling section of chapter 1 in the Stan manual for more
   # detail.
 
-  M_inv = 1/M
-  d = length(th)
-  phi = rnorm(d, 0, sqrt(M))
-  th_old = th
-  log_p_old = log_p_th(X, y, th) - .5*sum(M_inv*phi^2)
-  phi = phi + .5*epsilon*gradient_th_numerical(X, y, th)
+  M_inv     = 1/M
+  d         = length(theta)
+  phi       = rnorm(d, 0, sqrt(M))
+  th_old    = theta
+  log_p_old = log_p_th(X, y, theta) - .5*sum(M_inv*phi^2)
+  phi       = phi + .5 * epsilon * gradient_theta_numerical(X, y, theta)
   
   for (l in 1:L) {
-    th = th + epsilon*M_inv*phi
-    phi = phi + ifelse(l==L, .5, 1) * epsilon*gradient_th_numerical(X, y, th)
+    theta = theta + epsilon*M_inv*phi
+    phi = phi + ifelse(l == L, .5, 1) * 
+      epsilon * gradient_theta_numerical(X, y, theta)
   }
   
   # here we get into standard MCMC stuff, jump or not based on a draw from a
   # proposal distribution
   phi = -phi
-  log_p_star = log_p_th(X, y, th) - .5*sum(M_inv*phi^2)    
+  log_p_star = log_p_th(X, y, theta) - .5 * sum(M_inv * phi^2)    
   r = exp(log_p_star - log_p_old)
+  
   if (is.nan(r)) r = 0
+  
   p_jump = min(r, 1)
+  
   if (runif(1) < p_jump) {
-    th_new = th
+    th_new = theta
   }
   else {
     th_new = th_old
   }
-  return(list(th=th_new, p_jump=p_jump))  # returns estimates and acceptance rate
+  
+  return(list(theta = th_new, p_jump = p_jump))  # returns estimates and acceptance rate
 }
 
 
 # main HMC function
-hmc_run = function(starts, iter, warmup, epsilon_0, L_0, M, X, y) {
-  # Args: starts are starting values; iter is total number of simulations for 
-  # each chain (note chain is based on the dimension of starts); warmup
-  # determines which of the initial iterations will be ignored for inference
-  # purposes; edepsilon0 is the baseline stepsize; L0 is the baseline number 
-  # of leapfrog steps; M is the mass vector
+hmc_run = function(
+  starts,    # starting values for theta
+  iter,      # total number of simulations for each chain; chain is based on the dimension of starts
+  warmup,    # determines initial iterations that will be ignored for inference purposes
+  epsilon_0, # the baseline stepsize
+  L_0,       # the baseline number of leapfrog steps
+  M,         # the mass vector
+  X,          
+  y
+  ) {
+  # Args: 
+
   chains = nrow(starts)
-  d = ncol(starts)
-  sims = array(NA, c(iter, chains, d), 
-               dimnames=list(NULL, NULL, colnames(starts)))
+  d      = ncol(starts)
+  sims   = array(NA, c(iter, chains, d), dimnames = list(NULL, NULL, colnames(starts)))
   p_jump = matrix(NA, iter, chains)
   
   for (j in 1:chains) {
-    th = starts[j,]
+    theta = starts[j, ]
+    
     for (t in 1:iter) {
-      epsilon = runif(1, 0, 2*epsilon_0)
-      L = ceiling(2*L_0*runif(1))
-      temp = hmc_iteration(X, y, th, epsilon, L, M)
-      p_jump[t,j] = temp$p_jump
-      sims[t,j,] = temp$th
-      th = temp$th
+      epsilon = runif(1, 0, 2 * epsilon_0)
+      L = ceiling(2 * L_0 * runif(1))
+      
+      temp = hmc_iteration(X, y, theta, epsilon, L, M)
+      
+      p_jump[t, j] = temp$p_jump
+      sims[t, j,] = temp$theta
+      
+      theta = temp$theta
     }
   }
   
   # rstan::monitor(sims, warmup, digits_summary=3)
-  acc = round(colMeans(p_jump[(warmup+1):iter,]), 3)  # acceptance rate
-  message('Avg acceptance probability for each chain: ', 
-          paste0(acc[1],', ',acc[2]), '\n') 
-  return(list(sims=sims, p_jump=p_jump))
+  acc = round(colMeans(p_jump[(warmup + 1):iter,]), 3)  # acceptance rate
+  
+  message(
+    'Avg acceptance probability for each chain: ',
+    paste0(acc[1], ', ', acc[2]),          '\n'
+  )
+  
+  return(list(sims = sims, p_jump = p_jump))
 }
 ```
 
 
-With the primary functions in place, we set the starting values and choose other settings for for the HMC process. The coefficient starting values are based on random draws from a uniform distribution, while $\sigma$ is set to a value of one in each case.  As in the other examples we'll have 5000 total draws with warm-up set to 2500.  I don't have any thinning option here, but that could be added or simply done as part of the <span class="pack">coda</span> package preparation.
+With the primary functions in place, we set the starting values and choose other settings for for the HMC process. The coefficient starting values are based on random draws from a uniform distribution, while $\sigma$ is set to a value of one in each case.  For this example we'll have 2000 total draws with warm-up set to 1000.  I don't have any thinning option here, but that could be added or simply done as part of the <span class="pack">coda</span> package preparation.
 
 ```{r HMCexampleSetup, echo=c(1:5, 7:16)}
 # Starting values and mcmc settings
-parnames = c(paste0('beta[',1:4,']'), 'sigma')
+parnames = c(paste0('beta[', 1:4, ']'), 'sigma')
 d = length(parnames)
 chains = 2
 
-load('data/mainModelData.RData')
+load('data/mainModels.RData')
 thetastart = t(replicate(chains, c(runif(d-1, -1, 1), 1)))
 colnames(thetastart) = parnames
-nsim = 1000
-wu = 500
+
+nsim   = 2000
+warmup = 1000
 
 # fiddle with these to get a desirable acceptance rate of around .80. The
 # following work well with the document data.
 stepsize = .08
-nLeap = 10
-vars = rep(1, 5)
+nLeap    = 10
+vars     = rep(1, 5)
 mass_vector = 1/vars
 ```
 
 
-We are now ready to run the model.  On my machine and with the above settings, it took a couple seconds. Once complete we can use the <span class="pack">coda</span> package if desired as we have done before.
+We are now ready to run the model.  On my machine and with the above settings, this took a couple seconds. Once complete, we can use the <span class="pack">posterior</span> package as we have done before.
 
-```{r HMCexampleRun, message=T, eval=FALSE}
+```{r HMCexampleRun, eval=FALSE}
 # Run the model
-M1 = hmc_run(starts=thetastart, iter=nsim, warmup=wu, epsilon_0=stepsize, 
-             L_0=nLeap, M=mass_vector, X=X, y=y)
-# str(M1, 1)
+fit_hmc = hmc_run(
+  starts    = thetastart,
+  iter      = nsim,
+  warmup    = warmup,
+  epsilon_0 = stepsize,
+  L_0       = nLeap,
+  M         = mass_vector,
+  X         = X,
+  y         = y
+)
 
-# use coda if desired
-library(coda)
+# str(fit_hmc, 1)
 
-theta = as.mcmc.list(list(as.mcmc(M1$sims[(wu+1):nsim, 1,]), 
-                          as.mcmc(M1$sims[(wu+1):nsim, 2,])))
-summary(theta)
-finalest =  summary(theta)$statistics[,'Mean']
-b = finalest[1:4]
+# use posterior to summarize the two chains
+library(posterior)
+
+theta = as_draws_array(fit_hmc$sims[(warmup + 1):nsim, , ])
+summarise_draws(theta)
+
+finalest =  summary(theta)$mean
+b   = finalest[1:4]
 sig = finalest[5]
+
+# log posterior
 log_p_th(X, y, finalest)
 ```
 
 ```{r HMCexampleRun_pretty, message=T, echo=FALSE}
 # Run the model
-M1 = hmc_run(starts=thetastart, iter=nsim, warmup=wu, epsilon_0=stepsize, 
-             L_0=nLeap, M=mass_vector, X=X, y=y)
-# str(M1, 1)
+fit_hmc = hmc_run(
+  starts = thetastart,
+  iter   = nsim,
+  warmup = warmup,
+  epsilon_0 = stepsize,
+  L_0 = nLeap,
+  M   = mass_vector,
+  X   = X,
+  y   = y
+)
 
-# use coda if desired
-# library(coda)
-# 
-theta = as.mcmc.list(list(as.mcmc(M1$sims[(wu+1):nsim,1,]),
-                          as.mcmc(M1$sims[(wu+1):nsim,2,])))
-# # summary(theta)
-finalest =  summary(theta)$statistics[,'Mean']
-# b = finalest[1:4]
-# sig = finalest[5]
-# broom::tidyMCMC(theta, conf.int=T) %>% format(digits=2) %>% pander(justify='lrrrr')
+# str(fit_hmc, 1)
+
+library(posterior)
+
+theta = as_draws_array(fit_hmc$sims[(warmup + 1):nsim, , ])
+
+# summarise_draws(theta)
+
+finalest =  summary(theta)$mean
+b   = finalest[1:4]
+sig = finalest[5]
+
+# log posterior
+# log_p_th(X, y, finalest)
 ```
 
 ```{r HMCexampleRun_pretty_table, echo=FALSE}
-rstan::monitor(M1$sims, 
-               warmup=500, digits_summary=5, probs=c(.025,.975),
-               print=F) %>% 
-  kable(align='lrrrrrrr', digits=2) %>% 
-  kable_styling(full_width = F)
+posterior::summarise_draws(
+  theta,
+  mean     = mean,
+  sd       = sd,
+  mcse     = mcse_mean,
+  quantile = \(x, ...) quantile2(x, probs = c(.025, .975), ...),
+  default_convergence_measures()
+) %>% 
+  kable(align = 'lrrrrrrr', digits = 2) %>%
+  kable_styling(full_width = FALSE)
 
 
 glue::glue('log posterior = ', {round(log_p_th(X, y, finalest),3)})
 ```
 
 
-Our estimates look pretty good, and inspection of the diagnostics would show good mixing and convergence as well. At this point we can compare it to the Stan output.  For the following, I modified the previous Stan code to use the same inverse gamma prior and tweaked the control options for a little bit more similarity, but that's not necessary.
+Our estimates look pretty good, and inspection of the diagnostics would show good mixing and convergence as well. At this point we can compare it to the Stan output.  For the following, I modified the previous Stan code to use the same inverse gamma prior and tweaked the control options for a little bit more similarity.
 
 
 ```{r HMCexampleStanCompare, echo=FALSE}
@@ -933,23 +1166,28 @@ generated quantities {      // Generated quantities block. Not used presently.
 */
 "
 
-dat = list(N=N, K=ncol(X), y=y, X=X)
+dat = list(N = N,
+           K = ncol(X),
+           y = y,
+           X = X)
 
 # # standard stan
 # fit = stan(model_code = stanmodelcodeIG, data = dat, iter = nsim, 
-#            warmup=wu, thin=1, chains = chains, verbose = F)
+#            warmup=warmup, thin=1, chains = chains, verbose = F)
 
 # perhaps closer to above settings?
 # fitIG = stan(model_code = stanmodelcodeIG, data = dat, iter = nsim, 
-#            warmup=wu, thin=1, chains = chains, verbose = FALSE,
+#            warmup=warmup, thin=1, chains = chains, verbose = FALSE,
 #            control=list(adap_engaged=F, stepsize=stepsize, adap_t0=nLeap, refresh=0))
+
 load('data/IGModelData.RData')
 # print(fitIG, digits_summary=3, probs=c(.025,.5,.975))
-broom::tidy(fitIG, conf.int=T) %>% 
-  kable(align='lrrrr', digits = 2) %>% 
-  kable_styling(full_width = F)
+broom::tidy(fitIG, conf.int = TRUE) %>%
+  kable(align = 'lrrrr', digits = 2) %>%
+  kable_styling(full_width = FALSE)
 # finalest; log_p_th(X, y, finalest)
-glue::glue('log posterior = ', round(get_posterior_mean(fitIG, par='lp__')[,3],3))
+
+glue::glue('log posterior = ', round(get_posterior_mean(fitIG, par = 'lp__')[, 3], 3))
 ```
 
 
@@ -970,11 +1208,11 @@ glue::glue('log posterior = ', round(get_posterior_mean(fitIG, par='lp__')[,3],3
 
 [^MLvOLS]: Actually, there is a difference between the sigma estimates in that OLS estimates are based on a variance estimate divided by $N-p$ while the MLE estimate has a divisor of $N$.
 
-[^tangent]: Which is equivalent to finding the point where the slope of the tangent line to some function, i.e. the derivative, to the surface is zero. The derivative, or gradient in the case of multiple parameters, of the likelihood function with respect to the parameters is known as the <span class="emph">score function</span>.
+[^tangent]: Which is equivalent to finding the point where the slope of the tangent line for some function to the surface is zero. The derivative, or gradient in the case of multiple parameters, of the likelihood function with respect to the parameters is known as the *score function*.
 
 [^winbugs]: You might come across a previous incarnation, WinBugs, but it is no longer being developed.
 
-[^rbayes]: Many of these packages, if not all of them will be less flexible in model specification compared to implementing the aforementioned languages directly, or using the R interface to those languages.   What's more, R has interfaces to the previous language engines via the packages <span class="pack">R2OpenBUGS</span> and <span class="pack">BRugs</span>, <span class="pack">rjags</span>, and <span class="pack">rstan</span>, <span class="pack">rstanarm
+[^rbayes]: Many of these packages, if not all of them, will be less flexible in model specification compared to implementing the model in the aforementioned languages directly, or using the R interface to those languages.   What's more, R has interfaces to the previous language engines via the packages <span class="pack">nimble</span>, <span class="pack">rjags</span>, and <span class="pack">rstan</span>, <span class="pack">rstanarm</span>, <span class="pack">
 brms</span>, and many others.
 
 [^MHexample]: Assuming normal for $\beta$ coefficients, inverse gamma on $\sigma^2$.
