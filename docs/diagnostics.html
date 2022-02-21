@@ -1,44 +1,47 @@
 <!DOCTYPE html>
-<html >
-
+<html lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Bayesian Basics</title>
-  <meta name="description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more.">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Model Exploration | Bayesian Basics</title>
+  <meta name="description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Bayesian Basics" />
+  <meta property="og:title" content="Model Exploration | Bayesian Basics" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/bayesian-basics/" />
-  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
+  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics//img/nineteeneightyR.png" />
   <meta property="og:description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
   <meta name="github-repo" content="m-clark/bayesian-basics/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Bayesian Basics" />
+  <meta name="twitter:title" content="Model Exploration | Bayesian Basics" />
   
   <meta name="twitter:description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
-  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
+  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics//img/nineteeneightyR.png" />
 
 
 
-<meta name="date" content="2018-07-30">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
-  
-<link rel="prev" href="models.html">
-<link rel="next" href="enhancements.html">
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="models.html"/>
+<link rel="next" href="enhancements.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
 
 
 
@@ -47,41 +50,38 @@
 
 
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
-<script src="libs/htmlwidgets-1.2/htmlwidgets.js"></script>
-<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
-<script src="libs/vis-4.20.1/vis.min.js"></script>
-<script src="libs/visNetwork-binding-2.0.4/visNetwork.js"></script>
-<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; position: absolute; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; }
-pre.numberSource a.sourceLine:empty
-  { position: absolute; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -90,9 +90,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -125,8 +125,31 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="css/book.css" type="text/css" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.0/css/all.css" type="text/css" />
 </head>
 
 <body>
@@ -142,36 +165,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#going-further"><i class="fa fa-check"></i>Going Further</a></li>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#note"><i class="fa fa-check"></i>Note</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#about-the-author"><i class="fa fa-check"></i>About the Author</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a><ul>
-<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a><ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a>
+<ul>
 <li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#conditional-probability-bayes-theorem"><i class="fa fa-check"></i>Conditional probability &amp; Bayes theorem</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i>A Hands-on Example</a><ul>
+<li class="chapter" data-level="" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i>A Hands-on Example</a>
+<ul>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#prior-likelihood-posterior-distributions"><i class="fa fa-check"></i>Prior, likelihood, &amp; posterior distributions</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#prior"><i class="fa fa-check"></i>Prior</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#likelihood"><i class="fa fa-check"></i>Likelihood</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#posterior"><i class="fa fa-check"></i>Posterior</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i>Regression Models</a><ul>
-<li class="chapter" data-level="" data-path="models.html"><a href="models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a><ul>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i>Regression Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a>
+<ul>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#setup"><i class="fa fa-check"></i>Setup</a></li>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#stan-code"><i class="fa fa-check"></i>Stan Code</a></li>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#running-the-model"><i class="fa fa-check"></i>Running the Model</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html"><i class="fa fa-check"></i>Model Exploration</a><ul>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html"><i class="fa fa-check"></i>Model Exploration</a>
+<ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a>
+<ul>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#visual-inspection-traceplot-densities"><i class="fa fa-check"></i>Visual Inspection: Traceplot &amp; Densities</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#statistical-measures"><i class="fa fa-check"></i>Statistical Measures</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#autocorrelation"><i class="fa fa-check"></i>Autocorrelation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#model-checking"><i class="fa fa-check"></i>Model Checking</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#model-criticism"><i class="fa fa-check"></i>Model Criticism</a>
+<ul>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#sensitivity-analysis"><i class="fa fa-check"></i>Sensitivity Analysis</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#predictive-accuracy-model-comparison"><i class="fa fa-check"></i>Predictive Accuracy &amp; Model Comparison</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#posterior-predictive-checking-statistical"><i class="fa fa-check"></i>Posterior Predictive Checking: Statistical</a></li>
@@ -179,21 +213,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#summary"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a><ul>
+<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a>
+<ul>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#generating-new-variables-of-interest"><i class="fa fa-check"></i>Generating New Variables of Interest</a></li>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#robust-regression"><i class="fa fa-check"></i>Robust Regression</a></li>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#generalized-linear-model"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#debugging"><i class="fa fa-check"></i>Debugging</a></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#choice-of-prior"><i class="fa fa-check"></i>Choice of Prior</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#choice-of-prior"><i class="fa fa-check"></i>Choice of Prior</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#noninformative-weakly-informative-informative"><i class="fa fa-check"></i>Noninformative, Weakly Informative, Informative</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#conjugacy"><i class="fa fa-check"></i>Conjugacy</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#test-your-priors-beforehand"><i class="fa fa-check"></i>Test your Priors Beforehand</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#hierarchical-priors"><i class="fa fa-check"></i>Hierarchical Priors</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sensitivity-analysis-revisited"><i class="fa fa-check"></i>Sensitivity Analysis Revisited</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#a-simple-check"><i class="fa fa-check"></i>A Simple Check</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#summary-1"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sampling-procedure"><i class="fa fa-check"></i>Sampling Procedure</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sampling-procedure"><i class="fa fa-check"></i>Sampling Procedure</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#metropolis"><i class="fa fa-check"></i>Metropolis</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#gibbs"><i class="fa fa-check"></i>Gibbs</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#hamiltonian-monte-carlo"><i class="fa fa-check"></i>Hamiltonian Monte Carlo</a></li>
@@ -202,7 +242,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#number-of-draws-thinning-warm-up"><i class="fa fa-check"></i>Number of draws, thinning, warm-up</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#model-complexity"><i class="fa fa-check"></i>Model Complexity</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i>R Packages</a><ul>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i>R Packages</a>
+<ul>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#standard-regression-and-glm"><i class="fa fa-check"></i>Standard Regression and GLM</a></li>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#categorical-models"><i class="fa fa-check"></i>Categorical Models</a></li>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#extended-count-models"><i class="fa fa-check"></i>Extended Count Models</a></li>
@@ -211,15 +252,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#even-more-packages"><i class="fa fa-check"></i>Even More Packages</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i>Final Thoughts</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a>
+<ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a>
+<ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#example"><i class="fa fa-check"></i>Example</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#linear-model"><i class="fa fa-check"></i>Linear Model</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#binomial-likelihood-example"><i class="fa fa-check"></i>Binomial Likelihood Example</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#modeling-languages"><i class="fa fa-check"></i>Modeling Languages</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#modeling-languages"><i class="fa fa-check"></i>Modeling Languages</a>
+<ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#bugs"><i class="fa fa-check"></i>Bugs</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#jags"><i class="fa fa-check"></i>JAGS</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#nimble"><i class="fa fa-check"></i>Nimble</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#stan"><i class="fa fa-check"></i>Stan</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#r"><i class="fa fa-check"></i>R</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#general-statistical-packages"><i class="fa fa-check"></i>General Statistical Packages</a></li>
@@ -231,10 +276,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#metropolis-hastings-example"><i class="fa fa-check"></i>Metropolis Hastings Example</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#hamiltonian-monte-carlo-example"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a><ul>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a>
+<ul>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts-for-your-shelf"><i class="fa fa-check"></i>Texts for Your Shelf</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#stan-specific-resources"><i class="fa fa-check"></i>Stan Specific Resources</a></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html#other"><i class="fa fa-check"></i>Other</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 <li class="divider"></li>
@@ -279,22 +324,22 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
             <section class="normal" id="section-">
 <div id="model-exploration" class="section level1">
 <h1>Model Exploration</h1>
-<p>As with modeling in traditional approaches, it is not enough to simply run a model and go with whatever results are returned without further inspection. One must examine the results to assess model integrity and have more confidence in the results that have been produced<a href="#fn33" class="footnote-ref" id="fnref33"><sup>33</sup></a>.</p>
+<p>As with modeling in traditional approaches, it is not enough to simply run a model and go with whatever results are returned without further inspection. One must examine the results to assess model integrity and have more confidence in the results that have been produced<a href="#fn31" class="footnote-ref" id="fnref31"><sup>31</sup></a>.</p>
 <div id="monitoring-convergence" class="section level2">
 <h2>Monitoring Convergence</h2>
-<p>There are various ways to assess whether or not the model has converged to a target distribution<a href="#fn34" class="footnote-ref" id="fnref34"><sup>34</sup></a>, but as with more complex models in MLE, there is nothing that can tell you for sure that you’ve hit upon <em>the</em> solution. As a starting point, Stan or other modeling environments will spit out repeated warnings or errors if something is egregiously wrong, or perhaps take an extraordinarily long time to complete relative to expectations, if it ever finishes at all. Assuming you’ve at least gotten past that point, there is more to be done.</p>
+<p>There are various ways to assess whether or not the model has converged to a target distribution<a href="#fn32" class="footnote-ref" id="fnref32"><sup>32</sup></a>, but as with more complex models in MLE, there is nothing that can tell you for sure that you’ve hit upon the true solution. As a starting point, Stan or other modeling environments will likely return repeated warnings or errors if something is egregiously wrong, or perhaps take an extraordinarily long time to complete relative to expectations, if it ever finishes at all. Assuming you’ve at least gotten past that point, there is more to be done.</p>
 <div id="visual-inspection-traceplot-densities" class="section level3">
 <h3>Visual Inspection: Traceplot &amp; Densities</h3>
 <p>In the previous model we noted the traceplot for a single parameter, and a visual approach to monitoring convergence is certainly one good method. In general, we look for a plot that shows random scatter around a mean value, and our model results suggest that the chains mixed well and the traceplot looked satisfactory.</p>
-<p><img class='zoom' src="img/badchains.svg" style="display:block; margin: 0 auto;"  width=50%></p>
-<p>This is an example where things have gone horribly wrong. The chains never converge nor do they mix with one another. One reason for running multiple chains is that any individual chain might converge toward one target, while another chain might converge elsewhere, and this would still be a problem. Also, you might see otherwise healthy chains get stuck on occasion over the course of the series, which might suggest more model tweaking or a change in the sampler settings is warranted.</p>
+<p><img  src="img/badchains.svg" style="display:block; margin: 0 auto;"  width=50%></p>
+<p>This above shows an example where things have gone horribly wrong. The chains never converge, nor do they mix with one another. One reason for running multiple chains is that any individual chain might converge toward one target, while another chain might converge elsewhere, and this would still be a problem. Also, you might see otherwise healthy chains get stuck on occasion over the course of the series, which might suggest more model tweaking or a change in the sampler settings is warranted.</p>
 <p>We can examine the mixed chains and density plots of the posterior with standard functions in the <span class="pack">rstan</span> package displayed previously, various functions in the <span class="pack">bayesplot</span> package, or interactively via <span class="pack">shinyStan</span> package and its <span class="func">launch_shiny</span> function. In the Bayesian approach, increasing amounts of data leads to a posterior distribution of the parameter vector approaching multivariate normality. The following shows a density, trace and autocorrelation plots for one of the regression coefficients using <span class="pack">shinyStan</span>.</p>
 <p><br>
-<img class='zoom' src="img/shiny_stan.png" style="display:block; margin: 0 auto;"></p>
+<img  src="img/shiny_stan.png" style="display:block; margin: 0 auto;"></p>
 </div>
 <div id="statistical-measures" class="section level3">
 <h3>Statistical Measures</h3>
-<p>To go along with visual inspection, we can examine various statistics that might help our determination of convergence or lack thereof. Gelman and Rubin’s <span class="emph">potential scale reduction factor</span>, <span class="math inline">\(\hat{R}\)</span>, provides an estimate of convergence based on the variance of an estimated parameter <span class="math inline">\(\theta\)</span> between chains, and the variance within a chain. It is interpreted as the factor by which the variance in the estimate might be reduced with longer chains. We are looking for a value near 1 (and at the very least less than 1.1), and it will get there as <span class="math inline">\(N_{sim} \rightarrow \infty\)</span>. In the regression model things are looking good in this respect.</p>
+<p>To go along with visual inspection, we can examine various statistics that might help our determination of convergence or lack thereof. Gelman and Rubin’s <em>potential scale reduction factor</em>, <span class="math inline">\(\hat{R}\)</span>, provides an estimate of convergence based on the variance of an estimated parameter <span class="math inline">\(\theta\)</span> between chains, and the variance within a chain. It is interpreted as the factor by which the variance in the estimate might be reduced with longer chains. We are looking for a value near 1 (and at the very least less than 1.1), and it will get there as <span class="math inline">\(N_{sim} \rightarrow \infty\)</span>. In the regression model things are looking good in this respect.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -315,10 +360,10 @@ rhat
 beta[1]
 </td>
 <td style="text-align:center;">
-4.896
+4.889
 </td>
 <td style="text-align:center;">
-0.998
+1.000
 </td>
 </tr>
 <tr>
@@ -326,10 +371,10 @@ beta[1]
 beta[2]
 </td>
 <td style="text-align:center;">
-0.089
+0.083
 </td>
 <td style="text-align:center;">
-1.001
+1.006
 </td>
 </tr>
 <tr>
@@ -337,7 +382,7 @@ beta[2]
 beta[3]
 </td>
 <td style="text-align:center;">
--1.471
+-1.475
 </td>
 <td style="text-align:center;">
 0.999
@@ -348,10 +393,10 @@ beta[3]
 beta[4]
 </td>
 <td style="text-align:center;">
-0.817
+0.816
 </td>
 <td style="text-align:center;">
-1.002
+0.999
 </td>
 </tr>
 <tr>
@@ -362,7 +407,7 @@ sigma
 2.029
 </td>
 <td style="text-align:center;">
-0.999
+0.998
 </td>
 </tr>
 </tbody>
@@ -371,7 +416,7 @@ sigma
 </div>
 <div id="autocorrelation" class="section level3">
 <h3>Autocorrelation</h3>
-<p>As noted previously, each estimate in the MCMC process is serially correlated with the previous estimates by definition. Furthermore, other aspects of the data, model, and estimation settings may contribute to this. Higher serial correlation typically has the effect of requiring more samples in order to get to a stationary distribution. If inspection of the traceplots look more <em>snake-like</em> than like a fat hairy caterpillar, this might suggest such a situation, and that more samples are required.</p>
+<p>As noted previously, each estimate in the MCMC process is serially correlated with the previous estimates by definition. Furthermore, other aspects of the data, model, and estimation settings may contribute to this. Higher serial correlation typically has the effect of requiring more samples in order to get to a stationary distribution. If inspection of the traceplots look more ‘snake-like’ than like a fat hairy caterpillar, this might suggest such a situation, and that more samples are required.</p>
 <p>We can also look at the autocorrelation plot, in which the chain’s correlation with successive lags of the chain are plotted. The first plot is the autocorrelation plot from our model (starting at lag 1). The correlation is low to begin with and then just bounces around zero after. The next plot shows a case of high serial correlation, where the correlation with the first lag is high and the correlation persists even after longer lags. A longer chain with more thinning could help with this.</p>
 <!-- <img src="img/acfPlotNoSerial.svg" style="display:block; margin: 0 auto;" width=50%> -->
 <!-- <img src="img/acfPlotSerial.svg" style="display:block; margin: 0 auto;" width=50%> -->
@@ -397,10 +442,10 @@ ess
 beta[1]
 </td>
 <td style="text-align:center;">
-4.896
+4.889
 </td>
 <td style="text-align:center;">
-1000
+1142
 </td>
 </tr>
 <tr>
@@ -408,10 +453,10 @@ beta[1]
 beta[2]
 </td>
 <td style="text-align:center;">
-0.089
+0.083
 </td>
 <td style="text-align:center;">
-1000
+912
 </td>
 </tr>
 <tr>
@@ -419,10 +464,10 @@ beta[2]
 beta[3]
 </td>
 <td style="text-align:center;">
--1.471
+-1.475
 </td>
 <td style="text-align:center;">
-954
+910
 </td>
 </tr>
 <tr>
@@ -430,10 +475,10 @@ beta[3]
 beta[4]
 </td>
 <td style="text-align:center;">
-0.817
+0.816
 </td>
 <td style="text-align:center;">
-990
+988
 </td>
 </tr>
 <tr>
@@ -444,12 +489,12 @@ sigma
 2.029
 </td>
 <td style="text-align:center;">
-974
+844
 </td>
 </tr>
 </tbody>
 </table>
-<p><span class="emph">Monte Carlo error</span> is an estimate of the uncertainty contributed by only having a finite number of posterior draws. We’d typically want roughly less than 5% of the posterior standard deviation (reported right next to it in the Stan output), but might as well go for less than 1%. With no autocorrelation it would equal <span class="math inline">\(\sqrt{\frac{var(\theta)}{n_{\textrm{eff}}}}\)</span><a href="#fn35" class="footnote-ref" id="fnref35"><sup>35</sup></a>. and <span class="math inline">\(n_{\textrm{eff}}\)</span> would equal the number of simulation draws requested.</p>
+<p><em>Monte Carlo error</em> is an estimate of the uncertainty contributed by only having a finite number of posterior draws. We’d typically want roughly less than 5% of the posterior standard deviation (reported right next to it in the Stan output), but might as well go for less than 1%. With no autocorrelation it would equal <span class="math inline">\(\sqrt{\frac{var(\theta)}{n_{\textrm{eff}}}}\)</span><a href="#fn33" class="footnote-ref" id="fnref33"><sup>33</sup></a>. and <span class="math inline">\(n_{\textrm{eff}}\)</span> would equal the number of simulation draws requested.</p>
 <table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
@@ -469,7 +514,7 @@ se_mean
 beta[1]
 </td>
 <td style="text-align:left;">
-4.896
+4.891
 </td>
 <td style="text-align:center;">
 0.004
@@ -480,7 +525,7 @@ beta[1]
 beta[2]
 </td>
 <td style="text-align:left;">
-0.089
+0.083
 </td>
 <td style="text-align:center;">
 0.004
@@ -491,7 +536,7 @@ beta[2]
 beta[3]
 </td>
 <td style="text-align:left;">
--1.471
+-1.473
 </td>
 <td style="text-align:center;">
 0.004
@@ -502,7 +547,7 @@ beta[3]
 beta[4]
 </td>
 <td style="text-align:left;">
-0.817
+0.819
 </td>
 <td style="text-align:center;">
 0.004
@@ -513,7 +558,7 @@ beta[4]
 sigma
 </td>
 <td style="text-align:left;">
-2.029
+2.033
 </td>
 <td style="text-align:center;">
 0.003
@@ -523,9 +568,9 @@ sigma
 </table>
 </div>
 </div>
-<div id="model-checking" class="section level2">
-<h2>Model Checking</h2>
-<p>Checking the model for suitability is crucial to the analytical process<a href="#fn36" class="footnote-ref" id="fnref36"><sup>36</sup></a>. Assuming initial diagnostic inspection for convergence has proven satisfactory, we must then see if the model makes sense in its own right. This can be a straightforward process in many respects, and with Bayesian analysis one has a much richer environment in which to do so compared to traditional methods.</p>
+<div id="model-criticism" class="section level2">
+<h2>Model Criticism</h2>
+<p>Checking the model for suitability is crucial to the analytical process<a href="#fn34" class="footnote-ref" id="fnref34"><sup>34</sup></a>. Assuming initial diagnostic inspection for convergence has proven satisfactory, we must then see if the model makes sense in its own right. This can be a straightforward process in many respects, and with Bayesian analysis one has a much richer environment in which to do so compared to traditional methods.</p>
 <div id="sensitivity-analysis" class="section level3">
 <h3>Sensitivity Analysis</h3>
 <p>Sensitivity analysis entails checks on our model settings to see if changes in them, perhaps even slight ones, result in changes in posterior inferences. This may take the form of comparing models with plausible but different priors, different sampling distributions, or differences in other aspects of the model such as the inclusion or exclusion of explanatory variables. While an exhaustive check is impossible, at least some effort in this area should be made.</p>
@@ -533,45 +578,41 @@ sigma
 <div id="predictive-accuracy-model-comparison" class="section level3">
 <h3>Predictive Accuracy &amp; Model Comparison</h3>
 <p>A standard way to check for model adequacy is simply to investigate whether the predictions on new data are accurate. In general, the measure of predictive accuracy will be specific to the data problem, and involve posterior simulation of the sort covered in the next section. In addition, while oftentimes new data is hard to come by, assuming one has sufficient data to begin with, one could set aside part of it specifically for this purpose. In this manner one trains and tests the model in much the same fashion as machine learning approaches. In fact, one can incorporate the validation process as an inherent part of the modeling process in the Bayesian context just as you would there.</p>
-<p>For model comparison of out of sample predictive performance, there are information measures similar to the Akaike information criterion (AIC), that one could use in the Bayesian environment. One not to use is the so-called Bayesian information criterion (or BIC), which is not actually Bayesian nor a measure of predictive accuracy. BUGS provides the DIC, or deviance information criterion, as part of its summary output, which is a somewhat Bayesian version of the AIC. More recently developed, the WAIC, or Watanabe-AIC<a href="#fn37" class="footnote-ref" id="fnref37"><sup>37</sup></a>, is a more fully Bayesian approach. Under some conditions, the DIC and WAIC measures are asymptotically equivalent to Bayesian leave-one-out cross validation, as the AIC is under the classical setting.</p>
+<p>For model comparison of out of sample predictive performance, there are information measures similar to the Akaike information criterion (AIC), that one could use in the Bayesian environment. One not to use is the so-called Bayesian information criterion (or BIC), which is not actually Bayesian nor a measure of predictive accuracy. Some approaches favor the DIC, or <em>deviance information criterion</em>, as part of its summary output, which is a somewhat Bayesian version of the AIC. More recently developed are measures like <em>LOO</em> (leave-one-out criterion) and the <em>WAIC</em>, or Watanabe-AIC<a href="#fn35" class="footnote-ref" id="fnref35"><sup>35</sup></a>, which are fully Bayesian approaches. Under some conditions, the DIC and WAIC measures are asymptotically equivalent to Bayesian leave-one-out cross validation, as the AIC is under the classical setting.</p>
 </div>
 <div id="posterior-predictive-checking-statistical" class="section level3">
 <h3>Posterior Predictive Checking: Statistical</h3>
-<p>For an overall assessment of model fit, we can examine how well the model can reproduce the data at hand given the <span class="math inline">\(\theta\)</span> draws from the posterior. We discussed earlier the <span class="emph">posterior predictive distribution</span> for a future observation <span class="math inline">\(\tilde{y}\)</span><a href="#fn38" class="footnote-ref" id="fnref38"><sup>38</sup></a>, and here we’ll dive in to using it explicitly. There are two sources of uncertainty in our regression model, the variance in <span class="math inline">\(y\)</span> not explained by the model (<span class="math inline">\(\sigma^2\)</span>), and posterior uncertainty in the parameters due to having a finite sample size. As <span class="math inline">\(N\rightarrow\infty\)</span>, the latter goes to zero, and so we can simulate draws of <span class="math inline">\(\tilde{y} \sim N(\tilde{X}\beta, \sigma^2I)\)</span><a href="#fn39" class="footnote-ref" id="fnref39"><sup>39</sup></a>. If <span class="math inline">\(\tilde{X}\)</span> is the model data as in the following, then we will refer to <span class="math inline">\(y^{\textrm{Rep}}\)</span> instead of <span class="math inline">\(\tilde{y}\)</span>.</p>
-<p>For our model, this entails extracting the simulated values from the model object, and taking a random draw from the normal distribution based on the <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\sigma\)</span> that are drawn to produce our <span class="emph">replicated data</span>, <span class="math inline">\(y^{\textrm{Rep}}\)</span> (see <span class="citation">Gelman et al. (<a href="#ref-gelman_bda">2013</a>)</span>, Appendix C). In what follows, I write out the process explicitly, but <span class="pack">bayesplot</span>, <span class="pack">rstanarm</span>, and <span class="pack">brms</span> make this straightforward, possibly with a single line of code, the latter packages using <span class="pack">bayesplot</span>. In addition, it’s often simpler to create the <span class="math inline">\(y^{\textrm{Rep}}\)</span> as part of your generated quantities section of the model code if modeling with Stan explicitly.</p>
-<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" data-line-number="1"><span class="co"># extract the simulated draws from the posterior and note the number for nsims</span></a>
-<a class="sourceLine" id="cb21-2" data-line-number="2">theta =<span class="st"> </span><span class="kw">extract</span>(fit)</a>
-<a class="sourceLine" id="cb21-3" data-line-number="3">betas =<span class="st"> </span>theta<span class="op">$</span>beta</a>
-<a class="sourceLine" id="cb21-4" data-line-number="4">sigmas =<span class="st"> </span>theta<span class="op">$</span>sigma</a>
-<a class="sourceLine" id="cb21-5" data-line-number="5">nsims =<span class="st"> </span><span class="kw">length</span>(theta<span class="op">$</span>sigma)</a>
-<a class="sourceLine" id="cb21-6" data-line-number="6"></a>
-<a class="sourceLine" id="cb21-7" data-line-number="7"><span class="co"># produce the replications and inspect</span></a>
-<a class="sourceLine" id="cb21-8" data-line-number="8">yRep =<span class="st"> </span><span class="kw">sapply</span>(<span class="dv">1</span><span class="op">:</span>nsims, <span class="cf">function</span>(s) <span class="kw">rnorm</span>(<span class="dv">250</span>, X<span class="op">%*%</span>betas[s,], sigmas[s]))</a>
-<a class="sourceLine" id="cb21-9" data-line-number="9"><span class="kw">str</span>(yRep)</a></code></pre></div>
-<pre><code> num [1:250, 1:1000] 4.54 4.61 1.15 3.31 8.93 ...</code></pre>
-<p>With the <span class="math inline">\(y^{\textrm{Rep}}\)</span> in hand we can calculate all manner of statistics that might be of interest<a href="#fn40" class="footnote-ref" id="fnref40"><sup>40</sup></a>.</p>
+<p>For an overall assessment of model fit, we can examine how well the model can reproduce the data at hand given the <span class="math inline">\(\theta\)</span> draws from the posterior. We discussed earlier the <em>posterior predictive distribution</em> for a future observation <span class="math inline">\(\tilde{y}\)</span><a href="#fn36" class="footnote-ref" id="fnref36"><sup>36</sup></a>, and here we’ll dive in to using it explicitly. There are two sources of uncertainty in our regression model, the variance in <span class="math inline">\(y\)</span> not explained by the model (<span class="math inline">\(\sigma^2\)</span>), and posterior uncertainty in the parameters due to having a finite sample size. As <span class="math inline">\(N\rightarrow\infty\)</span>, the latter goes to zero, and so we can simulate draws of <span class="math inline">\(\tilde{y} \sim N(\tilde{X}\beta, \sigma^2I)\)</span><a href="#fn37" class="footnote-ref" id="fnref37"><sup>37</sup></a>. If <span class="math inline">\(\tilde{X}\)</span> is the model data as in the following, then we will refer to <span class="math inline">\(y^{\textrm{Rep}}\)</span> instead of <span class="math inline">\(\tilde{y}\)</span>.</p>
+<p>For our model, this entails extracting the simulated values from the model object, and taking a random draw from the normal distribution based on the <span class="math inline">\(\beta\)</span> and <span class="math inline">\(\sigma\)</span> that are drawn to produce our <em>replicated data</em>, <span class="math inline">\(y^{\textrm{Rep}}\)</span> (see <span class="citation"><a href="#ref-gelman_bda" role="doc-biblioref">Gelman et al.</a> (<a href="#ref-gelman_bda" role="doc-biblioref">2013</a>)</span>, Appendix C). In what follows, I write out the process explicitly, but <span class="pack">bayesplot</span>, <span class="pack">rstanarm</span>, and <span class="pack">brms</span> make this straightforward, possibly with a single line of code, the latter packages using <span class="pack">bayesplot</span>. In addition, it’s often simpler to create the <span class="math inline">\(y^{\textrm{Rep}}\)</span> as part of your generated quantities section of the model code if modeling with Stan explicitly.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="diagnostics.html#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># extract the simulated draws from the posterior and note the number for nsims</span></span>
+<span id="cb21-2"><a href="diagnostics.html#cb21-2" aria-hidden="true" tabindex="-1"></a>theta  <span class="ot">=</span> <span class="fu">extract</span>(fit)</span>
+<span id="cb21-3"><a href="diagnostics.html#cb21-3" aria-hidden="true" tabindex="-1"></a>betas  <span class="ot">=</span> theta<span class="sc">$</span>beta</span>
+<span id="cb21-4"><a href="diagnostics.html#cb21-4" aria-hidden="true" tabindex="-1"></a>sigmas <span class="ot">=</span> theta<span class="sc">$</span>sigma</span>
+<span id="cb21-5"><a href="diagnostics.html#cb21-5" aria-hidden="true" tabindex="-1"></a>nsims  <span class="ot">=</span> <span class="fu">length</span>(theta<span class="sc">$</span>sigma)</span>
+<span id="cb21-6"><a href="diagnostics.html#cb21-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-7"><a href="diagnostics.html#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="co"># produce the replications and inspect</span></span>
+<span id="cb21-8"><a href="diagnostics.html#cb21-8" aria-hidden="true" tabindex="-1"></a>yRep <span class="ot">=</span> <span class="fu">sapply</span>(<span class="dv">1</span><span class="sc">:</span>nsims, <span class="cf">function</span>(s) <span class="fu">rnorm</span>(<span class="dv">250</span>, X <span class="sc">%*%</span> betas[s,], sigmas[s]))</span>
+<span id="cb21-9"><a href="diagnostics.html#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(yRep)</span></code></pre></div>
+<pre><code> num [1:250, 1:1000] 4.44 4.47 1.12 4.3 10.04 ...</code></pre>
+<p>With the <span class="math inline">\(y^{\textrm{Rep}}\)</span> in hand we can calculate all manner of statistics that might be of interest<a href="#fn38" class="footnote-ref" id="fnref38"><sup>38</sup></a>.</p>
 <p>As a starting point, we can check our minimum value among the replicated data sets versus that observed in the data.</p>
-<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" data-line-number="1">min_rep =<span class="st"> </span><span class="kw">apply</span>(yRep, <span class="dv">2</span>, min)</a>
-<a class="sourceLine" id="cb23-2" data-line-number="2">min_y =<span class="st"> </span><span class="kw">min</span>(y)</a>
-<a class="sourceLine" id="cb23-3" data-line-number="3"><span class="kw">hist</span>(min_rep, <span class="dt">main=</span><span class="st">&#39;&#39;</span>); <span class="kw">abline</span>(<span class="dt">v=</span>min_y)</a>
-<a class="sourceLine" id="cb23-4" data-line-number="4"><span class="kw">c</span>(<span class="kw">mean</span>(min_rep), min_y)</a></code></pre></div>
-<pre><code>[1] -2.801519 -6.056495</code></pre>
-<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" data-line-number="1"><span class="kw">prop.table</span>(<span class="kw">table</span>(min_rep<span class="op">&gt;</span>min_y))</a></code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="diagnostics.html#cb23-1" aria-hidden="true" tabindex="-1"></a>min_rep <span class="ot">=</span> <span class="fu">apply</span>(yRep, <span class="dv">2</span>, min)</span>
+<span id="cb23-2"><a href="diagnostics.html#cb23-2" aria-hidden="true" tabindex="-1"></a>min_y <span class="ot">=</span> <span class="fu">min</span>(y)</span>
+<span id="cb23-3"><a href="diagnostics.html#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="fu">mean</span>(min_rep), min_y)</span></code></pre></div>
+<pre><code>[1] -2.831253 -6.056495</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="diagnostics.html#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(<span class="fu">table</span>(min_rep <span class="sc">&gt;</span> min_y))</span></code></pre></div>
 <pre><code>
 FALSE  TRUE 
-0.006 0.994 </code></pre>
-<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb27-1" data-line-number="1"><span class="kw">sort</span>(y)[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
+0.013 0.987 </code></pre>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="diagnostics.html#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sort</span>(y)[<span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>]</span></code></pre></div>
 <pre><code>[1] -6.0564952 -3.2320527 -2.6358579 -2.1649084 -0.8366149</code></pre>
-<pre><code>
-FALSE  TRUE 
-0.513 0.487 </code></pre>
 <p><img src="Bayesian-Basics_files/figure-html/posteriorPredictiveMinComparisonHist-1.svg" width="500px" style="display: block; margin: auto;" /></p>
 <p>These results suggest we may be having difficulty picking up the lower tail of the target variable, as our average minimum is notably higher than that seen in the data, and almost all our minimums are greater than the observed minimum (<span class="math inline">\(p=.99\)</span>). While in this case where we are dealing with a simulated data set and we know that assuming the normal distribution for our sampling distribution is appropriate, this might otherwise have given us pause for further consideration. A possible solution would be to assume a <span class="math inline">\(t\)</span> distribution for the likelihood, which would have fatter tails and thus possibly be better able to handle extreme values. We’ll show an example of this later. In this case it is just that by chance one of the <span class="math inline">\(y\)</span> values, -6.056, is fairly extreme relative to the others. Also, it is typically difficult to capture extreme values in practice. As a comparison, the model actually captures the 5<sup>th</sup>, 10<sup>th</sup> (shown), and 25<sup>th</sup> quantile values very well.</p>
 <p><img src="Bayesian-Basics_files/figure-html/posteriorPredictive10thComparisonHist-1.svg" width="500px" style="display: block; margin: auto;" /></p>
 <p style="font-size:.75em; text-align:center">
 See <span class="func">ppc_stat</span> in <span class="pack">bayesplot</span>.
 </p>
-<p>In general, we can devise a test statistic, <span class="math inline">\(T_{\textrm{Rep}}\)</span>, and associated p-value to check <em>any</em> particular result of interest based on the simulated data. The p-value in this context is simply the percentage of times the statistic of interest is equal to or more extreme than the statistic, <span class="math inline">\(T_y\)</span>, calculated for the original data. Thus p-values near 0 or 1 are indicative of areas where the model is falling short in some fashion. Sometimes <span class="math inline">\(T_y\)</span> may be based on the <span class="math inline">\(\theta\)</span> parameters being estimated, and thus you’d have a <span class="math inline">\(T_y\)</span> for every posterior draw. In such a case, one might examine the scatterplot of <span class="math inline">\(T_{\textrm{Rep}}\)</span> vs. <span class="math inline">\(T_y\)</span>, or examine a density plot of the difference between the two. In short, this is an area where one can get creative, and the <span class="pack">bayesplot</span> package can help with make this fairly easy. However, it must be stressed that we are not trying to accept or reject a model hypothesis as in the frequentist setting- we’re not going to throw a model out because of an extreme p-value in our posterior predictive check. We are merely trying to understand the model’s shortcomings as best we can, and make appropriate adjustments if applicable. It is often the case that the model will still be good enough for practical purposes.</p>
+<p>In general, we can devise a test statistic, <span class="math inline">\(T_{\textrm{Rep}}\)</span>, and associated p-value to check any particular result of interest based on the simulated data. The p-value in this context is simply the percentage of times the statistic of interest is equal to or more extreme than the statistic, <span class="math inline">\(T_y\)</span>, calculated for the original data. Thus p-values near 0 or 1 are indicative of areas where the model is falling short in some fashion. Sometimes <span class="math inline">\(T_y\)</span> may be based on the <span class="math inline">\(\theta\)</span> parameters being estimated, and thus you’d have a <span class="math inline">\(T_y\)</span> for every posterior draw. In such a case, one might examine the scatterplot of <span class="math inline">\(T_{\textrm{Rep}}\)</span> vs. <span class="math inline">\(T_y\)</span>, or examine a density plot of the difference between the two. In short, this is an area where one can get creative, and the <span class="pack">bayesplot</span> package can help with make this fairly easy. However, it must be stressed that we are not trying to accept or reject a model hypothesis as in the frequentist setting- we’re not going to throw a model out because of an extreme p-value in our posterior predictive check. We are merely trying to understand the model’s shortcomings as best we can, and make appropriate adjustments if applicable. It is often the case that the model will still be good enough for practical purposes.</p>
 </div>
 <div id="posterior-predictive-checking-graphical" class="section level3">
 <h3>Posterior Predictive Checking: Graphical</h3>
@@ -585,7 +626,7 @@ See <span class="func">ppc_scatter_avg</span> in <span class="pack">bayesplot</s
 <p style="font-size:.75em; text-align:center">
 See <span class="func">ppc_dens_overlay</span> in <span class="pack">bayesplot</span>.
 </p>
-<p>We can also examine residual plots of <span class="math inline">\(y - E(y|X,\theta)\)</span> as with standard analysis, shown as the final two figures for this section. The first shows such <em>realized</em> residuals, so-called as they are based on a posterior draw of <span class="math inline">\(\theta\)</span> rather than point estimation of the parameters, versus the expected values from the model. The next plot shows the average residual against the average fitted value. No discernible patterns are present, so we may conclude that the model is adequate in this regard<a href="#fn41" class="footnote-ref" id="fnref41"><sup>41</sup></a>.</p>
+<p>We can also examine residual plots of <span class="math inline">\(y - E(y|X,\theta)\)</span> as with standard analysis, shown as the final two figures for this section. The first shows such ‘realized’ residuals, so-called as they are based on a posterior draw of <span class="math inline">\(\theta\)</span> rather than point estimation of the parameters, versus the expected values from the model. The next plot shows the average residual against the average fitted value. No discernible patterns are present, so we may conclude that the model is adequate in this regard<a href="#fn39" class="footnote-ref" id="fnref39"><sup>39</sup></a>.</p>
 <p><img src="Bayesian-Basics_files/figure-html/posteriorPredictiveResiduals-1.svg" width="500px" style="display: block; margin: auto;" /><img src="Bayesian-Basics_files/figure-html/posteriorPredictiveResiduals-2.svg" width="500px" style="display: block; margin: auto;" /></p>
 </div>
 </div>
@@ -596,23 +637,26 @@ See <span class="func">ppc_dens_overlay</span> in <span class="pack">bayesplot</
 </div>
 </div>
 <h3>References</h3>
-<div id="refs" class="references">
-<div id="ref-gelman_bda">
-<p>Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-gelman_bda" class="csl-entry">
+Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. <a href="http://www.stat.columbia.edu/~gelman/book/">http://www.stat.columbia.edu/~gelman/book/</a>.
+</div>
+<div id="ref-vehtari2017practical" class="csl-entry">
+Vehtari, Aki, Andrew Gelman, and Jonah Gabry. 2017. <span>“Practical Bayesian Model Evaluation Using Leave-One-Out Cross-Validation and WAIC.”</span> <em>Statistics and Computing</em> 27 (5): 1413–32.
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="33">
-<li id="fn33"><p>I wonder how many results have been published on models that didn’t converge with the standard MLE. People will often ignore warnings as long as they get some sort of result.<a href="diagnostics.html#fnref33" class="footnote-back">↩</a></p></li>
-<li id="fn34"><p>Recall again that we are looking for convergence to a distribution, not a point estimate of a specific parameter.<a href="diagnostics.html#fnref34" class="footnote-back">↩</a></p></li>
-<li id="fn35"><p>This is the ‘naive’ estimate the <span class="pack">coda</span> package provides in its summary output.<a href="diagnostics.html#fnref35" class="footnote-back">↩</a></p></li>
-<li id="fn36"><p>Gelman devotes an entire chapter to this topic to go along with examples of model checking throughout his text. Much of this section follows that outline.<a href="diagnostics.html#fnref36" class="footnote-back">↩</a></p></li>
-<li id="fn37"><p>See <a href="http://www.stat.columbia.edu/~gelman/research/published/waic_understand3.pdf">Gelman et al. (2013)</a> for a review and references. See <a href="http://www.stat.columbia.edu/~gelman/research/unpublished/waic_stan.pdf">Vehtari &amp; Gelman (2014)</a> for some more on WAIC, as well as the R package <span class="pack">loo</span>.<a href="diagnostics.html#fnref37" class="footnote-back">↩</a></p></li>
-<li id="fn38"><p><span class="math inline">\(p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta\)</span><a href="diagnostics.html#fnref38" class="footnote-back">↩</a></p></li>
-<li id="fn39"><p>Technically, in the conjugate case the posterior predictive is t-distributed because of the uncertainty in the parameters, though it doesn’t take much sample size for simple models to get to approximately normal. Conceptually, with <span class="math inline">\(\hat{\beta}\)</span> being our mean <span class="math inline">\(\beta\)</span> estimate from the posterior, this can be represented as: <br> <span class="math inline">\(\tilde{y} \sim t(\tilde{X}\hat{\beta}, \sigma^2 + \textrm{parUnc}, \textrm{df}=N-k)\)</span><a href="diagnostics.html#fnref39" class="footnote-back">↩</a></p></li>
-<li id="fn40"><p>In many cases you might want to produce this in the generated quantities section of your Stan code, but doing so outside of it will keep the <span class="objclass">stanfit</span> object smaller, which may be desirable.<a href="diagnostics.html#fnref40" class="footnote-back">↩</a></p></li>
-<li id="fn41"><p>The two plots directly above replicate the figures in 6.11 in Gelman 2013.<a href="diagnostics.html#fnref41" class="footnote-back">↩</a></p></li>
+<ol start="31">
+<li id="fn31"><p>I wonder how many results have been published on models that didn’t converge with the standard MLE. People will often ignore warnings as long as they get some sort of result.<a href="diagnostics.html#fnref31" class="footnote-back">↩︎</a></p></li>
+<li id="fn32"><p>Recall again that we are looking for convergence to a distribution, not a point estimate of a specific parameter.<a href="diagnostics.html#fnref32" class="footnote-back">↩︎</a></p></li>
+<li id="fn33"><p>This is the ‘naive’ estimate that packages like <span class="pack">coda</span> might provide in the summary output.<a href="diagnostics.html#fnref33" class="footnote-back">↩︎</a></p></li>
+<li id="fn34"><p>Gelman devotes an entire chapter to this topic to go along with examples of model checking throughout his text. Much of this section follows that outline.<a href="diagnostics.html#fnref34" class="footnote-back">↩︎</a></p></li>
+<li id="fn35"><p>See <a href="http://www.stat.columbia.edu/~gelman/research/published/waic_understand3.pdf">Gelman et al. (2013)</a> for a review and references. See <a href="http://www.stat.columbia.edu/~gelman/research/unpublished/waic_stan.pdf">Vehtari &amp; Gelman (2014)</a> for some more on WAIC, as well as the R package <span class="pack">loo</span>. In general, the Stan group prefers <em>loo</em> <span class="citation"><a href="#ref-vehtari2017practical" role="doc-biblioref">Vehtari, Gelman, and Gabry</a> (<a href="#ref-vehtari2017practical" role="doc-biblioref">2017</a>)</span>.<a href="diagnostics.html#fnref35" class="footnote-back">↩︎</a></p></li>
+<li id="fn36"><p><span class="math inline">\(p(\tilde{y}|y) = \int p(\tilde{y}|\theta)p(\theta|y)\mathrm{d}\theta\)</span><a href="diagnostics.html#fnref36" class="footnote-back">↩︎</a></p></li>
+<li id="fn37"><p>Technically, in the conjugate case the posterior predictive is t-distributed because of the uncertainty in the parameters, though it doesn’t take much sample size for simple models to get to approximately normal. Formally, with <span class="math inline">\(\hat{\beta}\)</span> being our mean <span class="math inline">\(\beta\)</span> estimate from the posterior, this can be represented as: <br> <span class="math inline">\(\tilde{y} \sim t(\tilde{X}\hat{\beta}, \sigma^2 + \textrm{parUnc}, \textrm{df}=N-k)\)</span><a href="diagnostics.html#fnref37" class="footnote-back">↩︎</a></p></li>
+<li id="fn38"><p>In many cases you might want to produce this in the generated quantities section of your Stan code, but doing so outside of it will keep the <span class="objclass">stanfit</span> object smaller, which may be desirable.<a href="diagnostics.html#fnref38" class="footnote-back">↩︎</a></p></li>
+<li id="fn39"><p>The two plots directly above replicate the figures in 6.11 in Gelman 2013.<a href="diagnostics.html#fnref39" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -625,12 +669,13 @@ See <span class="func">ppc_dens_overlay</span> in <span class="pack">bayesplot</
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -638,12 +683,14 @@ gitbook.start({
 "github": false,
 "facebook": false,
 "twitter": false,
-"google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
-"all": ["twitter", "facebook", "google", "weibo", "instapaper"]
+"whatsapp": false,
+"all": ["twitter", "facebook", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
 },
 "fontsettings": {
 "theme": "white",
@@ -651,15 +698,26 @@ gitbook.start({
 "size": 2
 },
 "edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
 "download": ["Bayesian-Basics.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "depth": 2,
 "scroll_highlight": true
 },
 "df_print": "kable",
-"highlight": "pygments",
-"search": true
+"highlight": "pygments"
 });
 });
 </script>
@@ -670,9 +728,10 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();

@@ -1,44 +1,47 @@
 <!DOCTYPE html>
-<html >
-
+<html lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Bayesian Basics</title>
-  <meta name="description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more.">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Preface | Bayesian Basics</title>
+  <meta name="description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Bayesian Basics" />
+  <meta property="og:title" content="Preface | Bayesian Basics" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/bayesian-basics/" />
-  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
+  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics//img/nineteeneightyR.png" />
   <meta property="og:description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
   <meta name="github-repo" content="m-clark/bayesian-basics/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Bayesian Basics" />
+  <meta name="twitter:title" content="Preface | Bayesian Basics" />
   
   <meta name="twitter:description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
-  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
+  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics//img/nineteeneightyR.png" />
 
 
 
-<meta name="date" content="2018-07-30">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
-  
-<link rel="prev" href="index.html">
-<link rel="next" href="intro.html">
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="index.html"/>
+<link rel="next" href="intro.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
 
 
 
@@ -47,41 +50,38 @@
 
 
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
-<script src="libs/htmlwidgets-1.2/htmlwidgets.js"></script>
-<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
-<script src="libs/vis-4.20.1/vis.min.js"></script>
-<script src="libs/visNetwork-binding-2.0.4/visNetwork.js"></script>
-<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; position: absolute; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; }
-pre.numberSource a.sourceLine:empty
-  { position: absolute; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -90,9 +90,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -125,8 +125,31 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="css/book.css" type="text/css" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.0/css/all.css" type="text/css" />
 </head>
 
 <body>
@@ -142,36 +165,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#going-further"><i class="fa fa-check"></i>Going Further</a></li>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#note"><i class="fa fa-check"></i>Note</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#about-the-author"><i class="fa fa-check"></i>About the Author</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a><ul>
-<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a><ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a>
+<ul>
 <li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#conditional-probability-bayes-theorem"><i class="fa fa-check"></i>Conditional probability &amp; Bayes theorem</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i>A Hands-on Example</a><ul>
+<li class="chapter" data-level="" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i>A Hands-on Example</a>
+<ul>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#prior-likelihood-posterior-distributions"><i class="fa fa-check"></i>Prior, likelihood, &amp; posterior distributions</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#prior"><i class="fa fa-check"></i>Prior</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#likelihood"><i class="fa fa-check"></i>Likelihood</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#posterior"><i class="fa fa-check"></i>Posterior</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i>Regression Models</a><ul>
-<li class="chapter" data-level="" data-path="models.html"><a href="models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a><ul>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i>Regression Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a>
+<ul>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#setup"><i class="fa fa-check"></i>Setup</a></li>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#stan-code"><i class="fa fa-check"></i>Stan Code</a></li>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#running-the-model"><i class="fa fa-check"></i>Running the Model</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html"><i class="fa fa-check"></i>Model Exploration</a><ul>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html"><i class="fa fa-check"></i>Model Exploration</a>
+<ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a>
+<ul>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#visual-inspection-traceplot-densities"><i class="fa fa-check"></i>Visual Inspection: Traceplot &amp; Densities</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#statistical-measures"><i class="fa fa-check"></i>Statistical Measures</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#autocorrelation"><i class="fa fa-check"></i>Autocorrelation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#model-checking"><i class="fa fa-check"></i>Model Checking</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#model-criticism"><i class="fa fa-check"></i>Model Criticism</a>
+<ul>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#sensitivity-analysis"><i class="fa fa-check"></i>Sensitivity Analysis</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#predictive-accuracy-model-comparison"><i class="fa fa-check"></i>Predictive Accuracy &amp; Model Comparison</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#posterior-predictive-checking-statistical"><i class="fa fa-check"></i>Posterior Predictive Checking: Statistical</a></li>
@@ -179,21 +213,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#summary"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a><ul>
+<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a>
+<ul>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#generating-new-variables-of-interest"><i class="fa fa-check"></i>Generating New Variables of Interest</a></li>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#robust-regression"><i class="fa fa-check"></i>Robust Regression</a></li>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#generalized-linear-model"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#debugging"><i class="fa fa-check"></i>Debugging</a></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#choice-of-prior"><i class="fa fa-check"></i>Choice of Prior</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#choice-of-prior"><i class="fa fa-check"></i>Choice of Prior</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#noninformative-weakly-informative-informative"><i class="fa fa-check"></i>Noninformative, Weakly Informative, Informative</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#conjugacy"><i class="fa fa-check"></i>Conjugacy</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#test-your-priors-beforehand"><i class="fa fa-check"></i>Test your Priors Beforehand</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#hierarchical-priors"><i class="fa fa-check"></i>Hierarchical Priors</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sensitivity-analysis-revisited"><i class="fa fa-check"></i>Sensitivity Analysis Revisited</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#a-simple-check"><i class="fa fa-check"></i>A Simple Check</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#summary-1"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sampling-procedure"><i class="fa fa-check"></i>Sampling Procedure</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sampling-procedure"><i class="fa fa-check"></i>Sampling Procedure</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#metropolis"><i class="fa fa-check"></i>Metropolis</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#gibbs"><i class="fa fa-check"></i>Gibbs</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#hamiltonian-monte-carlo"><i class="fa fa-check"></i>Hamiltonian Monte Carlo</a></li>
@@ -202,7 +242,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#number-of-draws-thinning-warm-up"><i class="fa fa-check"></i>Number of draws, thinning, warm-up</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#model-complexity"><i class="fa fa-check"></i>Model Complexity</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i>R Packages</a><ul>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i>R Packages</a>
+<ul>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#standard-regression-and-glm"><i class="fa fa-check"></i>Standard Regression and GLM</a></li>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#categorical-models"><i class="fa fa-check"></i>Categorical Models</a></li>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#extended-count-models"><i class="fa fa-check"></i>Extended Count Models</a></li>
@@ -211,15 +252,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#even-more-packages"><i class="fa fa-check"></i>Even More Packages</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i>Final Thoughts</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a>
+<ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a>
+<ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#example"><i class="fa fa-check"></i>Example</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#linear-model"><i class="fa fa-check"></i>Linear Model</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#binomial-likelihood-example"><i class="fa fa-check"></i>Binomial Likelihood Example</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#modeling-languages"><i class="fa fa-check"></i>Modeling Languages</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#modeling-languages"><i class="fa fa-check"></i>Modeling Languages</a>
+<ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#bugs"><i class="fa fa-check"></i>Bugs</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#jags"><i class="fa fa-check"></i>JAGS</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#nimble"><i class="fa fa-check"></i>Nimble</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#stan"><i class="fa fa-check"></i>Stan</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#r"><i class="fa fa-check"></i>R</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#general-statistical-packages"><i class="fa fa-check"></i>General Statistical Packages</a></li>
@@ -231,10 +276,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#metropolis-hastings-example"><i class="fa fa-check"></i>Metropolis Hastings Example</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#hamiltonian-monte-carlo-example"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a><ul>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a>
+<ul>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts-for-your-shelf"><i class="fa fa-check"></i>Texts for Your Shelf</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#stan-specific-resources"><i class="fa fa-check"></i>Stan Specific Resources</a></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html#other"><i class="fa fa-check"></i>Other</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 <li class="divider"></li>
@@ -283,8 +328,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>After a conceptual introduction, a fully visible by-hand example is provided using the binomial distribution. After that, the document proceeds to introduce fully Bayesian analysis with the standard linear regression model, as that is the basis for most applied statistics courses and is assumed to be most familiar to the reader. Model diagnostics, model enhancements, and additional modeling issues are then explored. Supplemental content in the appendix provides more technical detail if desired, and includes a maximum likelihood refresher, an overview of programming options in Bayesian analysis, the same regression model using BUGS and JAGS, and ‘by-hand’ code for the model using the Metropolis-Hastings and Hamiltonian Monte Carlo algorithms.</p>
 <div id="prerequisites" class="section level2">
 <h2>Prerequisites</h2>
-<p>Prerequisites include a basic statistical exposure such as what would be covered in a typical (probably graduate) <em>applied</em> science statistics course. At least some familiarity with R is necessary to follow the code, but that itself is not necessary, and one may go through any number of introductions on the web to acquire enough knowledge in that respect. However, note that for the examples here, at least part of the code will employ some Bayesian-specific programming language (e.g. Stan primarily, BUGS and JAGS in the appendix). No attempt is made to teach those languages though, as it would be difficult to do so efficiently in this more conceptually oriented setting. As such, it is suggested that one follow the code as best they can, and investigate the respective manuals, relevant texts, etc. further on their own. Between the text and comments within the code it is hoped that what the code is accomplishing will be fairly clear. However, I also provide a set of notes that can serve as an overview of Stan <a href="https://m-clark.github.io/workshops/bayesian/">here</a>.</p>
-<p>This document relies heavily on <span class="citation">Gelman et al. (<a href="#ref-gelman_bda">2013</a>)</span>, which I highly recommend, if one is ready for it. Other sources used, or particularly pertinent to the material for this document, can be found in the <a href="references.html#references">references section</a> at the end. Some are more introductory, and which might be more suitable depending on the context you bring.</p>
+<p>Prerequisites include a basic statistical exposure such as what would be covered in a typical (probably graduate) <em>applied</em> science statistics course. At least some familiarity with R is necessary to follow the code, but that itself is not necessary, and one may go through any number of introductions on the web to acquire enough knowledge in that respect. However, note that for the examples here, at least part of the code will employ some Bayesian-specific programming language (e.g. Stan primarily, BUGS and JAGS in the appendix). No attempt is made to teach those languages though, as it would be difficult to do so efficiently in this more conceptually oriented setting. As such, it is suggested that one follow the code as best they can, and investigate the respective manuals, relevant texts, etc. further on their own. Between the text and comments within the code it is hoped that what the code is accomplishing will be fairly clear.</p>
+<p>This document relies heavily on <span class="citation"><a href="#ref-gelman_bda" role="doc-biblioref">Gelman et al.</a> (<a href="#ref-gelman_bda" role="doc-biblioref">2013</a>)</span>, which I highly recommend, if one is ready for it. Other sources used, or particularly pertinent to the material for this document, can be found in the <a href="references.html#references">references section</a> at the end. Some are more introductory, and which might be more suitable depending on the context you bring.</p>
 <p>Color coding:</p>
 <ul>
 <li><span class="emph">emphasis</span></li>
@@ -294,16 +339,26 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="preface.html#prerequisites">link</a></li>
 </ul>
 </div>
+<div id="going-further" class="section level2">
+<h2>Going Further</h2>
+<p>More recently, I offered a <a href="https://m-clark.github.io/posts/2021-02-28-practical-bayes-part-i/">two-part practical guide to Bayesian analysis</a>, which I would suggest would be your next step to quickly getting started with models and easy to use tools. I also have a set of old workshop notes that can serve as an overview of Stan and Stan-related packages <a href="https://m-clark.github.io/easy-bayes/">here</a> and <a href="https://m-clark.github.io/workshops/bayesian/">here</a>. There may be additional information and/or exercises that could still be of use. Beyond my own stuff, there are plenty of opportunities to learn Bayesian analysis in the R world, so don’t be afraid to just use something you find that you like.</p>
+</div>
 <div id="note" class="section level2">
 <h2>Note</h2>
-<p>This document focuses more on concepts and teaching the Bayesian approach to modeling, while using Stan more as a practical vehicle. However, I do want to say something about the development of Stan and the document itself. Since this document was first put together in Summer of 2014, Stan and associated packages have undergone vast and continued development, and tools for publishing documents with R have as well. Packages such as <span class="pack">rstanarm</span> and <span class="pack">brms</span> didn’t exist then, but now make even some fairly complicated models easy to pull off with just a line or two of standard R code, and without ever having to use the Stan language directly. Further, newer visualization tools such as <span class="pack">bayesplot</span> and <span class="pack">shinystan</span> make model exploration even easier than before. While the document now more reflects these developments, it still leans on conducting analysis more explicitly so that things are not so much of a black box. However, it’s worth noting that the example regression model within and associated diagnostics and visuals would now only take a few lines of code, and fully within R. In short, the combination of R and Stan make Bayesian analysis easier than ever before. Once armed with the basic concepts one should feel able to dive as easily as they would with any other R modeling tool.</p>
+<p>This document focuses more on concepts and teaching the Bayesian approach to modeling, while using Stan more as a practical vehicle. However, I do want to say something about the development of Stan and the document itself. Since this document was first put together in Summer of 2014, Stan and associated packages have undergone vast and continued development, and tools for publishing documents with R have as well. Packages such as <span class="pack">rstanarm</span> and <span class="pack">brms</span> didn’t exist then, but now make even some fairly complicated models easy to pull off with just a line or two of standard R code, and without ever having to use the Stan language directly. Further, newer visualization tools such as <span class="pack">bayesplot</span>, <span class="pack">tidybayes</span>, and <span class="pack">shinystan</span> make model exploration even easier than before. While the document has been updated periodically and so reflects some of these developments, it still leans on conducting analysis more explicitly so that things are not so much of a black box. However, it’s worth noting that the example regression model within and associated diagnostics and visuals would now only take a few lines of R code rather than Stan. In short, the combination of R and Stan make Bayesian analysis easier than ever before. Once armed with the basic concepts, you should feel able to dive in as easily as you would with any other R modeling tool.</p>
+</div>
+<div id="about-the-author" class="section level2">
+<h2>About the Author</h2>
+<p>I’ve done statistical consulting, conducted workshops, and engaged in scientific research at three universities- University of North Texas, Notre Dame, and the University of Michigan. I am currently a data scientist at <a href="https://strong.io">Strong Analytics</a>, where I continue to explore and analyze data in all sorts of ways. Writing documents like this helped me learn the techniques I was interested in, and I hope they help you as well! If you have any questions, feel free to <a href="https://m-clark.github.io/about">reach out</a>.</p>
+<p><br></p>
+<p><img src="https://github.com/m-clark/m-clark.github.io/raw/master/img/me_lake_mich_circ.png" style="width:25.0%" /></p>
 
 </div>
 </div>
 <h3>References</h3>
-<div id="refs" class="references">
-<div id="ref-gelman_bda">
-<p>Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed.</p>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-gelman_bda" class="csl-entry">
+Gelman, Andrew, John B. Carlin, Hal S. Stern, David B. Dunson, Aki Vehtari, and Donald B. Rubin. 2013. <em>Bayesian Data Analysis</em>. 3rd ed. <a href="http://www.stat.columbia.edu/~gelman/book/">http://www.stat.columbia.edu/~gelman/book/</a>.
 </div>
 </div>
             </section>
@@ -316,12 +371,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -329,12 +385,14 @@ gitbook.start({
 "github": false,
 "facebook": false,
 "twitter": false,
-"google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
-"all": ["twitter", "facebook", "google", "weibo", "instapaper"]
+"whatsapp": false,
+"all": ["twitter", "facebook", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
 },
 "fontsettings": {
 "theme": "white",
@@ -342,15 +400,26 @@ gitbook.start({
 "size": 2
 },
 "edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
 "download": ["Bayesian-Basics.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "depth": 2,
 "scroll_highlight": true
 },
 "df_print": "kable",
-"highlight": "pygments",
-"search": true
+"highlight": "pygments"
 });
 });
 </script>
@@ -361,9 +430,10 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();

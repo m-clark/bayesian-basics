@@ -1,44 +1,47 @@
 <!DOCTYPE html>
-<html >
-
+<html lang="" xml:lang="">
 <head>
 
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Bayesian Basics</title>
-  <meta name="description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more.">
-  <meta name="generator" content="bookdown 0.7 and GitBook 2.6.7">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Issues | Bayesian Basics</title>
+  <meta name="description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Bayesian Basics" />
+  <meta property="og:title" content="Issues | Bayesian Basics" />
   <meta property="og:type" content="book" />
   <meta property="og:url" content="https://m-clark.github.io/bayesian-basics/" />
-  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
+  <meta property="og:image" content="https://m-clark.github.io/bayesian-basics//img/nineteeneightyR.png" />
   <meta property="og:description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
   <meta name="github-repo" content="m-clark/bayesian-basics/" />
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Bayesian Basics" />
+  <meta name="twitter:title" content="Issues | Bayesian Basics" />
   
   <meta name="twitter:description" content="This document provides an introduction to Bayesian data analysis. It is conceptual in nature, but uses the probabilistic programming language Stan for demonstration (and its implementation in R via rstan). From elementary examples, guidance is provided for data preparation, efficient modeling, diagnostics, and more." />
-  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics/img/nineteeneightyR.png" />
+  <meta name="twitter:image" content="https://m-clark.github.io/bayesian-basics//img/nineteeneightyR.png" />
 
 
 
-<meta name="date" content="2018-07-30">
 
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   
-  
-<link rel="prev" href="enhancements.html">
-<link rel="next" href="packages.html">
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+  <link rel="shortcut icon" href="img/R.ico" type="image/x-icon" />
+<link rel="prev" href="enhancements.html"/>
+<link rel="next" href="packages.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
 
 
 
@@ -47,41 +50,38 @@
 
 
 <script src="libs/kePrint-0.0.1/kePrint.js"></script>
-<script src="libs/htmlwidgets-1.2/htmlwidgets.js"></script>
-<link href="libs/vis-4.20.1/vis.css" rel="stylesheet" />
-<script src="libs/vis-4.20.1/vis.min.js"></script>
-<script src="libs/visNetwork-binding-2.0.4/visNetwork.js"></script>
-<script src="libs/plotly-binding-4.7.1/plotly.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
 <script src="libs/typedarray-0.1/typedarray.min.js"></script>
-<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
-<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
-<link href="libs/plotlyjs-1.29.2/plotly-htmlwidgets.css" rel="stylesheet" />
-<script src="libs/plotlyjs-1.29.2/plotly-latest.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; position: absolute; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
-div.sourceCode { margin: 1em 0; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; }
-pre.numberSource a.sourceLine:empty
-  { position: absolute; }
-pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -90,9 +90,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -125,8 +125,31 @@ code span.vs { color: #4070a0; } /* VerbatimString */
 code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 </style>
 
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
 <link rel="stylesheet" href="css/book.css" type="text/css" />
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" type="text/css" />
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.0/css/all.css" type="text/css" />
 </head>
 
 <body>
@@ -142,36 +165,47 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="./"><img src="img/r_and_stan.png" style="width:75%; padding:10px 10px;"></a></li>
 
 <li class="divider"></li>
-<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a><ul>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html"><i class="fa fa-check"></i>Preface</a>
+<ul>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#prerequisites"><i class="fa fa-check"></i>Prerequisites</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#going-further"><i class="fa fa-check"></i>Going Further</a></li>
 <li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#note"><i class="fa fa-check"></i>Note</a></li>
+<li class="chapter" data-level="" data-path="preface.html"><a href="preface.html#about-the-author"><i class="fa fa-check"></i>About the Author</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a><ul>
-<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a><ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html"><i class="fa fa-check"></i>Introduction</a>
+<ul>
+<li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#bayesian-probability"><i class="fa fa-check"></i>Bayesian Probability</a>
+<ul>
 <li class="chapter" data-level="" data-path="intro.html"><a href="intro.html#conditional-probability-bayes-theorem"><i class="fa fa-check"></i>Conditional probability &amp; Bayes theorem</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i>A Hands-on Example</a><ul>
+<li class="chapter" data-level="" data-path="example.html"><a href="example.html"><i class="fa fa-check"></i>A Hands-on Example</a>
+<ul>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#prior-likelihood-posterior-distributions"><i class="fa fa-check"></i>Prior, likelihood, &amp; posterior distributions</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#prior"><i class="fa fa-check"></i>Prior</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#likelihood"><i class="fa fa-check"></i>Likelihood</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#posterior"><i class="fa fa-check"></i>Posterior</a></li>
 <li class="chapter" data-level="" data-path="example.html"><a href="example.html#posterior-predictive"><i class="fa fa-check"></i>Posterior predictive</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i>Regression Models</a><ul>
-<li class="chapter" data-level="" data-path="models.html"><a href="models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a><ul>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html"><i class="fa fa-check"></i>Regression Models</a>
+<ul>
+<li class="chapter" data-level="" data-path="models.html"><a href="models.html#example-linear-regression-model"><i class="fa fa-check"></i>Example: Linear Regression Model</a>
+<ul>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#setup"><i class="fa fa-check"></i>Setup</a></li>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#stan-code"><i class="fa fa-check"></i>Stan Code</a></li>
 <li class="chapter" data-level="" data-path="models.html"><a href="models.html#running-the-model"><i class="fa fa-check"></i>Running the Model</a></li>
 </ul></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html"><i class="fa fa-check"></i>Model Exploration</a><ul>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html"><i class="fa fa-check"></i>Model Exploration</a>
+<ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#monitoring-convergence"><i class="fa fa-check"></i>Monitoring Convergence</a>
+<ul>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#visual-inspection-traceplot-densities"><i class="fa fa-check"></i>Visual Inspection: Traceplot &amp; Densities</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#statistical-measures"><i class="fa fa-check"></i>Statistical Measures</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#autocorrelation"><i class="fa fa-check"></i>Autocorrelation</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#model-checking"><i class="fa fa-check"></i>Model Checking</a><ul>
+<li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#model-criticism"><i class="fa fa-check"></i>Model Criticism</a>
+<ul>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#sensitivity-analysis"><i class="fa fa-check"></i>Sensitivity Analysis</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#predictive-accuracy-model-comparison"><i class="fa fa-check"></i>Predictive Accuracy &amp; Model Comparison</a></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#posterior-predictive-checking-statistical"><i class="fa fa-check"></i>Posterior Predictive Checking: Statistical</a></li>
@@ -179,21 +213,27 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 <li class="chapter" data-level="" data-path="diagnostics.html"><a href="diagnostics.html#summary"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a><ul>
+<li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html"><i class="fa fa-check"></i>Model Enhancements</a>
+<ul>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#generating-new-variables-of-interest"><i class="fa fa-check"></i>Generating New Variables of Interest</a></li>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#robust-regression"><i class="fa fa-check"></i>Robust Regression</a></li>
 <li class="chapter" data-level="" data-path="enhancements.html"><a href="enhancements.html#generalized-linear-model"><i class="fa fa-check"></i>Generalized Linear Model</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html"><i class="fa fa-check"></i>Issues</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#debugging"><i class="fa fa-check"></i>Debugging</a></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#choice-of-prior"><i class="fa fa-check"></i>Choice of Prior</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#choice-of-prior"><i class="fa fa-check"></i>Choice of Prior</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#noninformative-weakly-informative-informative"><i class="fa fa-check"></i>Noninformative, Weakly Informative, Informative</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#conjugacy"><i class="fa fa-check"></i>Conjugacy</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#test-your-priors-beforehand"><i class="fa fa-check"></i>Test your Priors Beforehand</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#hierarchical-priors"><i class="fa fa-check"></i>Hierarchical Priors</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sensitivity-analysis-revisited"><i class="fa fa-check"></i>Sensitivity Analysis Revisited</a></li>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#a-simple-check"><i class="fa fa-check"></i>A Simple Check</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#summary-1"><i class="fa fa-check"></i>Summary</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sampling-procedure"><i class="fa fa-check"></i>Sampling Procedure</a><ul>
+<li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#sampling-procedure"><i class="fa fa-check"></i>Sampling Procedure</a>
+<ul>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#metropolis"><i class="fa fa-check"></i>Metropolis</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#gibbs"><i class="fa fa-check"></i>Gibbs</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#hamiltonian-monte-carlo"><i class="fa fa-check"></i>Hamiltonian Monte Carlo</a></li>
@@ -202,7 +242,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#number-of-draws-thinning-warm-up"><i class="fa fa-check"></i>Number of draws, thinning, warm-up</a></li>
 <li class="chapter" data-level="" data-path="issues.html"><a href="issues.html#model-complexity"><i class="fa fa-check"></i>Model Complexity</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i>R Packages</a><ul>
+<li class="chapter" data-level="" data-path="packages.html"><a href="packages.html"><i class="fa fa-check"></i>R Packages</a>
+<ul>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#standard-regression-and-glm"><i class="fa fa-check"></i>Standard Regression and GLM</a></li>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#categorical-models"><i class="fa fa-check"></i>Categorical Models</a></li>
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#extended-count-models"><i class="fa fa-check"></i>Extended Count Models</a></li>
@@ -211,15 +252,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="packages.html"><a href="packages.html#even-more-packages"><i class="fa fa-check"></i>Even More Packages</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i>Final Thoughts</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a><ul>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html"><i class="fa fa-check"></i>Appendix</a>
+<ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#maximum-likelihood-review"><i class="fa fa-check"></i>Maximum Likelihood Review</a>
+<ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#example"><i class="fa fa-check"></i>Example</a></li>
 </ul></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#linear-model"><i class="fa fa-check"></i>Linear Model</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#binomial-likelihood-example"><i class="fa fa-check"></i>Binomial Likelihood Example</a></li>
-<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#modeling-languages"><i class="fa fa-check"></i>Modeling Languages</a><ul>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#modeling-languages"><i class="fa fa-check"></i>Modeling Languages</a>
+<ul>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#bugs"><i class="fa fa-check"></i>Bugs</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#jags"><i class="fa fa-check"></i>JAGS</a></li>
+<li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#nimble"><i class="fa fa-check"></i>Nimble</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#stan"><i class="fa fa-check"></i>Stan</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#r"><i class="fa fa-check"></i>R</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#general-statistical-packages"><i class="fa fa-check"></i>General Statistical Packages</a></li>
@@ -231,10 +276,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#metropolis-hastings-example"><i class="fa fa-check"></i>Metropolis Hastings Example</a></li>
 <li class="chapter" data-level="" data-path="appendix.html"><a href="appendix.html#hamiltonian-monte-carlo-example"><i class="fa fa-check"></i>Hamiltonian Monte Carlo Example</a></li>
 </ul></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a><ul>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>References</a>
+<ul>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#texts-for-your-shelf"><i class="fa fa-check"></i>Texts for Your Shelf</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#stan-specific-resources"><i class="fa fa-check"></i>Stan Specific Resources</a></li>
-<li class="chapter" data-level="" data-path="references.html"><a href="references.html#other"><i class="fa fa-check"></i>Other</a></li>
 <li class="chapter" data-level="" data-path="references.html"><a href="references.html#works-citedused"><i class="fa fa-check"></i>Works Cited/Used</a></li>
 </ul></li>
 <li class="divider"></li>
@@ -282,60 +327,80 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>This section highlights some things to think about, as well as questions that would naturally arise for the applied researcher who might now be ready to start in on their first Bayesian analysis. It provides merely a taste regarding some select issues, and at this point one should be consulting Bayesian analysis texts directly.</p>
 <div id="debugging" class="section level2">
 <h2>Debugging</h2>
-<p>An essential part of Bayesian analysis is debugging to see if your code and model are doing what it should be doing<a href="#fn48" class="footnote-ref" id="fnref48"><sup>48</sup></a>, and this especially holds for more complex models. For many models with typical numbers for posterior draws, Bayesian analysis might take several minutes on standard computers or laptops. With big data and/or very complex models, some might take hours or even <em>days</em>. In either case, it is a waste of time to let broken code/models run unnecessarily.</p>
-<p>The idea with debugging is that, once you think you have everything set up the way you like, run very short attempts to see if A, the code even compiles, and B, whether it runs appropriately. As such, you will only want to set your warm-up and iterations to some small number to begin with, e.g. maybe not even 100 iterations, and no more than two chains<a href="#fn49" class="footnote-ref" id="fnref49"><sup>49</sup></a>. Sometimes it will be obvious what a problem is, such as a typo resulting in the program of choice not being able to locate the parameter of interest. Other issues may be fairly subtle, for example, when it comes to prior specification.</p>
-<p>Along with initial short runs, one should consider simpler models first, and perhaps using only a subset of the data. Especially for complex models, it helps to build the model up, debugging and checking for problems along the way. As a not too complicated example, consider a mixed model for logistic regression. One could even start with a standard linear model ignoring the binary nature of the target and random effect structure. Getting a sense of things from that and just making sure that inputs etc. are in place, one can supply the inverse logit link and change the sampling distribution to Bernoulli. Now you can think about adding the random effect, other explanatory variables of interest, and any other complexities that had not been included yet.</p>
-<p>As you identify issues, you fix any problems that arise and tinker with other settings. Once you are satisfied, <em>then</em> try for the big run. Even then, you might spot new issues with a longer chain, so you can rinse and repeat at that point. BUGS, JAGS, and Stan more or less have this capacity built in with model upgrade functions. For example, in Stan you can feed the previous setup of a model in to the main <span class="func">stan</span> function. Use one for your initial runs, then when you’re ready, supply the model object as input to the ‘fit’ argument, perhaps with adjustments to the Monte Carlo settings.</p>
+<p>An essential part of Bayesian analysis is debugging to see if your code and model are doing what it should be doing<a href="#fn46" class="footnote-ref" id="fnref46"><sup>46</sup></a>, and this especially holds for more complex models. For many models with typical numbers for posterior draws, Bayesian analysis might take several minutes on standard computers or laptops. With big data and/or very complex models, some might take hours or even <em>days</em>. In either case, it is a waste of time to let broken code/models run unnecessarily.</p>
+<p>The idea with debugging is that, once you think you have everything set up the way you like, run very short attempts to see if A, the code even compiles, and B, whether it runs appropriately. As such, you will only want to set your warm-up and iterations to some small number to begin with, e.g. maybe not even 100 iterations, and maybe no more than two chains<a href="#fn47" class="footnote-ref" id="fnref47"><sup>47</sup></a>. Sometimes it will be obvious what a problem is, such as a typo resulting in the program not being able to locate the parameter of interest. Other issues may be fairly subtle, for example, when it comes to prior specification.</p>
+<p>Along with initial short runs, one should consider simpler models first, and perhaps using only a subset of the data. Especially for complex models, it helps to build the model up, debugging and checking for problems along the way. As a not too complicated example, consider a mixed model for logistic regression. One could even start with a standard linear model ignoring the binary nature of the target and random effect structure. Getting a sense of things from that, and just making sure that inputs and other things are in place, one can then supply the inverse logit link and change the sampling distribution to Bernoulli. Now you can think about adding the random effect, other explanatory variables of interest, and any other complexities that had not been included yet. Then you can add something like accuracy or other metrics to your generated quantities block</p>
+<p>As you identify issues, you fix any problems that arise and tinker with other settings. Once you are satisfied, then try for the big run. Even then, you might spot new issues with a longer chain, so you can rinse and repeat at that point. Stan and other languages like BUGS/JAGS more or less have this capacity built in with model upgrade functions. For example, in Stan you can feed the previous setup of a model in to the main <span class="func">stan</span> function. Use one for your initial runs, then when you’re ready, supply the model object as input to the <code>fit</code> argument, perhaps with adjustments to the Monte Carlo settings.</p>
 </div>
 <div id="choice-of-prior" class="section level2">
 <h2>Choice of Prior</h2>
-<p>Selection of prior distributions might be a bit daunting for the new user of applied Bayesian analysis, but in many cases, and especially for standard models, there are more or less widely adopted choices. Even so, we will discuss the options from a general point of view.</p>
+<p>Selection of prior distributions can be a bit daunting for the new user of applied Bayesian analysis. However, in many cases, and especially for standard models, there are more or less widely adopted choices. Even so, we will discuss the options from a general point of view, and some tips for selection.</p>
 <div id="noninformative-weakly-informative-informative" class="section level3">
 <h3>Noninformative, Weakly Informative, Informative</h3>
-<p>We can begin with <span class="emph">noninformative priors</span>, which might also be referred to as <em>vague</em>, <em>flat</em>, <em>reference</em>, <em>objective</em>, or <em>diffuse</em> depending on the context. The idea is to use something that allows for Bayesian inference but puts all the premium on the data, and/or soi-disant <em>objectivity</em>, though the fact that there is still choice here should make clear that these are not entirely noninformative or objective. As we have alluded to elsewhere, if we put a prior uniform distribution on the regression coefficients (and e.g. the log of <span class="math inline">\(\sigma\)</span>), this would be a noninformative approach that would essentially be akin to maximum likelihood estimation. One might wonder at this point why we wouldn’t just use vague priors all the time and not worry about overly influencing the analysis by the choice of prior.</p>
-<p>As an example, let’s assume a uniform distribution <span class="math inline">\((-\infty,\infty)\)</span> for some parameter <span class="math inline">\(\theta\)</span>. Without bounds, this prior is <em>improper</em>, i.e. the probability distribution does not integrate to 1. While the posterior distribution may be proper, it may not be, and it is left the researcher to determine this. One also has to choose a suitable range, something which may not be easy to ascertain. In addition, the distribution may not be uniform on some transformation of the parameter, say <span class="math inline">\(\theta^2\)</span>. A <em>Jeffreys’ prior</em> could be used to overcome this particular issue, but is more difficult for multiparameter settings.</p>
-<p>In general, there are several issues with using a noninformative or reference prior. For many models, there may be no clear choice of what to use. In any case, if the data are sufficient, the prior won’t matter as much, so establishing some reference to be used automatically isn’t exactly in keeping with Bayesian thinking. In addition, such choices can still have unintended effects on the results. Furthermore, if you had clear prior information, e.g. from previous research, one should use it.</p>
-<p>In practice, many priors we might use could be said to be <span class="emph">weakly informative</span>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague but not too vague. As an example, consider our earlier <a href="example.html#prior">binomial distribution example</a>. Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80% of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a <span class="math inline">\(\mathcal{B}(9,3)\)</span> would probably be a good way to proceed. One can examine such a distribution in the subsequent density plot.</p>
-<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb40-1" data-line-number="1"><span class="kw">diff</span>(<span class="kw">pbeta</span>(<span class="kw">c</span>(.<span class="dv">6</span>, <span class="fl">.9</span>), <span class="dv">3</span>, <span class="dv">1</span>))</a>
-<a class="sourceLine" id="cb40-2" data-line-number="2"><span class="kw">diff</span>(<span class="kw">pbeta</span>(<span class="kw">c</span>(.<span class="dv">6</span>, <span class="fl">.9</span>), <span class="dv">8</span>, <span class="dv">3</span>))</a>
-<a class="sourceLine" id="cb40-3" data-line-number="3"><span class="kw">diff</span>(<span class="kw">pbeta</span>(<span class="kw">c</span>(.<span class="dv">6</span>, <span class="fl">.9</span>), <span class="dv">9</span>, <span class="dv">3</span>))</a></code></pre></div>
+<p>We can begin with <em>noninformative priors</em>, which might also be referred to as <em>vague</em>, <em>flat</em>, <em>reference</em>, <em>objective</em>, or <em>diffuse</em> depending on the context. The idea is to use something that allows for Bayesian inference but puts all the premium on the data, and/or soi-disant <em>objectivity</em>, though the fact that there is still choice here should make clear that these are not entirely noninformative or objective. As we have alluded to elsewhere, if we put a prior uniform distribution on the regression coefficients (and e.g. the log of <span class="math inline">\(\sigma\)</span>), this would be a noninformative approach that would essentially be akin to maximum likelihood estimation. One might wonder at this point why we wouldn’t just use vague priors all the time and not worry about overly influencing the analysis by the choice of prior.</p>
+<p>As an example, let’s assume a uniform distribution <span class="math inline">\((-\infty,\infty)\)</span> for some parameter <span class="math inline">\(\theta\)</span>. Without bounds, this prior is <em>improper</em>, i.e. the probability distribution does not integrate to 1. While the posterior distribution might be proper, it also might not be, and it is left the researcher to determine this. One also has to choose a suitable range, something which may not be easy to ascertain. In addition, the distribution may not be uniform on some transformation of the parameter, say <span class="math inline">\(\theta^2\)</span>. A <em>Jeffreys’ prior</em> could be used to overcome this particular issue, but is more difficult for multiparameter settings.</p>
+<p>In general, there are several issues with using a noninformative or reference prior. For many models, there may be no clear choice of what to use, and employing some reference to be used automatically isn’t exactly in keeping with Bayesian thinking. In addition, such choices can still have unintended effects on the results. And finally, if you had clear prior information, e.g. from previous research, one should use it.</p>
+<p>In practice, many priors we might use could be said to be <em>weakly informative</em>. So instead of being completely ignorant, we can choose instead to be mostly ignorant, vague, but not too vague. As an example, consider our earlier <a href="example.html#prior">binomial distribution example</a>. Perhaps a reasonable guess as to the probability of making a penalty kick was .75. With that as a basis, we could choose a Beta distribution that would have roughly 80% of its probability between .6 and .9. We know that lower values for the parameters of a beta distribution represent a less informed state of mind, and the mean of the distribution is A/(A+B), so we could just fiddle with some values to see what we can turn up. The following code suggests a <span class="math inline">\(\mathcal{B}(9,3)\)</span> would probably be a good way to proceed. One can examine such a distribution in the subsequent density plot.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="issues.html#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(<span class="fu">pbeta</span>(<span class="fu">c</span>(.<span class="dv">6</span>, .<span class="dv">9</span>), <span class="dv">3</span>, <span class="dv">1</span>))</span>
+<span id="cb40-2"><a href="issues.html#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(<span class="fu">pbeta</span>(<span class="fu">c</span>(.<span class="dv">6</span>, .<span class="dv">9</span>), <span class="dv">8</span>, <span class="dv">3</span>))</span>
+<span id="cb40-3"><a href="issues.html#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">diff</span>(<span class="fu">pbeta</span>(<span class="fu">c</span>(.<span class="dv">6</span>, .<span class="dv">9</span>), <span class="dv">9</span>, <span class="dv">3</span>))</span></code></pre></div>
 <pre><code>[1] 0.513
 [1] 0.7625194
 [1] 0.7915213</code></pre>
 <p><img src="Bayesian-Basics_files/figure-html/chooseBetaPrior2-1.svg" width="500px" style="display: block; margin: auto;" /></p>
-<p>With our regression model, we were dealing with standardized predictors, so even choosing a <span class="math inline">\(\mathcal{N}(0, 10)\)</span> might be overly vague, as it would be near flat from -1 to 1, which is the range we’d expect the coefficients to fall in. The nice part about setting the prior mean on zero is that it has a regularizing effect, shrinking coefficients toward 0, that can help avoid overfitting with smaller samples.</p>
-<p>Gelman has <a href="https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations#how-informative-is-the-prior">recently proposed</a> the following as a practical check on how informative your prior might be:</p>
-<blockquote>
-<p>Here’s an idea for not getting tripped up with default priors: For each parameter (or other quantity of interest), compare the posterior sd to the prior sd. If the posterior sd for any parameter is more than 0.1 times the prior sd, then print out a note: “The prior distribution for this parameter is informative.” Then the user can go back and check that the default prior makes sense for this particular example.</p>
-</blockquote>
-<p>Thus, weakly informative priors can be based on perfectly reasonable settings, and this probably makes more sense than claiming complete ignorance, not to mention they simply work better for parameter estimation relative to flat priors. As mentioned, just some casual thought in many settings will often reveal that one isn’t completely ignorant. Furthermore, if we have clear prior information, in the form of prior research for example, we can then use <span class="emph">informative</span> priors based on those results. This again would be preferable to a completely noninformative approach.</p>
+<p>Thus, weakly informative priors can be based on perfectly reasonable settings, and this probably makes more sense than claiming complete ignorance, not to mention they simply work better for parameter estimation relative to flat priors. As mentioned, just some casual thought in many settings will often reveal that one isn’t completely ignorant. Furthermore, if we have clear prior information, in the form of prior research for example, we can then use <em>informative</em> priors based on those results. This again would be preferable to a completely noninformative approach.</p>
 </div>
 <div id="conjugacy" class="section level3">
 <h3>Conjugacy</h3>
-<p>Another consideration in the choice of prior is <span class="emph">conjugacy</span>. Consider using the beta distribution as a prior for the binomial setting as we have done previously. It turns out that using a <span class="math inline">\(\beta(\mathcal{A}, \mathcal{B})\)</span> results in the following posterior:</p>
+<p>Another consideration in the choice of prior is <em>conjugacy</em>. Consider using the beta distribution as a prior for the binomial setting as we have done previously. It turns out that using a <span class="math inline">\(\beta(\mathcal{A}, \mathcal{B})\)</span> results in the following posterior:</p>
 <p><span class="math display">\[p(\theta|y, n) \propto \beta(y+\mathcal{A}, n-y+\mathcal{B})\]</span></p>
 <p>Thus the posterior has the same parametric form as the prior, i.e. the beta distribution is <em>congugate</em> for the binomial likelihood. In this sense, the prior has the interpretation as providing additional data points. In our regression model, the conjugate setting uses a normal distribution for the predictor coefficients and an inverse gamma for <span class="math inline">\(\sigma^2\)</span>. In the case of exponential family distributions of generalized linear models, there are also natural conjugate prior distributions.</p>
 <p>While there can be practical advantages to using a conjugate prior, it is not required for some estimation approaches, and for many more complex models, may not even be possible. However, it might be useful to consider a known conjugate prior as a starting point.</p>
 </div>
+<div id="test-your-priors-beforehand" class="section level3">
+<h3>Test your Priors Beforehand</h3>
+<p>With our regression model, we were dealing with standardized predictors, so even choosing a <span class="math inline">\(\mathcal{N}(0, 10)\)</span> would be overly vague, as it would be nearly flat for the values from -1 to 1, which is the range we’d expect the coefficients to fall in. The nice part about setting the prior mean on zero is that it has a regularizing effect, shrinking coefficients toward 0, that can help avoid overfitting with smaller samples, but in that case we likely wouldn’t get much of that benefit.</p>
+<p>If we want to take advantage of this sort of knowledge, we can set up our model and priors, then sample only as if we had prior estimates. In a regression model for example, let’s say we want to check the prior for our beta coefficients. We want to test several priors, all with different variances, but otherwise centered on zero. The following uses matrix random normal samples and multiplication to quickly get the estimates.</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="issues.html#cb42-1" aria-hidden="true" tabindex="-1"></a>n_sim <span class="ot">=</span> <span class="dv">10</span></span>
+<span id="cb42-2"><a href="issues.html#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="issues.html#cb42-3" aria-hidden="true" tabindex="-1"></a>prior_beta_0_10  <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">4</span>, <span class="fu">rnorm</span>(n_sim, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">10</span>))</span>
+<span id="cb42-4"><a href="issues.html#cb42-4" aria-hidden="true" tabindex="-1"></a>prior_beta_0_1   <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">4</span>, <span class="fu">rnorm</span>(n_sim, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">1</span>))</span>
+<span id="cb42-5"><a href="issues.html#cb42-5" aria-hidden="true" tabindex="-1"></a>prior_beta_0_01  <span class="ot">=</span> <span class="fu">replicate</span>(<span class="dv">4</span>, <span class="fu">rnorm</span>(n_sim, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> .<span class="dv">1</span>))</span>
+<span id="cb42-6"><a href="issues.html#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="issues.html#cb42-7" aria-hidden="true" tabindex="-1"></a>y_rep_prior_0_10 <span class="ot">=</span> <span class="fu">tcrossprod</span>(X, prior_beta_0_10)</span>
+<span id="cb42-8"><a href="issues.html#cb42-8" aria-hidden="true" tabindex="-1"></a>y_rep_prior_0_1  <span class="ot">=</span> <span class="fu">tcrossprod</span>(X, prior_beta_0_1)</span>
+<span id="cb42-9"><a href="issues.html#cb42-9" aria-hidden="true" tabindex="-1"></a>y_rep_prior_0_01 <span class="ot">=</span> <span class="fu">tcrossprod</span>(X, prior_beta_0_01)</span></code></pre></div>
+<p>Now that we have some simulated data, compare the following plot to our observed data range for y of -6.06 to 12.43. It seems pretty clear that that one prior would be too restrictive, while the other is overly relaxed. The <span class="math inline">\(\mathcal{N}(0, 1)\)</span> seems the best choice. However, we might want to do something different for the intercept, since its value would be on a different scale than the other coefficients, and this might help shift our result to be more in line with the data<a href="#fn48" class="footnote-ref" id="fnref48"><sup>48</sup></a>.</p>
+<p><img src="Bayesian-Basics_files/figure-html/vis-sim-priors-1.svg" width="672" style="display: block; margin: auto;" /></p>
+<p>While not all situations are not as straightforward<a href="#fn49" class="footnote-ref" id="fnref49"><sup>49</sup></a>, hopefully this gives you an idea of how you might go about this. If using the <span class="pack">brms</span> package, it makes this easy with a sampling option <code>sample_prior = 'only'</code>. You can check out <a href="https://m-clark.github.io/posts/2021-02-28-practical-bayes-part-ii/#simulate-from-priors">my demonstration</a> of that process.</p>
+</div>
 <div id="hierarchical-priors" class="section level3">
 <h3>Hierarchical Priors</h3>
-<p>Not to be confused with hierarchical linear models, <em>hierarchical</em> in the context of Bayesian models often refers to using what are called <span class="emph">hyperpriors</span>, or priors on priors. Take for instance our example with regression coefficients. Maybe we wouldn’t know a good standard deviation to use. In this case we might set it as yet another parameter to be estimated, <span class="math inline">\(\sigma_\beta\)</span>, and give it a prior with lower bound of 0, e.g. <span class="math inline">\(\sigma_\beta \sim \textrm{Half-Cauchy}(10)\)</span>, that would have a median of 10 but will result in a final estimate of some other value. Technically this could turn into <a href="https://en.wikipedia.org/wiki/Turtles_all_the_way_down#/media/File:River_terrapin.jpg">turtles all the way up</a>, with priors upon priors upon priors. Usually one level is enough though, and might make you feel better for not setting a specific parameter to some value.</p>
+<p>Not to be confused with hierarchical linear models, <em>hierarchical</em> in the context of Bayesian models often refers to using what are called <em>hyperpriors</em>, or priors on priors. Take for instance our example with regression coefficients. Maybe we wouldn’t know a good standard deviation to use. In this case we might set it as yet another parameter to be estimated, <span class="math inline">\(\sigma_\beta\)</span>, and give it a prior with lower bound of 0, e.g. <span class="math inline">\(\sigma_\beta \sim \textrm{Half-Cauchy}(10)\)</span>, that would have a median of 10 but will result in a final estimate of some other value. Technically this could turn into <a href="https://en.wikipedia.org/wiki/Turtles_all_the_way_down#/media/File:River_terrapin.jpg">turtles all the way up</a>, with priors upon priors upon priors. Usually one level is enough though, and might make you feel better for not setting a specific parameter to some value.</p>
 </div>
 <div id="sensitivity-analysis-revisited" class="section level3">
 <h3>Sensitivity Analysis Revisited</h3>
 <p>As a reminder, we pointed out in the <a href="diagnostics.html#sensitivity-analysis">sensitivity analysis</a> section of the discussion on model checking, one may perform checks on settings for the model to see if changes to them results in gross changes of inference from the posterior. Part of that check should include the choice of prior, whether different parameter values for the same distribution, or different distributions altogether. Doing such a check will give you more confidence in the final selection.</p>
 </div>
+<div id="a-simple-check" class="section level3">
+<h3>A Simple Check</h3>
+<p><a href="https://github.com/stan-dev/stan/wiki/Prior-Choice-Recommendations#how-informative-is-the-prior">Gelman has proposed</a> the following as a practical check on how informative your prior might be:</p>
+<blockquote>
+<p>Here’s an idea for not getting tripped up with default priors: For each parameter (or other quantity of interest), compare the posterior sd to the prior sd. If the posterior sd for any parameter is more than 0.1 times the prior sd, then print out a note: “The prior distribution for this parameter is informative.” Then the user can go back and check that the default prior makes sense for this particular example.</p>
+</blockquote>
+<p>If you’re using <span class="pack">rstanarm</span> or <span class="pack">brms</span>, the <span class="pack">bayestestR</span> package will do this check for you.</p>
+</div>
 <div id="summary-1" class="section level3">
 <h3>Summary</h3>
-<p>It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors<a href="#fn50" class="footnote-ref" id="fnref50"><sup>50</sup></a>. One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot for simpler models. While the choice might be considered subjective in some respects, it is not arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.</p>
+<p>It will not take long with a couple Bayesian texts or research articles that employ Bayesian methods to get a feel for how to go about choosing priors<a href="#fn50" class="footnote-ref" id="fnref50"><sup>50</sup></a>. One should also remember that in the face of a lot of data, the likelihood will overwhelm the prior, rendering the choice effectively moot for simpler models. While the choice might be considered subjective in some respects, it is never arbitrary, and there are standard choices for common models and guidelines for more complex ones to help the researcher in their choice.</p>
 </div>
 </div>
 <div id="sampling-procedure" class="section level2">
 <h2>Sampling Procedure</h2>
-<p>There are <a href="http://m-clark.github.io/docs/ld_mcmc/">many ways</a> in which one might sample from the posterior. Bayesian analysis is highly flexible and can solve a great many statistical models in theory. In practice things can be more difficult. As more complex models are attempted, new approaches are undertaken to deal with the problems in estimation that inevitably arise. In an attempt to dissolve at least some of the mystery, a brief description follows.</p>
+<p>There are <a href="http://m-clark.github.io/docs/ld_mcmc/">many ways</a> in which one might sample from the posterior. While Bayesian analysis is highly flexible and can solve a great many statistical models in theory, in practice things can be more difficult. As more complex models are attempted, new approaches are undertaken to deal with the problems in estimation that inevitably arise. In an attempt to dissolve at least some of the mystery, a brief description follows.</p>
 <div id="metropolis" class="section level3">
 <h3>Metropolis</h3>
-<p>We have mentioned that BUGS and JAGS use <span class="emph">Gibbs sampling</span>, which is a special case of the <span class="emph">Metropolis-Hastings</span> (MH) algorithm<a href="#fn51" class="footnote-ref" id="fnref51"><sup>51</sup></a>, a very general approach encompassing a wide variety of techniques. The Metropolis algorithm can be briefly described in the following steps:</p>
+<p>We have mentioned that BUGS and JAGS use <em>Gibbs sampling</em>, which is a special case of the <em>Metropolis-Hastings</em> (MH) algorithm<a href="#fn51" class="footnote-ref" id="fnref51"><sup>51</sup></a>, a very general approach encompassing a wide variety of techniques. The Metropolis algorithm can be briefly described in the following steps:</p>
 <ol style="list-style-type: decimal">
 <li>Start with initial values for the parameters <span class="math inline">\(\theta^0\)</span></li>
 </ol>
@@ -347,16 +412,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ol>
 <p>Conceptually, if the proposal increases the posterior density, <span class="math inline">\(\theta^t = \theta^*\)</span>. If it decreases the proposal density, set <span class="math inline">\(\theta^t = \theta^*\)</span> with probability <span class="math inline">\(r\)</span>, else it remains at <span class="math inline">\(\theta^{t-1}\)</span>. The MH algorithm generalizes the Metropolis to use asymmetric proposal distributions and uses an <span class="math inline">\(r\)</span> to correct for asymmetry<a href="#fn52" class="footnote-ref" id="fnref52"><sup>52</sup></a>.</p>
 <p>Let’s look at this in generic/pseudo R code for additional clarity (in practice we can take the difference in the log values for step 3):</p>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb42-1" data-line-number="1">nsim =<span class="st"> </span>numberSimulatedDraws</a>
-<a class="sourceLine" id="cb42-2" data-line-number="2">theta0 =<span class="st"> </span>initValue</a>
-<a class="sourceLine" id="cb42-3" data-line-number="3">theta =<span class="st"> </span><span class="kw">c</span>(theta0, <span class="kw">rep</span>(<span class="ot">NA</span>, nsim))</a>
-<a class="sourceLine" id="cb42-4" data-line-number="4"></a>
-<a class="sourceLine" id="cb42-5" data-line-number="5"><span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">2</span><span class="op">:</span>nsim) {</a>
-<a class="sourceLine" id="cb42-6" data-line-number="6">  thetaStar =<span class="st"> </span><span class="kw">rnorm</span>(<span class="dv">1</span>, theta[t<span class="dv">-1</span>], sd)</a>
-<a class="sourceLine" id="cb42-7" data-line-number="7">  u =<span class="st"> </span><span class="kw">runif</span>(<span class="dv">1</span>)</a>
-<a class="sourceLine" id="cb42-8" data-line-number="8">  r =<span class="st"> </span><span class="kw">exp</span>(logPosterior_thetaStar <span class="op">-</span><span class="st"> </span>logPosterior_theta0)</a>
-<a class="sourceLine" id="cb42-9" data-line-number="9">  theta[t] =<span class="st"> </span><span class="kw">ifelse</span>(u<span class="op">&lt;=</span>r, thetaStar, theta[t<span class="dv">-1</span>])</a>
-<a class="sourceLine" id="cb42-10" data-line-number="10">}</a></code></pre></div>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="issues.html#cb43-1" aria-hidden="true" tabindex="-1"></a>nsim <span class="ot">=</span> numberSimulatedDraws</span>
+<span id="cb43-2"><a href="issues.html#cb43-2" aria-hidden="true" tabindex="-1"></a>theta0 <span class="ot">=</span> initValue</span>
+<span id="cb43-3"><a href="issues.html#cb43-3" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">=</span> <span class="fu">c</span>(theta0, <span class="fu">rep</span>(<span class="cn">NA</span>, nsim))</span>
+<span id="cb43-4"><a href="issues.html#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="issues.html#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>nsim) {</span>
+<span id="cb43-6"><a href="issues.html#cb43-6" aria-hidden="true" tabindex="-1"></a>  thetaStar <span class="ot">=</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, theta[t<span class="dv">-1</span>], sd)</span>
+<span id="cb43-7"><a href="issues.html#cb43-7" aria-hidden="true" tabindex="-1"></a>  u <span class="ot">=</span> <span class="fu">runif</span>(<span class="dv">1</span>)</span>
+<span id="cb43-8"><a href="issues.html#cb43-8" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">=</span> <span class="fu">exp</span>(logPosterior_thetaStar <span class="sc">-</span> logPosterior_theta0)</span>
+<span id="cb43-9"><a href="issues.html#cb43-9" aria-hidden="true" tabindex="-1"></a>  theta[t] <span class="ot">=</span> <span class="fu">ifelse</span>(u<span class="sc">&lt;=</span>r, thetaStar, theta[t<span class="dv">-1</span>])</span>
+<span id="cb43-10"><a href="issues.html#cb43-10" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 <p>One can see the <a href="appendix.html#metropolis-hastings-example">Metropolis-Hastings Example</a> to see the Metropolis algorithm applied to our regression problem.</p>
 </div>
 <div id="gibbs" class="section level3">
@@ -374,16 +439,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Generate <span class="math inline">\(\theta_p^t \sim p(\theta_p^t | \theta_1^{t}, \theta_2^{t}, ..., \theta_{p-1}^{t})\)</span></li>
 </ol>
 <p>Again, some generic code may provide another way to understand it:</p>
-<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" data-line-number="1"><span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>nsim) {</a>
-<a class="sourceLine" id="cb43-2" data-line-number="2">  <span class="cf">for</span> (p <span class="cf">in</span> <span class="dv">1</span><span class="op">:</span>P) {</a>
-<a class="sourceLine" id="cb43-3" data-line-number="3">    thetaNew[p] =<span class="st"> </span><span class="kw">rDistribution</span>(<span class="dv">1</span>, theta[t,<span class="op">-</span>p])</a>
-<a class="sourceLine" id="cb43-4" data-line-number="4">  }</a>
-<a class="sourceLine" id="cb43-5" data-line-number="5">  theta[t,] =<span class="st"> </span>thetaNew</a>
-<a class="sourceLine" id="cb43-6" data-line-number="6">}</a></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="issues.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>nsim) {</span>
+<span id="cb44-2"><a href="issues.html#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (p <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>P) {</span>
+<span id="cb44-3"><a href="issues.html#cb44-3" aria-hidden="true" tabindex="-1"></a>    thetaNew[p] <span class="ot">=</span> <span class="fu">rDistribution</span>(<span class="dv">1</span>, theta[t,<span class="sc">-</span>p])</span>
+<span id="cb44-4"><a href="issues.html#cb44-4" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb44-5"><a href="issues.html#cb44-5" aria-hidden="true" tabindex="-1"></a>  theta[t,] <span class="ot">=</span> thetaNew</span>
+<span id="cb44-6"><a href="issues.html#cb44-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
 </div>
 <div id="hamiltonian-monte-carlo" class="section level3">
 <h3>Hamiltonian Monte Carlo</h3>
-<p>Stan uses <span class="emph">Hamiltonian Monte Carlo</span>, another variant of MH. It takes the parameters <span class="math inline">\(\theta\)</span> as collectively denoting the position of a particle in some space with momentum <span class="math inline">\(\phi\)</span> (of same dimension as <span class="math inline">\(\theta\)</span>). Both <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\phi\)</span> are updated at each Metropolis step and jointly estimated, though we are only interested in <span class="math inline">\(\theta\)</span>. We can describe the basic steps as follows.</p>
+<p>Stan uses <em>Hamiltonian Monte Carlo</em>, another variant of MH. It takes the parameters <span class="math inline">\(\theta\)</span> as collectively denoting the position of a particle in some space with momentum <span class="math inline">\(\phi\)</span> (of same dimension as <span class="math inline">\(\theta\)</span>). Both <span class="math inline">\(\theta\)</span> and <span class="math inline">\(\phi\)</span> are updated at each Metropolis step and jointly estimated, though we are only interested in <span class="math inline">\(\theta\)</span>. We can describe the basic steps as follows.</p>
 <ol style="list-style-type: decimal">
 <li>At iteration <span class="math inline">\(t\)</span>, take a random draw of momentum <span class="math inline">\(\phi\)</span> from its posterior distribution</li>
 <li>Update the position vector <span class="math inline">\(\theta\)</span> given current momentum, update <span class="math inline">\(\phi\)</span> given the gradient of <span class="math inline">\(\theta\)</span></li>
@@ -400,26 +465,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="number-of-draws-thinning-warm-up" class="section level2">
 <h2>Number of draws, thinning, warm-up</h2>
 <p>Whatever program we use, the typical inputs that will need to be set regard the number of simulated draws from the posterior, the number of warm-up draws, and the amount of thinning. Only the draws that remain after warm-up and thinning will be used for inference. However, there certainly is no default that would work from one situation to the next.</p>
-<p>Recall that we are looking for convergence to a distribution, and this isn’t determined by the number of draws alone. The fact is that one only needs a few draws for accurate inference. Even something as low as <span class="math inline">\(n_{\textrm{eff}}\)</span> of 10 for each chain would actually be fine assuming everything else seemed in order, though typically we want more than that so that our values don’t bounce around from one model run to the next. To feel confident about convergence, i.e. get <span class="math inline">\(\hat R\)</span> of around 1, plots looking right, etc., we will usually want in the thousands for the number of total draws. We might need quite a few more for increasing model complexity.</p>
-<p>A conservative approach to the number of warm-up draws is half the number of runs, but this is fairly arbitrary. Thinning isn’t specifically necessary for inference if approximate convergence is achieved, but is useful with increasing model complexity to reduce autocorrelation among the estimates.</p>
-<p>For myself, I typically run models such that the results are based on roughly <span class="math inline">\(n_{\textrm{eff}} = 1000\)</span> estimates, simply because 1000 is a nice round number and is enough to make graphical display a bit smoother. For a regression model as we have been running, the setting we used produced 1000 final estimates across 4 chains. Other models might make due with 100000, 50000, 50 respectively. You may just need to feel things out for yourself, but for simpler models you won’t need much.</p>
+<p>Recall that we are looking for convergence to a distribution, and this isn’t determined by the number of draws alone. The fact is that one only needs a few draws for accurate inference. Even something as low as <span class="math inline">\(n_{\textrm{eff}}\)</span> of 10 for each chain would actually be fine assuming everything else seemed in order, though typically we want more than that so that our estimates wouldn’t bounce around a great deal from one model run to the next. To feel confident about convergence, i.e. get <span class="math inline">\(\hat R\)</span> of around 1, plots looking right, etc., we will usually want in the thousands for the number of total draws. We might need quite a few more for increasing model complexity.</p>
+<p>A conservative approach to the number of warm-up draws is to set them half the number of runs, but this is fairly arbitrary. Thinning isn’t specifically necessary for inference if approximate convergence is achieved, but is useful with increasing model complexity to reduce autocorrelation among the estimates. I mostly just use it so that the result is not so large in size.</p>
+<p>For myself, I typically run models such that the results are based on roughly <span class="math inline">\(n_{\textrm{eff}} = 1000\)</span> estimates, simply because 1000 is a nice round number, and is enough to make graphical display a bit smoother. For a regression model as we have been running, the setting we used produced 1000 final estimates across 4 chains. Other models might make due with 100000, 50000, 50 respectively. You may just need to feel things out for yourself, but for simpler models you really won’t need much.</p>
 </div>
 <div id="model-complexity" class="section level2">
 <h2>Model Complexity</h2>
-<p>One of the great things about the Bayesian approach is its ability to handle extremely complex models involving lots of parameters. In addition, it will often work better (or at all) in simpler settings where the data under consideration are problematic (e.g. collinearity, separation in the logistic regression setting). While it can be quite an undertaking to set things correctly and debug, re-run etc. and generally go through the trial and error process typically associated with highly complex models, it’s definitely nice to know that you can at least attempt them. It will take some work, but you will also learn a great deal along the way. Furthermore, there are typically tips and tricks that can potentially help just about any model run a little more smoothly.</p>
+<p>One of the great things about the Bayesian approach is its ability to handle extremely complex models involving lots of parameters. In addition, it will often work better (or at all) in simpler settings where the data under consideration are problematic (e.g. collinearity, separation in the logistic regression setting). While it can be quite an undertaking to set things correctly and debug, re-run fits, and generally go through the trial and error process typically associated with highly complex models, it’s definitely nice to know that you can at least attempt them. It will take some work, but you will also learn a great deal along the way. Furthermore, there are typically tips and tricks that can potentially help just about any model run a little more smoothly.</p>
 
 </div>
 </div>
 <div class="footnotes">
 <hr />
-<ol start="48">
-<li id="fn48"><p>It really should be a part of most analysis.<a href="issues.html#fnref48" class="footnote-back">↩</a></p></li>
-<li id="fn49"><p>With Stan I sometimes do a 1 iteration compile check first.<a href="issues.html#fnref49" class="footnote-back">↩</a></p></li>
-<li id="fn50"><p>The BUGS book has many examples for a wide variety of applications. The <a href="https://github.com/stan-dev/example-models/wiki">Stan github page</a> has Stan examples for each of those BUGS examples and many more.<a href="issues.html#fnref50" class="footnote-back">↩</a></p></li>
-<li id="fn51"><p>Originally developed in physics in the 50s, it eventually made its way across to other fields.<a href="issues.html#fnref51" class="footnote-back">↩</a></p></li>
+<ol start="46">
+<li id="fn46"><p>It really should be a part of any analysis.<a href="issues.html#fnref46" class="footnote-back">↩︎</a></p></li>
+<li id="fn47"><p>With Stan I sometimes do a 1 iteration compile check first.<a href="issues.html#fnref47" class="footnote-back">↩︎</a></p></li>
+<li id="fn48"><p>The <span class="pack">brms</span> package does in fact automatically treat the intercept in a special manner.<a href="issues.html#fnref48" class="footnote-back">↩︎</a></p></li>
+<li id="fn49"><p>Even here we’re ignoring our sigma estimate.<a href="issues.html#fnref49" class="footnote-back">↩︎</a></p></li>
+<li id="fn50"><p>The BUGS book has many examples for a wide variety of applications. The <a href="https://github.com/stan-dev/example-models/wiki">Stan github page</a> has Stan examples for each of those BUGS examples and many more.<a href="issues.html#fnref50" class="footnote-back">↩︎</a></p></li>
+<li id="fn51"><p>Originally developed in physics in the 50s, it eventually made its way across to other fields.<a href="issues.html#fnref51" class="footnote-back">↩︎</a></p></li>
 <li id="fn52"><p>Given a proposal/jumping distribution <span class="math inline">\(\mathcal{J}_t\)</span>, <br>
-<span class="math inline">\(r=\frac{p(\theta^*|y)/\mathcal{J}_t(\theta^*|\theta^{t-1})} {p(\theta^{t-1}|y)/\mathcal{J}_t(\theta^{t-1}|\theta^*)}\)</span><a href="issues.html#fnref52" class="footnote-back">↩</a></p></li>
-<li id="fn53"><p>See this entry at David Mimno’s blog for a <a href="http://www.mimno.org/articles/hmc/">visualization of HMC</a>, and Betancourt’s <a href="https://arxiv.org/pdf/1701.02434.pdf">Conceptual Introduction to Hamiltonian Monte Carlo</a>.<a href="issues.html#fnref53" class="footnote-back">↩</a></p></li>
+<span class="math inline">\(r=\frac{p(\theta^*|y)/\mathcal{J}_t(\theta^*|\theta^{t-1})} {p(\theta^{t-1}|y)/\mathcal{J}_t(\theta^{t-1}|\theta^*)}\)</span><a href="issues.html#fnref52" class="footnote-back">↩︎</a></p></li>
+<li id="fn53"><p>See this entry at David Mimno’s blog for a <a href="http://www.mimno.org/articles/hmc/">visualization of HMC</a>, and Betancourt’s <a href="https://arxiv.org/pdf/1701.02434.pdf">Conceptual Introduction to Hamiltonian Monte Carlo</a>.<a href="issues.html#fnref53" class="footnote-back">↩︎</a></p></li>
 </ol>
 </div>
             </section>
@@ -432,12 +499,13 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
 <script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
 <script>
 gitbook.require(["gitbook"], function(gitbook) {
 gitbook.start({
@@ -445,12 +513,14 @@ gitbook.start({
 "github": false,
 "facebook": false,
 "twitter": false,
-"google": false,
 "linkedin": false,
 "weibo": false,
-"instapper": false,
+"instapaper": false,
 "vk": false,
-"all": ["twitter", "facebook", "google", "weibo", "instapaper"]
+"whatsapp": false,
+"all": ["twitter", "facebook", "google", "weibo", "instapaper"],
+"google": false,
+"instapper": false
 },
 "fontsettings": {
 "theme": "white",
@@ -458,15 +528,26 @@ gitbook.start({
 "size": 2
 },
 "edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
 "download": ["Bayesian-Basics.epub"],
+"search": {
+"engine": "fuse",
+"options": null
+},
 "toc": {
 "collapse": "section",
 "depth": 2,
 "scroll_highlight": true
 },
 "df_print": "kable",
-"highlight": "pygments",
-"search": true
+"highlight": "pygments"
 });
 });
 </script>
@@ -477,9 +558,10 @@ gitbook.start({
     var script = document.createElement("script");
     script.type = "text/javascript";
     var src = "true";
-    if (src === "" || src === "true") src = "https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML";
-    if (location.protocol !== "file:" && /^https?:/.test(src))
-      src = src.replace(/^https?:/, '');
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
     script.src = src;
     document.getElementsByTagName("head")[0].appendChild(script);
   })();
